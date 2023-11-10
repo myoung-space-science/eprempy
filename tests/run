@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# This is a work-around for the fact that running plain `pytest` in this
+# directory fails because not all test modules have unique names.
+
+all=(
+    test_reference.py
+    test_etc.py
+    test_container.py
+    test_exceptions.py
+    test_base.py
+    test_metric
+    test_paths.py
+    test_symbolic.py
+    test_aliased.py
+    test_measured
+    test_numeric
+    test_real
+    test_parameter
+    test_physical
+    test_universal.py
+    test_dataset
+    test_quantity
+    test_observable.py
+    test_observer.py
+    test_api.py
+)
+
+i=0
+for tests in ${all[@]}; do
+    echo "$i: ${tests}"
+    i=$((i+1))
+    pytest ${tests}
+done
+
