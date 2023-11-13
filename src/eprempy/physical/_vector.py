@@ -4,6 +4,7 @@ import numpy
 
 from .. import base
 from .. import measured
+from ..typehelp import Self
 from ._object import Object
 from ._scalar import Scalar
 from ._types import QuantityType as Q
@@ -38,7 +39,7 @@ class Vector(Object[base.SequenceType]):
     def __getitem__(self, __i: int) -> Scalar: ...
 
     @typing.overload
-    def __getitem__(self: typing.Self, __i: slice) -> typing.Self: ...
+    def __getitem__(self: Self, __i: slice) -> Self: ...
 
     def __getitem__(self, __i):
         """Called for self[__i]."""

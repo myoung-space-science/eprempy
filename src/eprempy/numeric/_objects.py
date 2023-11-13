@@ -7,9 +7,9 @@ import functools
 import inspect
 import numbers
 import typing
-from typing_extensions import Self
 
 from .. import etc
+from ..typehelp import Self
 
 
 ValueType = typing.TypeVar('ValueType', int, float, complex, numbers.Complex)

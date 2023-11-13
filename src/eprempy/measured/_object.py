@@ -4,6 +4,7 @@ from .. import base
 from .. import metric
 from . import _types
 from . import _context
+from ..typehelp import Self
 
 
 I = typing.TypeVar('I', bound=_types.Object)
@@ -20,7 +21,7 @@ class Object(_types.Object[base.RealType]):
         super().__init__(data, context.unit)
         self._context = context
 
-    def withunit(self: typing.Self, new: metric.UnitLike, /) -> typing.Self:
+    def withunit(self: Self, new: metric.UnitLike, /) -> Self:
         """Convert this object to a new unit."""
         return self._context.convert(self, new)
 

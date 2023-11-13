@@ -1,6 +1,5 @@
 import pathlib
 import typing
-from typing_extensions import Self
 
 import matplotlib.pyplot as plt
 import numpy
@@ -11,6 +10,7 @@ from .. import measured
 from .. import numeric
 from .. import quantity
 from .. import real
+from ..typehelp import Self
 from ._axis import Coordinates
 from ._axes import Axes
 from ._tensor import Tensor

@@ -1,11 +1,11 @@
 import abc
 import typing
-from typing_extensions import Self
 
 from .. import base
 from .. import measured
 from .. import numeric
 from .. import quantity
+from ..typehelp import Self
 from ._types import QuantityType as Q
 
 

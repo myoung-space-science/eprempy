@@ -20,6 +20,7 @@ from .. import physical
 from .. import quantity
 from .. import reference
 from ..reference import ARRAYS
+from ..typehelp import Self
 
 
 class Interpolant(typing.NamedTuple):
@@ -32,9 +33,9 @@ class Array(physical.Array):
     """A physical array with interpolation support."""
 
     def interpolate(
-        self: typing.Self,
+        self: Self,
         interpolants: typing.Mapping[str, Interpolant],
-    ) -> typing.Self:
+    ) -> Self:
         """Interpolate this array to target values."""
         return interpolate(self, interpolants)
 

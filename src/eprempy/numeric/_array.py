@@ -2,7 +2,6 @@ import collections.abc
 import contextlib
 import numbers
 import typing
-from typing_extensions import Self
 
 import numpy
 import numpy.typing
@@ -13,6 +12,7 @@ from .. import etc
 from . import _data
 from . import _index
 from . import _operators
+from ..typehelp import Self
 from ._objects import (
     Object,
     Quantity,

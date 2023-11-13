@@ -5,7 +5,6 @@ Support for defining and working with labeled axes.
 import collections.abc
 import numbers
 import typing
-from typing_extensions import Self
 
 import numpy
 import numpy.typing
@@ -15,6 +14,7 @@ from .. import etc
 from .. import numeric
 from .. import quantity
 from . import _axis
+from ..typehelp import Self
 
 
 AxisType = typing.Union[
