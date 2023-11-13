@@ -5,6 +5,9 @@
 
 ## NEXT
 
+## v0.1.1 (2023-11-13)
+
+- Fix backwards-compatibility (to Python 3.9) of type annotations
 
 ## v0.1.0 (2023-11-09)
 
