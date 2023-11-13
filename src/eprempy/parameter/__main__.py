@@ -35,7 +35,7 @@ def compare_arguments(
     well as the corresponding value contained in each configuration file in
     `paths`. If `source` is not absent, it will read parameter names and default
     values from the version of `configuration.c` in `source`; otherwise it will
-    use the values in `runtime.json`.
+    use the values in the local database.
     """
     args = _build_arg_dict(files, source=source, diff=diff)
     topkeys = next(list(v.keys()) for v in args.values() if v)
@@ -290,6 +290,7 @@ if __name__ == '__main__':
         '`source`': 'SRC',
         "`paths`": "the given paths",
         '`': "'",
+        "the local database": str(SourceFile._db_path),
     }
     parser = argparse.ArgumentParser(
         description="Generate or compare EPREM configuration files.",
