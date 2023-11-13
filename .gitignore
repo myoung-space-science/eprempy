@@ -2,8 +2,6 @@
 /dev
 /tests/data
 sources.log
-default.py
-reference.json
 
 # Visual Studio Code
 .vscode
