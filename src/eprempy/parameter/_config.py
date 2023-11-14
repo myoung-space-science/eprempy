@@ -194,7 +194,7 @@ class ConfigFile(collections.abc.Mapping):
 
     def __str__(self) -> str:
         """A simplified representation of this object."""
-        return str(self.filepath)
+        return str(self.source)
 
     def __iter__(self) -> typing.Iterable[str]:
         """Called for iter(self)."""
@@ -245,11 +245,11 @@ class ConfigFile(collections.abc.Mapping):
         """The parsed parameter-value pairs."""
         if self._parsed is None:
             comments = set(self._comments or ['#'])
-            self._parsed = _parse_config(self.filepath, comments)
+            self._parsed = _parse_config(self.source, comments)
         return self._parsed
 
     @property
-    def filepath(self):
+    def source(self):
         """The path to the parsed configuration file."""
         return self._filepath
 

@@ -211,7 +211,7 @@ def interface_factory(*args, **kwargs):
     cfgpath = None
     if cfginit:
         cfgfile = _config.configfile_factory(cfginit, **options)
-        cfgpath = cfgfile.filepath
+        cfgpath = cfgfile.source
         user = {
             # NOTE: this does not use `configfile.get(key)` because we don't
             # want to overwrite the default value with `None` if the config
