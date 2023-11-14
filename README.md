@@ -10,7 +10,16 @@ $ pip install eprempy
 
 ## Usage
 
-- TODO
+Before getting started in earnest with `eprempy`, one simple task you can perform to make sure everything is installed is to print the version number.
+
+
+```python
+import eprempy
+print(f"Using version {eprempy.__version__} of eprempy {chr(0x1f60a)}")
+```
+
+    Using version 0.1.1 of eprempy 😊
+
 
 ## Contributing
 
