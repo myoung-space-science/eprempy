@@ -3,7 +3,7 @@
 # Changelog
 
 
-## NEXT
+## v0.1.2 (2023-11-14)
 
 - Rename `ConfigFile.filepath` to `.source`
 - Add project development dependency: Python Semantic Release
