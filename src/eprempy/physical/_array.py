@@ -79,6 +79,16 @@ class Array(Tensor[real.Array[real.ValueType]]):
         axes = self.axes.permute(*args)
         return self.spawn(data, unit=self.unit, axes=axes)
 
+    @typing.overload
+    def plot(
+        self,
+        *args,
+        x: typing.Optional[typing.Union[str, typing.Sequence]]=None,
+        unit: typing.Optional[metric.UnitLike]=None,
+        path: typing.Optional[pathlib.Path]=None,
+        **extra
+    ) -> None: ...
+
     def plot(self, *args, **kwargs):
         """Plot this array."""
         return plot(self, *args, **kwargs)
