@@ -2,6 +2,12 @@
 
 # Changelog
 
+## NEXT
+
+## v0.1.3 (2023-11-15)
+
+- Fix bug in observable interpolation
+- Edit README Usage
 
 ## v0.1.2 (2023-11-14)
 
