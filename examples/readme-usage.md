@@ -6,7 +6,7 @@ import eprempy
 print(f"Using version {eprempy.__version__} of eprempy {chr(0x1f60a)}")
 ```
 
-    Using version 0.1.2 of eprempy 😊
+    Using version 0.1.3 of eprempy 😊
 
 
 ### Creating an observer
@@ -49,30 +49,143 @@ We can request the value of simulation runtime parameters by aliased keyword. Fo
 
 ```python
 for key in ('lambda0', 'lamo', 'lam0'):
-    print(f"{key} = {stream[key]}")
+    print(f"{key} = {stream[key]!r}")
 ```
 
-    lambda0 = [1.], unit='au'
-    lamo = [1.], unit='au'
-    lam0 = [1.], unit='au'
+    lambda0 = Variable([1.], unit='au')
+    lamo = Variable([1.], unit='au')
+    lam0 = Variable([1.], unit='au')
 
+
+We can also request an array-like observable quantity by one of its aliases. 
 
 
 ```python
-vr = stream['Vr']
-print(vr)
+for alias in ('Vr', 'vr', 'Ur', 'ur'):
+    print(f"{alias} = {stream[alias]!r}")
 ```
 
-    Quantity(unit='m s^-1', dimensions={'time', 'shell'})
+    Vr = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
+    vr = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
+    Ur = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
+    ur = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
 
+
+As show above, each observable quantity knows its metric unit and array dimensions. Dimension names have the same meaning as in the raw EPREM output.
+
+It is possible to change an observable quantity's unit by calling its `withunit` method:
 
 
 ```python
-vr[:, (0.5, 'au')].plot('k')
+print(stream['vr'].unit)
+print(stream['vr'].withunit('au / day').unit)
+print(stream['flux'].unit)
+print(stream['flux'].withunit('1 / (cm^2 s sr MeV)').unit)
+```
+
+    m s^-1
+    au d^-1
+    J^-1 s^-1 sr^-1 m^-2
+    MeV^-1 s^-1 sr^-1 cm^-2
+
+
+An observable quantity supports subscription by standard index types or by "measurable" indices. An index is measurable if it contains one or more numeric values followed by a unit-like string.
+
+This is best illustrated by a concrete example. Let's first pick a particular time in hours and radius in au
+
+
+```python
+time = stream['time'].withunit('hour')
+print(f"time:\n{time[27]}\n")
+radius = stream['radius'].withunit('au')
+print(f"radius:\n{radius[27, 57]}")
+```
+
+    time:
+    [67.2],
+    unit='h',
+    dimensions={'time'}
+    
+    radius:
+    [[1.27798576]],
+    unit='au',
+    dimensions={'time', 'shell'}
+
+
+Next, we'll retrieve the observable quantity representing plasma density.
+
+
+```python
+rho = stream['rho']
+print(f"density at fixed time:\n{rho[27, 56:59]}\n")
+print(f"density at fixed radius:\n{rho[26:29, 57]}\n")
+print(f"density at fixed time and radius:\n{rho[27, 57]}")
+```
+
+    density at fixed time:
+    [[20884873.80632916  5146864.60956498 21476487.84191666]],
+    unit='m^-3',
+    dimensions={'time', 'shell'}
+    
+    density at fixed radius:
+    [[ 5521952.49424706]
+     [ 5146864.60956498]
+     [18721643.43447628]],
+    unit='m^-3',
+    dimensions={'time', 'shell'}
+    
+    density at fixed time and radius:
+    [[5146864.60956498]],
+    unit='m^-3',
+    dimensions={'time', 'shell'}
+
+
+Finally, we'll create a measured index with value equivalent to our chosen time point and one equivalent to our chosen radius point. When we use the measured indices to subscript the density, we get a value very close to the value of density subscripted with standard indices.
+
+
+```python
+t0 = 67.2, 'hour'
+r0 = 1.27798576, 'au'
+print(f"density at (t0, r0):\n{rho[t0, r0]}\n")
+```
+
+    density at (t0, r0):
+    [[5146864.35972748]],
+    unit='m^-3',
+    dimensions={'time', 'radius'}
+    
+
+
+Each observable quantity has a `plot` method.
+
+
+```python
+vr = stream['vr']
+r0 = 0.5, 'au'
+vr[:, r0].plot('k')
 ```
 
 
     
-![png](readme-usage_files/readme-usage_10_0.png)
+![png](readme-usage_files/readme-usage_22_0.png)
+    
+
+
+This method is useful for quickly viewing a single quantity. More complex plots require explicit use of a plotting module such as `matplotlib.pyplot`. The following example creates a slightly more complex version of the above plot, and demonstrates use of the `format` method for metric units.
+
+
+```python
+import matplotlib.pyplot as plt
+for r in (0.1, 0.5, 1.0):
+    plt.plot(time, vr[:, (r, 'au')], label=f"r = {r} au")
+plt.legend()
+plt.xlabel(f"Time [{time.unit}]")
+plt.ylabel(rf"$V_r$ [{vr.unit.format(style='tex')}]")
+plt.tight_layout()
+```
+
+
+    
+![png](readme-usage_files/readme-usage_24_0.png)
     
 
