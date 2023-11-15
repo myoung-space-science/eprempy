@@ -966,7 +966,7 @@ class Implementations:
                 a = physical.vector(axis[idx])
                 for v in m:
                     _check_interpolation_bounds(key, v, a)
-                interpolants[key] = physical.Interpolant(
+                interpolants[key] = Interpolant(
                     targets=numpy.array(m),
                     reference=self.grid[key][idx],
                 )
