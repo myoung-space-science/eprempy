@@ -64,17 +64,17 @@ class Expression(collections.abc.Sequence):
         """An unambiguous representation of this object."""
         return f"{self.__class__.__qualname__}({self})"
 
-    def format(self, *, separator: str=' ', style: str=None):
+    def format(self, style: str=None, *, separator: str=' '):
         """Join symbolic terms into a string.
 
         Parameters
         ----------
-        separator : string, default=' '
-            The string to place between terms.
-
         style : string, optional
             The style in which to format each term. See `~Operand.format` for
             available styles.
+
+        separator : string, default=' '
+            The string to place between terms.
         """
         formatted = (term.format(style=style) for term in self)
         return separator.join(formatted)

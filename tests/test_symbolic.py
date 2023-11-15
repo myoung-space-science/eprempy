@@ -525,9 +525,13 @@ def test_formatted_expression():
                 assert all(term in formatted for term in terms)
             elif isinstance(style, tuple):
                 for key in style:
+                    formatted = expresssion.format(key)
+                    assert all(term in formatted for term in terms)
                     formatted = expresssion.format(style=key)
                     assert all(term in formatted for term in terms)
             else:
+                formatted = expresssion.format(style)
+                assert all(term in formatted for term in terms)
                 formatted = expresssion.format(style=style)
                 assert all(term in formatted for term in terms)
 
