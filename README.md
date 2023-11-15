@@ -18,7 +18,7 @@ import eprempy
 print(f"Using version {eprempy.__version__} of eprempy {chr(0x1f60a)}")
 ```
 
-    Using version 0.1.1 of eprempy 😊
+    Using version 0.1.3 of eprempy 😊
 
 
 ## Contributing
