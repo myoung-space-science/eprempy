@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Refactor `symbolic.Expression.format`
+
 ## v0.1.3 (2023-11-15)
 
 - Fix bug in observable interpolation
