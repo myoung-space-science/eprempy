@@ -4,7 +4,10 @@
 
 ## NEXT
 
+## v0.1.4 (2023-11-17)
+
 - Refactor `symbolic.Expression.format`
+- Define `Observer.which` method
 
 ## v0.1.3 (2023-11-15)
 
