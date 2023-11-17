@@ -18,7 +18,7 @@ import eprempy
 print(f"Using version {eprempy.__version__} of eprempy {chr(0x1f60a)}")
 ```
 
-    Using version 0.1.3 of eprempy 😊
+    Using version 0.1.4 of eprempy 😊
 
 
 ### Creating an observer
@@ -179,7 +179,7 @@ vr[:, r0].plot('k')
 
 
     
-![png](examples/readme-usage_files/readme-usage_22_0.png)
+![png](readme-usage_files/readme-usage_22_0.png)
     
 
 
@@ -198,8 +198,153 @@ plt.tight_layout()
 
 
     
-![png](examples/readme-usage_files/readme-usage_24_0.png)
+![png](readme-usage_files/readme-usage_24_0.png)
     
+
+
+You can print all observable quantities and parameters available to an observer by calling the observer's `which` method.
+
+
+```python
+stream.which('observables')
+```
+
+    'phiOffset'
+    't' == 'times' == 'time'
+    'shells' == 'shell'
+    'pitch-angle' == 'pitch angles' == 'mu' == 'pitch-angle cosines' == 'pitch-angles' == 'pitch-angle cosine' == 'pitch angle'
+    'mass' == 'm'
+    'charge' == 'q'
+    'E' == 'egrid' == 'energies' == 'energy'
+    'v' == 'vgrid' == 'speed'
+    'radius' == 'r' == 'R'
+    'theta' == 'T'
+    'phi' == 'P'
+    'br' == 'Br'
+    'Bt' == 'Btheta' == 'bt' == 'btheta'
+    'Bp' == 'bp' == 'Bphi' == 'bphi'
+    'Ur' == 'ur' == 'Vr' == 'vr'
+    'Ut' == 'Utheta' == 'ut' == 'Vt' == 'Vtheta' == 'utheta'
+    'up' == 'Vphi' == 'Uphi' == 'Vp' == 'Up' == 'uphi'
+    'rho' == 'Rho'
+    'Dist' == 'dist' == 'f'
+    'j(E)' == 'flux' == 'J' == 'J(E)' == 'j' == 'Flux'
+    'x' == 'X'
+    'Y' == 'y'
+    'z' == 'Z'
+    'B' == 'b mag' == '|b|' == '|B|' == 'b_mag' == 'bmag' == 'b'
+    '|U|' == 'u_mag' == 'umag' == 'U' == '|u|' == 'u mag' == 'u'
+    'upara' == 'u_para' == 'Upara'
+    'u_perp' == 'uperp' == 'Uperp'
+    'flow_angle' == 'flow angle' == 'angle'
+    'div u' == 'div(U)' == 'divU' == 'div U' == 'divu' == 'div_u' == 'div(u)'
+    'Rg' == 'rigidity' == 'R_g'
+    'mean free path' == 'mfp' == 'mean_free_path'
+    'ar' == 'acceleration rate' == 'acceleration_rate'
+    'energy density' == 'energy_density'
+    'average energy' == 'average_energy'
+    'fluence'
+    'intflux' == 'integral_flux' == 'integral flux'
+
+
+
+```python
+stream.which('parameters')
+```
+
+    'minimum energy' == 'Emin' == 'minimum_energy'
+    'reference energy' == 'energy0'
+    'reference radius' == 'r0'
+    'FailModeDump'
+    'adiabaticChangeAlg'
+    'adiabaticFocusAlg'
+    'aziSunStart'
+    'J0' == 'boundaryFunctAmplitude'
+    'beta' == 'boundaryFunctBeta'
+    'boundaryFunctEcutoff' == 'E0'
+    'gamma' == 'boundaryFunctGamma'
+    'xi' == 'boundaryFunctXi'
+    'boundaryFunctionInitDomain'
+    'charge'
+    'checkSeedPopulation'
+    'dsh_hel_min'
+    'dsh_min'
+    'dumpFreq'
+    'dumpOnAbort'
+    'eMax'
+    'eMin'
+    'epCalcStartTime'
+    'epEquilibriumCalcDuration'
+    'epremDomain'
+    'epremDomainOutputTime'
+    'fieldAligned'
+    'flowMag'
+    'fluxLimiter'
+    'focusingLimit'
+    'gammaEhigh'
+    'gammaElow'
+    'idealShock'
+    'idealShockFalloff'
+    'idealShockInitTime'
+    'idealShockJump'
+    'idealShockPhi'
+    'idealShockScaleLength'
+    'idealShockSharpness'
+    'idealShockSpeed'
+    'idealShockTheta'
+    'idealShockWidth'
+    'idw_p'
+    'kper_kpar' == 'kper/kpar' == 'kper / kpar' == 'kperxkpar'
+    'lamo' == 'lam0' == 'lambda0'
+    'mass'
+    'mfpRadialPower' == 'mfp_radial_power'
+    'mhdBAu'
+    'mhdDensityAu'
+    'minInjectionEnergy'
+    'numColumnsPerFace'
+    'numEnergySteps'
+    'numEpSteps'
+    'numMuSteps'
+    'numNodesPerStream'
+    'numObservers'
+    'numRowsPerFace'
+    'numSpecies'
+    'obsPhi'
+    'obsR'
+    'obsTheta'
+    'omegaSun'
+    'outputFloat'
+    'outputRestart'
+    'parallelFlow'
+    'pointObserverOutput'
+    'pointObserverOutputTime'
+    'preEruptionDuration'
+    'rScale'
+    'rigidityPower' == 'rigidity_power'
+    'saveRestartFile'
+    'seedFunctionTest'
+    'shockDetectPercent'
+    'shockInjectionFactor'
+    'shockSolver'
+    'simStartTime'
+    'simStopTime'
+    'streamFluxOutput'
+    'streamFluxOutputTime'
+    'subTimeCouple'
+    'tDel'
+    'unifiedOutput'
+    'unifiedOutputTime'
+    'unstructuredDomain'
+    'unstructuredDomainOutputTime'
+    'useAdiabaticChange'
+    'useAdiabaticFocus'
+    'useBoundaryFunction'
+    'useDrift'
+    'useEPBoundary'
+    'useParallelDiffusion'
+    'useShellDiffusion'
+    'useStochastic'
+    'warningsFile'
 
 ## Contributing
 
