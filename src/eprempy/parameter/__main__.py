@@ -20,6 +20,9 @@ from eprempy.parameter._src import (
 from eprempy import paths
 
 
+DeprecationWarning("The package CLI has replaced this module.")
+
+
 DIRECTORY = pathlib.Path(__file__).expanduser().resolve().parent
 """The fully resolved directory containing this file."""
 
