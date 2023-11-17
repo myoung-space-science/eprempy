@@ -179,7 +179,7 @@ vr[:, r0].plot('k')
 
 
     
-![png](readme-usage_files/readme-usage_22_0.png)
+![png](examples/readme-usage_files/readme-usage_22_0.png)
     
 
 
@@ -198,7 +198,7 @@ plt.tight_layout()
 
 
     
-![png](readme-usage_files/readme-usage_24_0.png)
+![png](examples/readme-usage_files/readme-usage_24_0.png)
     
 
 
