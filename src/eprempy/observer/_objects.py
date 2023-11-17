@@ -9,6 +9,7 @@ from .. import metric
 from .. import observable
 from .. import parameter
 from .. import paths
+from .. import reference
 
 
 class Paths(typing.NamedTuple):
@@ -65,6 +66,25 @@ class Observer(collections.abc.Mapping):
         raise KeyError(
             f"No observable quantity or parameter value for {key!r}"
         ) from None
+
+    def which(
+        self,
+        category: typing.Union[
+            typing.Literal['observables'],
+            typing.Literal['parameters'],
+        ],
+    ) -> None:
+        """Print names of available quantities."""
+        if category == 'observables':
+            for group in reference.OBSERVABLES.aliases:
+                print(' == '.join(repr(i) for i in group))
+        elif category == 'parameters':
+            for group in self.parameters.keys(aliased=True):
+                print(' == '.join(repr(i) for i in group))
+        else:
+            raise ValueError(
+                f"Unknown category of quantities: {category!r}"
+            ) from None
 
     @property
     def observables(self):
