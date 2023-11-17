@@ -156,6 +156,18 @@ print(f"density at (t0, r0):\n{rho[t0, r0]}\n")
     
 
 
+Of course, most of the steps above were simply for the sake of demonstration. You can acheive the desired affect in a single line
+
+
+```python
+print(rho[(67.2, 'hour'), (1.27798576, 'au')])
+```
+
+    [[5146864.35972748]],
+    unit='m^-3',
+    dimensions={'time', 'radius'}
+
+
 Each observable quantity has a `plot` method.
 
 
@@ -167,7 +179,7 @@ vr[:, r0].plot('k')
 
 
     
-![png](readme-usage_files/readme-usage_22_0.png)
+![png](readme-usage_files/readme-usage_24_0.png)
     
 
 
@@ -186,7 +198,7 @@ plt.tight_layout()
 
 
     
-![png](readme-usage_files/readme-usage_24_0.png)
+![png](readme-usage_files/readme-usage_26_0.png)
     
 
 
@@ -198,41 +210,41 @@ stream.which('observables')
 ```
 
     'phiOffset'
-    't' == 'times' == 'time'
+    'times' == 't' == 'time'
     'shells' == 'shell'
-    'pitch-angle' == 'pitch angles' == 'mu' == 'pitch-angle cosines' == 'pitch-angles' == 'pitch-angle cosine' == 'pitch angle'
-    'mass' == 'm'
-    'charge' == 'q'
-    'E' == 'egrid' == 'energies' == 'energy'
-    'v' == 'vgrid' == 'speed'
-    'radius' == 'r' == 'R'
-    'theta' == 'T'
-    'phi' == 'P'
-    'br' == 'Br'
-    'Bt' == 'Btheta' == 'bt' == 'btheta'
-    'Bp' == 'bp' == 'Bphi' == 'bphi'
-    'Ur' == 'ur' == 'Vr' == 'vr'
-    'Ut' == 'Utheta' == 'ut' == 'Vt' == 'Vtheta' == 'utheta'
-    'up' == 'Vphi' == 'Uphi' == 'Vp' == 'Up' == 'uphi'
+    'pitch-angle cosine' == 'pitch angles' == 'pitch-angle cosines' == 'pitch-angles' == 'mu' == 'pitch angle' == 'pitch-angle'
+    'm' == 'mass'
+    'q' == 'charge'
+    'egrid' == 'energy' == 'energies' == 'E'
+    'speed' == 'v' == 'vgrid'
+    'R' == 'r' == 'radius'
+    'T' == 'theta'
+    'P' == 'phi'
+    'Br' == 'br'
+    'Btheta' == 'Bt' == 'btheta' == 'bt'
+    'bphi' == 'Bphi' == 'Bp' == 'bp'
+    'vr' == 'Vr' == 'Ur' == 'ur'
+    'utheta' == 'Vtheta' == 'ut' == 'Ut' == 'Vt' == 'Utheta'
+    'Uphi' == 'Up' == 'uphi' == 'up' == 'Vphi' == 'Vp'
     'rho' == 'Rho'
     'Dist' == 'dist' == 'f'
-    'j(E)' == 'flux' == 'J' == 'J(E)' == 'j' == 'Flux'
+    'J(E)' == 'flux' == 'Flux' == 'j' == 'J' == 'j(E)'
     'x' == 'X'
-    'Y' == 'y'
-    'z' == 'Z'
-    'B' == 'b mag' == '|b|' == '|B|' == 'b_mag' == 'bmag' == 'b'
-    '|U|' == 'u_mag' == 'umag' == 'U' == '|u|' == 'u mag' == 'u'
-    'upara' == 'u_para' == 'Upara'
-    'u_perp' == 'uperp' == 'Uperp'
-    'flow_angle' == 'flow angle' == 'angle'
-    'div u' == 'div(U)' == 'divU' == 'div U' == 'divu' == 'div_u' == 'div(u)'
-    'Rg' == 'rigidity' == 'R_g'
-    'mean free path' == 'mfp' == 'mean_free_path'
-    'ar' == 'acceleration rate' == 'acceleration_rate'
-    'energy density' == 'energy_density'
+    'y' == 'Y'
+    'Z' == 'z'
+    'b mag' == 'b_mag' == 'b' == 'bmag' == 'B' == '|B|' == '|b|'
+    '|u|' == 'u_mag' == 'U' == '|U|' == 'u mag' == 'u' == 'umag'
+    'upara' == 'Upara' == 'u_para'
+    'uperp' == 'Uperp' == 'u_perp'
+    'angle' == 'flow angle' == 'flow_angle'
+    'divU' == 'divu' == 'div(U)' == 'div_u' == 'div U' == 'div(u)' == 'div u'
+    'rigidity' == 'R_g' == 'Rg'
+    'mean free path' == 'mean_free_path' == 'mfp'
+    'acceleration_rate' == 'ar' == 'acceleration rate'
+    'energy_density' == 'energy density'
     'average energy' == 'average_energy'
     'fluence'
-    'intflux' == 'integral_flux' == 'integral flux'
+    'integral flux' == 'integral_flux' == 'intflux'
 
 
 
@@ -240,18 +252,18 @@ stream.which('observables')
 stream.which('parameters')
 ```
 
-    'minimum energy' == 'Emin' == 'minimum_energy'
+    'minimum_energy' == 'Emin' == 'minimum energy'
     'reference energy' == 'energy0'
     'reference radius' == 'r0'
     'FailModeDump'
     'adiabaticChangeAlg'
     'adiabaticFocusAlg'
     'aziSunStart'
-    'J0' == 'boundaryFunctAmplitude'
-    'beta' == 'boundaryFunctBeta'
-    'boundaryFunctEcutoff' == 'E0'
-    'gamma' == 'boundaryFunctGamma'
-    'xi' == 'boundaryFunctXi'
+    'boundaryFunctAmplitude' == 'J0'
+    'boundaryFunctBeta' == 'beta'
+    'E0' == 'boundaryFunctEcutoff'
+    'boundaryFunctGamma' == 'gamma'
+    'boundaryFunctXi' == 'xi'
     'boundaryFunctionInitDomain'
     'charge'
     'checkSeedPopulation'
@@ -282,8 +294,8 @@ stream.which('parameters')
     'idealShockTheta'
     'idealShockWidth'
     'idw_p'
-    'kper_kpar' == 'kper/kpar' == 'kper / kpar' == 'kperxkpar'
-    'lamo' == 'lam0' == 'lambda0'
+    'kperxkpar' == 'kper/kpar' == 'kper / kpar' == 'kper_kpar'
+    'lambda0' == 'lam0' == 'lamo'
     'mass'
     'mfpRadialPower' == 'mfp_radial_power'
     'mhdBAu'
@@ -308,7 +320,7 @@ stream.which('parameters')
     'pointObserverOutputTime'
     'preEruptionDuration'
     'rScale'
-    'rigidityPower' == 'rigidity_power'
+    'rigidity_power' == 'rigidityPower'
     'saveRestartFile'
     'seedFunctionTest'
     'shockDetectPercent'
