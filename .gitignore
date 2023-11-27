@@ -1,6 +1,6 @@
 # Project-specific files
-/dev
-/tests/data
+dev/
+tests/data/
 sources.log
 
 # Visual Studio Code
