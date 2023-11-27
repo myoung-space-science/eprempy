@@ -1,3 +1,4 @@
+import contextlib
 import numbers
 import typing
 
@@ -272,8 +273,12 @@ def additive(f, a, b, /):
     if isinstance(a, Array) and isinstance(b, Array):
         data = f(a.data, b.data)
         badattrs = []
-        if a.unit == b.unit and a.axes == b.axes:
-            return array_factory(data, unit=a.unit, axes=a.axes)
+        if a.unit == b.unit:
+            if a.axes == b.axes:
+                return array_factory(data, unit=a.unit, axes=a.axes)
+            with contextlib.suppress(ValueError):
+                axes = a.axes + b.axes
+                return array_factory(data, unit=a.unit, axes=axes)
         if a.unit != b.unit:
             badattrs.append('units')
         if a.axes != b.axes:
