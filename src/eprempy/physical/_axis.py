@@ -77,6 +77,13 @@ class Axis(numeric.Object[T]):
             if index < -len(self) or index > len(self)-1:
                 return index
 
+    def __contains__(self, __x):
+        """Called for x in self."""
+        if isinstance(__x, Axis) and len(__x) == 1:
+            with contextlib.suppress(Exception):
+                return self.index(__x) in self.indices
+        return __x in self.reference
+
     def __getitem__(self, __i):
         """Called for index-based access.
 
