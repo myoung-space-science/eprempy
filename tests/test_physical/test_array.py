@@ -199,6 +199,22 @@ def check_additive(
     assert new.axes == a.axes
 
 
+def test_additive_broadcast(ndarrays: support.NDArrays) -> None:
+    """Test additive operations with broadcasting on physical arrays."""
+    axes = ['x', 'y']
+    unit = 'm'
+    original = physical.array(ndarrays.r, unit=unit, axes=axes)
+    a = original[:]
+    b = original[0, :]
+    r = a - b
+    assert isinstance(r, physical.Array)
+    assert numpy.array_equal(r, a.data.array - b.data.array)
+    assert r.unit == a.unit
+    assert r.axes == a.axes
+    with pytest.raises(ValueError): # numpy-level broadcasting error
+        original[:] - original[:2, 0]
+
+
 def test_multiplicative(ndarrays: support.NDArrays) -> None:
     """Test multiplicative operations on physical arrays."""
     dxy = ['x', 'y']
