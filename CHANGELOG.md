@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.1.5 (2023-11-27)
+
 - Add package CLI with parameter-based modes
 - Expose `compare` and `generate` functions from parameter namespace
 
