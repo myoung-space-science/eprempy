@@ -127,6 +127,36 @@ def test_axes_comparisons():
     assert xyzw >= xyz
 
 
+def test_axes_add():
+    """Test the operation that fills in singular dimensions."""
+    x = numpy.arange(3)
+    y = numpy.arange(4)
+    z = numpy.arange(5)
+    full = physical.axes(x=x, y=y, z=z)
+    valid = (
+        (full, physical.axes(x=[1], y=y, z=z)),
+        (full, physical.axes(x=x, y=[1], z=z)),
+        (full, physical.axes(x=x, y=y, z=[1])),
+        (full, physical.axes(x=x, y=[1], z=[1])),
+        (full, physical.axes(x=[1], y=y, z=[1])),
+        (full, physical.axes(x=[1], y=[1], z=z)),
+        (full, physical.axes(x=[1], y=[1], z=[1])),
+    )
+    for a, b in valid:
+        assert a + b == full
+        assert b + a == full
+    errors = (
+        (full, physical.axes(x=[10], y=y, z=z)),
+        (full, physical.axes(x=[1.0], y=y, z=z)),
+        (full, physical.axes(x=[1, 2], y=y, z=z)),
+    )
+    for a, b in errors:
+        with pytest.raises(ValueError):
+            a + b
+        with pytest.raises(ValueError):
+            b + a
+
+
 def test_axes_merge():
     """Test merging operations between axes objects."""
     x = numpy.arange(4)
