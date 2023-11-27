@@ -137,6 +137,34 @@ class Axes(collections.abc.Mapping, typing.Mapping[str, _axis.Axis]):
                 ) from None
         return akeys >= bkeys
 
+    def __add__(self, other):
+        """Called for self + other.
+
+        This method will fill singular dimensions in each instance with the
+        corresponding full axis in the other instance, if possible.
+        """
+        if not isinstance(other, Axes):
+            return NotImplemented
+        if self.keys() != other.keys():
+            raise ValueError(
+                f"Cannot fill {a} from {b} with different dimensions"
+            ) from None
+        new = {}
+        for key in self:
+            a = self[key]
+            b = other[key]
+            if a == b:
+                new[key] = a
+            elif len(b) == 1 and b in a:
+                new[key] = a
+            elif len(a) == 1 and a in b:
+                new[key] = b
+            else:
+                raise ValueError(
+                    f"The axes {a} and {b} have inconsistent values"
+                ) from None
+        return Axes(new)
+
     def __or__(self, other):
         """Called for self | other."""
         if isinstance(other, typing.Mapping):
