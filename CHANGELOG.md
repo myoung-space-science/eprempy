@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Update formatting of length-1 measured objects when using parameter compare CLI
+
 ## v0.1.6 (2023-11-28)
 
 - Define `physical.Axis.__contains__`
