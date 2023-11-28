@@ -4,6 +4,10 @@
 
 ## NEXT
 
+- Define `physical.Axis.__contains__`
+- Define `physical.Axes.__add__`
+- Improve broadcasting support in array additive operations
+
 ## v0.1.5 (2023-11-27)
 
 - Add package CLI with parameter-based modes
