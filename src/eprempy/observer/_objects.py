@@ -43,6 +43,7 @@ class Observer(collections.abc.Mapping):
         self._parameters = None
         self._observables = None
         self._dataset = None
+        self._config = None
         self._sizes = None
 
     def __str__(self) -> str:
@@ -114,7 +115,9 @@ class Observer(collections.abc.Mapping):
     @property
     def config(self):
         """An interface to this observer's raw configuration file."""
-        return parameter.configfile(self._paths.config)
+        if self._config is None:
+            self._config = parameter.configfile(self._paths.config)
+        return self._config
 
     @property
     def system(self):
