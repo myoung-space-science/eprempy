@@ -131,11 +131,12 @@ def _normalize_paths(args: typing.Iterable[paths.PathLike]):
 def _format_arg(arg):
     """Format this argument for display."""
     if isinstance(arg, measured.Object):
-        if arg.unit == '1' or arg.data is None:
-            return f"{arg.data!r}"
+        data = arg.data[0] if len(arg.data) == 1 else arg.data
+        if arg.unit == '1' or data is None:
+            return f"{data!r}"
         if str(arg.unit) in {'d', 'day'}:
-            return f"{arg.data} 'day'"
-        return f"{arg.data} {str(arg.unit)!r}"
+            return f"{data} 'day'"
+        return f"{data} {str(arg.unit)!r}"
     return str(arg)
 
 
