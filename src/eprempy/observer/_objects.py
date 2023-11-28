@@ -42,6 +42,7 @@ class Observer(collections.abc.Mapping):
         self._system = system
         self._parameters = None
         self._observables = None
+        self._source = None
         self._dataset = None
         self._config = None
         self._sizes = None
@@ -97,6 +98,13 @@ class Observer(collections.abc.Mapping):
                 self.system,
             )
         return self._observables
+
+    @property
+    def source(self):
+        """The directory containing this observer's dataset."""
+        if self._source is None:
+            self._source = self.dataset.source.parent
+        return self._source
 
     @property
     def dataset(self):
