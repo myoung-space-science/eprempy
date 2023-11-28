@@ -5,6 +5,7 @@
 ## NEXT
 
 - Update formatting of length-1 measured objects when using parameter compare CLI
+- Define `Observer.source` property
 
 ## v0.1.6 (2023-11-28)
 
