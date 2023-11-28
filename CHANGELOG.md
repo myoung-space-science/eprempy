@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.1.6 (2023-11-28)
+
 - Define `physical.Axis.__contains__`
 - Define `physical.Axes.__add__`
 - Improve broadcasting support in array additive operations
