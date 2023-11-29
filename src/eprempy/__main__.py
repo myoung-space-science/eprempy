@@ -8,6 +8,11 @@ from .parameter._interface import (
 )
 
 
+def print_version():
+    from importlib.metadata import version
+    print(f"eprempy {version('eprempy')}")
+
+
 if __name__ == '__main__':
     replacements = {
         '`src`': 'SRC',
@@ -20,6 +25,12 @@ if __name__ == '__main__':
         prog='eprempy',
         description="Generate or compare EPREM configuration files.",
         formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        '-V',
+        '--version',
+        help="print the current package version",
+        action='store_true',
     )
     subparsers = parser.add_subparsers(
         title="modes",
@@ -87,11 +98,13 @@ if __name__ == '__main__':
         action='store_true',
     )
     cli = vars(parser.parse_args())
-    usermode = cli.pop('mode')
-    try:
-        run(usermode, cli)
-    except UserError as err:
-        print()
-        print(f"ERROR: {err}")
-        print(f"       Try 'eprempy {usermode} -h'")
+    if cli.get('version'):
+        print_version()
+    elif usermode := cli.pop('mode'):
+        try:
+            run(usermode, cli)
+        except UserError as err:
+            print()
+            print(f"ERROR: {err}")
+            print(f"       Try 'eprempy {usermode} -h'")
 
