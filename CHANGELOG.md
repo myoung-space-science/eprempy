@@ -8,6 +8,7 @@
 - Define `Observer.source` property
 - Create examples/cli.md document
 - Make aliased observable quantities equal
+- Define `dataset.Arrays.hasdist` property
 
 ## v0.1.6 (2023-11-28)
 
