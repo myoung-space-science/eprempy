@@ -83,5 +83,7 @@ def test_coordinates():
     for target, error in errors:
         with pytest.raises(error):
             coordinates.index(target)
+    assert coordinates.index(1.2, closest='lower') == numeric.index.value(1)
+    assert coordinates.index(1.2, closest='upper') == numeric.index.value(2)
 
 
