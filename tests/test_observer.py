@@ -20,11 +20,14 @@ def streams(datadir: pathlib.Path) -> typing.Dict[str, observer.Stream]:
     return streams
 
 
+UNOBSERVABLE = {'shell', 'shells', 'phiOffset'}
+"""Quantities that tests should not try to observe."""
+
+
 def test_init(streams: typing.Dict[str, observer.Stream]):
     """Test the ability to initialize the observer interface."""
-    unobservable = {'shell', 'shells', 'phiOffset'}
     for stream in streams.values():
-        names = set(reference.ARRAYS.names) - unobservable
+        names = set(reference.ARRAYS.names) - UNOBSERVABLE
         for name in names:
             assert isinstance(stream[name], observable.Quantity)
 
