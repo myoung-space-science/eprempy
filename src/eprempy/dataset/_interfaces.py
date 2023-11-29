@@ -375,7 +375,7 @@ class Arrays:
         `~hasflux`
         """
         if self._hasdist is None:
-            self._hasdist = 'dist' in self.view.arrays
+            self._hasdist = 'Dist' in self.view.arrays
         return self._hasdist
 
     @property
