@@ -1400,19 +1400,19 @@ class Quantities(collections.abc.Mapping):
         have the correct unit and dimensions, but calling its operator will
         unconditionally return `None`.
         """
-        if self.dataset.hasflux:
-            unit = self.system['particle distribution'].unit
-            dimensions = self.dataset.flux.dimensions | 'mu'
-            return self._implement(self._f, unit, dimensions)
-        return self._implement(
-            self._f,
-            self.dataset.f.unit,
-            self.dataset.f.dimensions,
-        )
+        if self.dataset.hasdist:
+            return self._implement(
+                self._f,
+                self.dataset.f.unit,
+                self.dataset.f.dimensions,
+            )
+        unit = self.system['particle distribution'].unit
+        dimensions = self.dataset.flux.dimensions | 'mu'
+        return self._implement(self._f, unit, dimensions)
 
     def _f(self, user: Arguments):
         """Callback method for particle distribution."""
-        if not self.dataset.hasflux:
+        if self.dataset.hasdist:
             return self.functions.f(
                 time=user.time,
                 shell=user.shell,
