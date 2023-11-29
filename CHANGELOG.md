@@ -5,6 +5,8 @@
 ## NEXT
 
 - Define observer axes properties
+- Add '-V/--verbose' option to CLI
+- Print informative message when CLI called without arguments
 
 ## v0.1.7 (2023-11-29)
 
