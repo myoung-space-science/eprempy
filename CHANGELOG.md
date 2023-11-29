@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Define observer axes properties
+
 ## v0.1.7 (2023-11-29)
 
 - Update formatting of length-1 measured objects when using parameter compare CLI
