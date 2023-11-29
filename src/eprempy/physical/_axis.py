@@ -236,7 +236,11 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
     def __init__(self, data: measured.Sequence[numbers.Real]) -> None:
         super().__init__(data)
 
-    def index(self, *targets: typing.Union[numbers.Real, str]):
+    def index(
+        self,
+        *targets: typing.Union[numbers.Real, str],
+        closest: typing.Optional[str]=None,
+    ) -> typing.Union[numeric.index.Value, numeric.index.Sequence]:
         if not targets:
             return self.indices
         this = self._measure(targets)
@@ -296,16 +300,24 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
         #   numerically closest value, which may not be useful. It also lets
         #   calling code determine how to handle values not contained in the
         #   reference array (e.g., by interpolation or extrapolation).
-        indices = []
-        for target in array:
-            if not numeric.data.isclose(self.reference, target):
-                raise AxisValueError(
-                    f"{self.reference} does not contain {target}"
-                ) from None
-            indices.append(container.nearest(self.reference, target).index)
+        indices = [self._compute_index(target, closest) for target in array]
         if len(indices) == 1:
             return numeric.index.value(indices[0])
         return numeric.index.sequence(indices)
+
+    def _compute_index(self, target, closest):
+        """Helper for `index`."""
+        if numeric.data.isclose(self.reference, target):
+            return container.nearest(self.reference, target).index
+        if closest is None:
+            raise AxisValueError(
+                f"{self.reference} does not contain {target}"
+            ) from None
+        if closest == 'lower':
+            return container.nearest(self.reference, target, 'upper').index
+        if closest == 'upper':
+            return container.nearest(self.reference, target, 'lower').index
+        raise ValueError(f"Unknown constraint {closest!r}") from None
 
     def _measure(self, targets: typing.Sequence):
         """Create a measured sequence, if possible."""
