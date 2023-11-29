@@ -60,3 +60,12 @@ def test_observer_as_mapping(streams: typing.Dict[str, observer.Stream]):
             assert key not in stream.observables
 
 
+def test_observable_aliases(streams: typing.Dict[str, observer.Stream]):
+    """Make sure the user can access quantities by known aliases."""
+    observables = reference.OBSERVABLES.names.values(aliased=True)
+    names = set(observables) - UNOBSERVABLE
+    for stream in streams.values():
+        for name in names:
+            aliases = reference.OBSERVABLES.aliases[name]
+            for alias in aliases:
+                assert stream[name] == stream[alias]
