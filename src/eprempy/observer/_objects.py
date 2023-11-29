@@ -46,6 +46,12 @@ class Observer(collections.abc.Mapping):
         self._dataset = None
         self._config = None
         self._sizes = None
+        self._axes = None
+        self._times = None
+        self._shells = None
+        self._species = None
+        self._energies = None
+        self._mus = None
 
     def __str__(self) -> str:
         """A simplified representation of this object."""
@@ -87,6 +93,47 @@ class Observer(collections.abc.Mapping):
             raise ValueError(
                 f"Unknown category of quantities: {category!r}"
             ) from None
+
+    @property
+    def times(self):
+        """This observer's time coordinates."""
+        if self._times is None:
+            self._times = self._get_axis('time')
+        return self._times
+
+    @property
+    def shells(self):
+        """This observer's shell numbers."""
+        if self._shells is None:
+            self._shells = self._get_axis('shell')
+        return self._shells
+
+    @property
+    def species(self):
+        """This observer's species symbols."""
+        if self._species is None:
+            self._species = self._get_axis('species')
+        return self._species
+
+    @property
+    def energies(self):
+        """This observer's energy coordinates."""
+        if self._energies is None:
+            self._energies = self._get_axis('energy')
+        return self._energies
+
+    @property
+    def mus(self):
+        """This observer's mu coordinates."""
+        if self._mus is None:
+            self._mus = self._get_axis('mu')
+        return self._mus
+
+    def _get_axis(self, name: str):
+        """Internal helper for axis properties."""
+        if self._axes is None:
+            self._axes = dataset.axes(self._paths.source, self.system)
+        return self._axes[name]
 
     @property
     def observables(self):
