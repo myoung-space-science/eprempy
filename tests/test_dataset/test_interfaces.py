@@ -69,7 +69,7 @@ def check_arrays(
         assert this.f is None
         assert this.flux.dimensions == dimensions['flux']
         assert this.flux.unit == units['flux']
-    else:
+    if this.hasdist:
         assert this.f.dimensions == dimensions['f']
         assert this.f.unit == units['f']
         assert this.flux is None
