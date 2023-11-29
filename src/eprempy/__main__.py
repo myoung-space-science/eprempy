@@ -107,4 +107,6 @@ if __name__ == '__main__':
             print()
             print(f"ERROR: {err}")
             print(f"       Try 'eprempy {usermode} -h'")
+    else:
+        parser.error("No arguments. Try 'eprempy -h' for more information.")
 
