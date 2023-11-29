@@ -992,10 +992,15 @@ def nearest(
         coercible to the type of `values`.
 
     bound : {None, 'lower', 'upper'}
-        The constraint to apply when finding the nearest value:: - None: no
-        constraint - 'lower': ensure that the nearest value is equal to or
-        greater than the target value - 'upper': ensure that the nearest value
-        is equal to or less than the target value
+        The constraint to apply when finding the nearest value:
+
+        - None: no constraint
+        - 'lower': ensure that the nearest value is equal to or greater than the
+          target value (in other words, the target value is a lower bound for
+          the nearest value)
+        - 'upper': ensure that the nearest value is equal to or less than the
+          target value (in other words, the target value is an upper bound for
+          the nearest value)
 
     Returns
     -------
