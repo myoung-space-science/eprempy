@@ -7,6 +7,7 @@
 - Update formatting of length-1 measured objects when using parameter compare CLI
 - Define `Observer.source` property
 - Create examples/cli.md document
+- Make aliased observable quantities equal
 
 ## v0.1.6 (2023-11-28)
 
