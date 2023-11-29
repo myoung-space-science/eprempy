@@ -192,6 +192,7 @@ class Arrays:
         self._rho = None
         self._f = None
         self._flux = None
+        self._hasflux = None
 
     @property
     def time(self):
@@ -368,7 +369,9 @@ class Arrays:
         pre-computed flux (`True`) or not (`False`) before attempting to
         access the array property for flux or distribution..
         """
-        return 'flux' in self.view.arrays
+        if self._hasflux is None:
+            self._hasflux = 'flux' in self.view.arrays
+        return self._hasflux
 
     @property
     def view(self):
