@@ -361,13 +361,13 @@ class Arrays:
 
     @property
     def hasflux(self):
-        """True if this dataset contains flux instead of the distribution.
-        
+        """True if this dataset contains the particle flux.
+
         Datasets from EPREM runs with `streamFluxOutput=1` contain pre-computed
-        flux in place of the pitch-angle resolved particle distribution. This
-        property allows users to check whether the underlying dataset contains
-        pre-computed flux (`True`) or not (`False`) before attempting to
-        access the array property for flux or distribution..
+        particle flux in place of the pitch-angle resolved particle
+        distribution. This property allows users to check whether the underlying
+        dataset contains pre-computed flux (`True`) or not (`False`) before
+        attempting to access the corresponding array property.
         """
         if self._hasflux is None:
             self._hasflux = 'flux' in self.view.arrays
