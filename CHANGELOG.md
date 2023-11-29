@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.1.7 (2023-11-29)
+
 - Update formatting of length-1 measured objects when using parameter compare CLI
 - Define `Observer.source` property
 - Create examples/cli.md document
