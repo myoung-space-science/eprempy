@@ -12,8 +12,10 @@ import numpy.typing
 from .. import container
 from .. import etc
 from .. import measured
+from .. import metric
 from .. import numeric
 from .. import quantity
+from ..typehelp import Self
 
 
 T = typing.TypeVar('T')
@@ -336,6 +338,11 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
     def __measure__(self) -> quantity.Measurement:
         """Called for `~quantity.measure(self)`."""
         return quantity.measurement(self.reference)
+
+    def withunit(self: Self, new: metric.UnitLike, /) -> Self:
+        """Convert this cooridinate to a new unit."""
+        s = self.reference.withunit(new)
+        return self.spawn(s)
 
     @property
     def unit(self):
