@@ -65,6 +65,7 @@ def check_arrays(
     assert this.uphi.unit == units['uphi']
     assert this.rho.dimensions == dimensions['rho']
     assert this.rho.unit == units['rho']
+    assert this.hasdist or this.hasflux
     if this.hasflux:
         assert this.f is None
         assert this.flux.dimensions == dimensions['flux']
