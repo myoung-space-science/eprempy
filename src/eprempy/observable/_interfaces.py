@@ -1062,7 +1062,18 @@ def _check_interpolation_bounds(
 
 @etc.autostr
 class Quantities(collections.abc.Mapping):
-    """A collection of array-like observable quantities."""
+    """A collection of array-like observable quantities.
+
+    Notes
+    -----
+    For each observable quantity, there is a public-facing property and an
+    internal callback method, the latter of which becomes the `operator`
+    property of the `~Context` instance from which this class will construct the
+    corresponding `~Quantity` instance. The operator method calls a
+    quantity-specific implementation that contains all the logic necessary for
+    computing the appropriate array (possibly including calling other
+    implementations), given user indices.
+    """
 
     def __init__(
         self,
@@ -1130,227 +1141,252 @@ class Quantities(collections.abc.Mapping):
             f"{key!r} is not an observable quantity"
         ) from None
 
-    # NOTE: Each property defines a local (i.e., nested) function, which becomes
-    # the `operator` property of the `Context` instance from which this class
-    # will construct the corresponding `Quantity` instance. That local function
-    # calls a quantity-specific implementation, which contains all the logic
-    # necessary for computing the appropriate array (possibly including calling
-    # other implementations), given user indices.
-
     @property
     def time(self):
         """The output times."""
-        def __f(user: Arguments):
-            return self.functions.time(time=user.time)
         return self._implement(
-            __f,
+            self._time,
             self.dataset.time.unit,
             self.dataset.time.dimensions,
         )
 
+    def _time(self, user: Arguments):
+        """Callback method for time."""
+        return self.functions.time(time=user.time)
+
     @property
     def energy(self):
         """The particle energies."""
-        def __f(user: Arguments):
-            return self.functions.energy(energy=user.energy)
         return self._implement(
-            __f,
+            self._energy,
             self.dataset.energy.unit,
             self.dataset.energy.dimensions,
         )
 
+    def _energy(self, user: Arguments):
+        """Callback method for particle energies."""
+        return self.functions.energy(energy=user.energy)
+
     @property
     def v(self):
         """The particle speeds."""
-        def __f(user: Arguments):
-            return self.functions.v(energy=user.energy)
         return self._implement(
-            __f,
+            self._v,
             self.dataset.v.unit,
             self.dataset.v.dimensions,
         )
 
+    def _v(self, user: Arguments):
+        """Callback method for particle speeds."""
+        return self.functions.v(energy=user.energy)
+
     @property
     def mu(self):
         """The particle pitch-angle cosines."""
-        def __f(user: Arguments):
-            return self.functions.mu(mu=user.mu)
         return self._implement(
-            __f,
+            self._mu,
             self.dataset.mu.unit,
             self.dataset.mu.dimensions,
         )
 
+    def _mu(self, user: Arguments):
+        """Callback method for pitch-angle cosines."""
+        return self.functions.mu(mu=user.mu)
+
     @property
     def mass(self):
         """The mass of each species."""
-        def __f(user: Arguments):
-            return self.functions.mass(species=user.species)
         return self._implement(
-            __f,
+            self._mass,
             self.dataset.mass.unit,
             self.dataset.mass.dimensions,
         )
 
+    def _mass(self, user: Arguments):
+        """Callback method for species mass."""
+        return self.functions.mass(species=user.species)
+
     @property
     def charge(self):
         """The charge of each species."""
-        def __f(user: Arguments):
-            return self.functions.charge(species=user.species)
         return self._implement(
-            __f,
+            self._charge,
             self.dataset.charge.unit,
             self.dataset.charge.dimensions,
         )
 
+    def _charge(self, user: Arguments):
+        """Callback method for species charge."""
+        return self.functions.charge(species=user.species)
+
     @property
     def r(self):
         """The radial observer coordinates."""
-        def __f(user: Arguments):
-            return self.functions.r(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._r,
             self.dataset.r.unit,
             self.dataset.r.dimensions,
+        )
+
+    def _r(self, user: Arguments):
+        """Callback method for radial coordinates."""
+        return self.functions.r(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def theta(self):
         """The polar observer coordinates."""
-        def __f(user: Arguments):
-            return self.functions.theta(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._theta,
             self.dataset.theta.unit,
             self.dataset.theta.dimensions,
+        )
+
+    def _theta(self, user: Arguments):
+        """Callback method for polar coordinates."""
+        return self.functions.theta(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def phi(self):
         """The azimuthal observer coordinates."""
-        def __f(user: Arguments):
-            return self.functions.phi(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._phi,
             self.dataset.phi.unit,
             self.dataset.phi.dimensions,
+        )
+
+    def _phi(self, user: Arguments):
+        """Callback method for azimuthal coordinates."""
+        return self.functions.phi(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def br(self):
         """The magnetic-field radial component."""
-        def __f(user: Arguments):
-            return self.functions.br(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._br,
             self.dataset.br.unit,
             self.dataset.br.dimensions,
+        )
+
+    def _br(self, user: Arguments):
+        """Callback method for radial magnetic field."""
+        return self.functions.br(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def btheta(self):
         """The magnetic-field polar component."""
-        def __f(user: Arguments):
-            return self.functions.btheta(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._btheta,
             self.dataset.btheta.unit,
             self.dataset.btheta.dimensions,
+        )
+
+    def _btheta(self, user: Arguments):
+        """Callback method for polar magnetic field."""
+        return self.functions.btheta(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def bphi(self):
         """The magnetic-field azimuthal component."""
-        def __f(user: Arguments):
-            return self.functions.bphi(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._bphi,
             self.dataset.bphi.unit,
             self.dataset.bphi.dimensions,
+        )
+
+    def _bphi(self, user: Arguments):
+        """Callback method for azimuthal magnetic field."""
+        return self.functions.bphi(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def ur(self):
         """The velocity-field radial component."""
-        def __f(user: Arguments):
-            return self.functions.ur(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._ur,
             self.dataset.ur.unit,
             self.dataset.ur.dimensions,
+        )
+
+    def _ur(self, user: Arguments):
+        """Callback method for radial velocity."""
+        return self.functions.ur(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def utheta(self):
         """The velocity-field polar component."""
-        def __f(user: Arguments):
-            return self.functions.utheta(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._utheta,
             self.dataset.utheta.unit,
             self.dataset.utheta.dimensions,
+        )
+
+    def _utheta(self, user: Arguments):
+        """Callback method for polar velocity."""
+        return self.functions.utheta(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def uphi(self):
         """The velocity-field azimuthal component."""
-        def __f(user: Arguments):
-            return self.functions.uphi(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._uphi,
             self.dataset.uphi.unit,
             self.dataset.uphi.dimensions,
+        )
+
+    def _uphi(self, user: Arguments):
+        """Callback method for azimuthal velocity."""
+        return self.functions.uphi(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def rho(self):
         """The plasma density."""
-        def __f(user: Arguments):
-            return self.functions.rho(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._rho,
             self.dataset.rho.unit,
             self.dataset.rho.dimensions,
+        )
+
+    def _rho(self, user: Arguments):
+        """Callback method for plasma density."""
+        return self.functions.rho(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
@@ -1359,14 +1395,24 @@ class Quantities(collections.abc.Mapping):
         
         Notes
         -----
-        EPREM datasets generated with `streamFluxOutput=1` contain particle
-        flux in place of this quantity.
+        EPREM datasets generated with `streamFluxOutput=1` contain particle flux
+        in place of this quantity. In those cases, the observable quantity will
+        have the correct unit and dimensions, but calling its operator will
+        unconditionally return `None`.
         """
         if self.dataset.hasflux:
             unit = self.system['particle distribution'].unit
             dimensions = self.dataset.flux.dimensions | 'mu'
-            return self._implement(lambda _: None, unit, dimensions)
-        def __f(user: Arguments):
+            return self._implement(self._f, unit, dimensions)
+        return self._implement(
+            self._f,
+            self.dataset.f.unit,
+            self.dataset.f.dimensions,
+        )
+
+    def _f(self, user: Arguments):
+        """Callback method for particle distribution."""
+        if not self.dataset.hasflux:
             return self.functions.f(
                 time=user.time,
                 shell=user.shell,
@@ -1375,263 +1421,324 @@ class Quantities(collections.abc.Mapping):
                 mu=user.mu,
                 assumptions=user.assumptions,
             )
-        return self._implement(
-            __f,
-            self.dataset.f.unit,
-            self.dataset.f.dimensions,
-        )
 
     @property
     def x(self):
-        """The x-axis component given by x = r·sin(θ)cos(φ)."""
-        def __f(user: Arguments):
-            return self.functions.x(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
+        """The x-axis observer coordinates given by x = r·sin(θ)cos(φ)."""
         return self._implement(
-            __f,
+            self._x,
             self.r.unit,
             self.r.dimensions,
+        )
+
+    def _x(self, user: Arguments):
+        """Callback method for x coordinates."""
+        return self.functions.x(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def y(self):
-        """The y-axis component given by y = r·sin(θ)sin(φ)."""
-        def __f(user: Arguments):
-            return self.functions.y(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
+        """The y-axis observer coordinates given by y = r·sin(θ)sin(φ)."""
         return self._implement(
-            __f,
+            self._y,
             self.r.unit,
             self.r.dimensions,
         )
 
+    def _y(self, user: Arguments):
+        """Callback method for coordinates."""
+        return self.functions.y(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
+        )
+
     @property
     def z(self):
-        """The z-axis component given by z = r·cos(θ)."""
-        def __f(user: Arguments):
-            return self.functions.z(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
+        """The z-axis observer coordinates given by z = r·cos(θ)."""
         return self._implement(
-            __f,
+            self._z,
             self.r.unit,
             self.r.dimensions,
+        )
+
+    def _z(self, user: Arguments):
+        """Callback method for z coordinates."""
+        return self.functions.z(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def bmag(self):
         """The magnetic-field magnitude, |B|."""
-        def __f(user: Arguments):
-            return self.functions.bmag(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._bmag,
             self.br.unit,
             self.br.dimensions,
+        )
+
+    def _bmag(self, user: Arguments):
+        """Callback method for magnetic-field magnitude."""
+        return self.functions.bmag(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def umag(self):
         """The velocity-field magnitude, |U|."""
-        def __f(user: Arguments):
-            return self.functions.umag(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._umag,
             self.ur.unit,
             self.ur.dimensions,
+        )
+
+    def _umag(self, user: Arguments):
+        """Callback method for velocity-field magnitude."""
+        return self.functions.umag(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def angle(self):
         """The angle between the magnetic- and velocity-field vectors."""
-        def __f(user: Arguments):
-            return self.functions.angle(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._angle,
             self.system['plane angle'].unit,
             self.ur.dimensions,
+        )
+
+    def _angle(self, user: Arguments):
+        """Callback method for flow angle."""
+        return self.functions.angle(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def upara(self):
         """The velocity-field component parallel to the magnetic field."""
-        def __f(user: Arguments):
-            return self.functions.upara(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._upara,
             self.ur.unit,
             self.ur.dimensions,
+        )
+
+    def _upara(self, user: Arguments):
+        """Callback method for parallel velocity."""
+        return self.functions.upara(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def uperp(self):
         """The velocity-field magnitude perpendicular to the magnetic field."""
-        def __f(user: Arguments):
-            return self.functions.uperp(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._uperp,
             self.ur.unit,
             self.ur.dimensions,
+        )
+
+    def _uperp(self, user: Arguments):
+        """Callback method for perpendicular velocity."""
+        return self.functions.uperp(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def divu(self):
         """The velocity-field divergence."""
-        def __f(user: Arguments):
-            return self.functions.divu(
-                time=user.time,
-                shell=user.shell,
-                assumptions=user.assumptions,
-            )
         return self._implement(
-            __f,
+            self._divu,
             1 / self.system['time'].unit,
             self.rho.dimensions,
+        )
+
+    def _divu(self, user: Arguments):
+        """Callback method for flow divergence."""
+        return self.functions.divu(
+            time=user.time,
+            shell=user.shell,
+            assumptions=user.assumptions,
         )
 
     @property
     def rigidity(self):
         """The magnetic rigidity."""
-        def __f(user: Arguments):
-            return self.functions.rigidity(
-                species=user.species,
-                energy=user.energy,
-            )
         unit = self.system['momentum / charge'].unit
         dimensions = self.mass.dimensions | self.energy.dimensions
-        return self._implement(__f, unit, dimensions)
+        return self._implement(
+            self._rigidity,
+            unit,
+            dimensions,
+        )
+
+    def _rigidity(self, user: Arguments):
+        """Callback method for rigidity."""
+        return self.functions.rigidity(
+            species=user.species,
+            energy=user.energy,
+        )
 
     @property
     def mfp(self):
         """The scattering mean free path."""
-        def __f(user: Arguments):
-            return self.functions.mfp(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                energy=user.energy,
-                assumptions=user.assumptions,
-            )
         unit = self.system['length'].unit
         dimensions = self.r.dimensions | self.rigidity.dimensions
-        return self._implement(__f, unit, dimensions)
+        return self._implement(
+            self._mfp,
+            unit,
+            dimensions,
+        )
+
+    def _mfp(self, user: Arguments):
+        """Callback method for mean free path."""
+        return self.functions.mfp(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            energy=user.energy,
+            assumptions=user.assumptions,
+        )
 
     @property
     def ar(self):
         """The theoretical acceleration rate."""
-        def __f(user: Arguments):
-            return self.functions.ar(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                energy=user.energy,
-                assumptions=user.assumptions,
-            )
         unit = 1 / self.system['time'].unit
-        return self._implement(__f, unit, self.mfp.dimensions)
+        return self._implement(
+            self._ar,
+            unit,
+            self.mfp.dimensions,
+        )
+
+    def _ar(self, user: Arguments):
+        """Callback method for acceleration rate."""
+        return self.functions.ar(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            energy=user.energy,
+            assumptions=user.assumptions,
+        )
 
     @property
     def average_energy(self):
         """The average particle-distribution energy."""
-        def __f(user: Arguments):
-            return self.functions.average_energy(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                energy=user.energy,
-                assumptions=user.assumptions,
-            )
         unit = self.energy.unit
         removed = self.energy.dimensions | self.mu.dimensions
         dimensions = self.f.dimensions - removed
-        return self._implement(__f, unit, dimensions)
+        return self._implement(
+            self._average_energy,
+            unit,
+            dimensions,
+        )
+
+    def _average_energy(self, user: Arguments):
+        """Callback method for average energy."""
+        return self.functions.average_energy(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            energy=user.energy,
+            assumptions=user.assumptions,
+        )
 
     @property
     def energy_density(self):
         """The particle-distribution energy density."""
-        def __f(user: Arguments):
-            return self.functions.energy_density(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                energy=user.energy,
-                assumptions=user.assumptions,
-            )
         unit = self.system['energy density'].unit
-        return self._implement(__f, unit, self.average_energy.dimensions)
+        return self._implement(
+            self._energy_density,
+            unit,
+            self.average_energy.dimensions,
+        )
+
+    def _energy_density(self, user: Arguments):
+        """Callback method for energy density."""
+        return self.functions.energy_density(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            energy=user.energy,
+            assumptions=user.assumptions,
+        )
 
     @property
     def flux(self):
         """The differential energy flux of a distribution."""
-        def __f(user: Arguments):
-            return self.functions.flux(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                energy=user.energy,
-                assumptions=user.assumptions,
-            )
         unit = self.system['flux'].unit
         dimensions = self.f.dimensions - self.mu.dimensions
-        return self._implement(__f, unit, dimensions)
+        return self._implement(
+            self._flux,
+            unit,
+            dimensions,
+        )
+
+    def _flux(self, user: Arguments):
+        """Callback method for particle flux."""
+        return self.functions.flux(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            energy=user.energy,
+            assumptions=user.assumptions,
+        )
 
     @property
     def fluence(self):
         """The particle-distribution fluence."""
-        def __f(user: Arguments):
-            return self.functions.fluence(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                energy=user.energy,
-                assumptions=user.assumptions,
-            )
         unit = self.system['fluence'].unit
-        return self._implement(__f, unit, self.flux.dimensions)
+        return self._implement(
+            self._fluence,
+            unit,
+            self.flux.dimensions,
+        )
+
+    def _fluence(self, user: Arguments):
+        """Callback method for particle fluence."""
+        return self.functions.fluence(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            energy=user.energy,
+            assumptions=user.assumptions,
+        )
 
     @property
     def intflux(self):
         """The integral flux of a distribution above a given energy"""
-        def __f(user: Arguments):
-            assumptions = dict(user.assumptions)
-            if 'minimum energy' not in assumptions:
-                assumptions['minimum energy'] == sys.float_info.min
-            return self.functions.intflux(
-                time=user.time,
-                shell=user.shell,
-                species=user.species,
-                assumptions=assumptions,
-            )
         unit = self.system['integral flux'].unit
         dimensions = self.flux.dimensions.replace('energy', 'minimum energy')
-        return self._implement(__f, unit, dimensions)
+        return self._implement(
+            self._intflux,
+            unit,
+            dimensions,
+        )
+
+    def _intflux(self, user: Arguments):
+        """Callback method for integral particle flux."""
+        assumptions = dict(user.assumptions)
+        if 'minimum energy' not in assumptions:
+            assumptions['minimum energy'] == sys.float_info.min
+        return self.functions.intflux(
+            time=user.time,
+            shell=user.shell,
+            species=user.species,
+            assumptions=assumptions,
+        )
 
     def _implement(
         self,
