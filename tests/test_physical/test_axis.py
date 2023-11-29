@@ -85,5 +85,7 @@ def test_coordinates():
             coordinates.index(target)
     assert coordinates.index(1.2, closest='lower') == numeric.index.value(1)
     assert coordinates.index(1.2, closest='upper') == numeric.index.value(2)
+    assert coordinates.withunit('cm').data == coordinates.data.withunit('cm')
+    assert coordinates.withunit('cm').index(150.0) == numeric.index.value(2)
 
 
