@@ -2,10 +2,12 @@ import itertools
 import pathlib
 import typing
 
+import numpy
 import pytest
 
 from eprempy import observable
 from eprempy import observer
+from eprempy import physical
 from eprempy import reference
 
 
@@ -69,3 +71,20 @@ def test_observable_aliases(streams: typing.Dict[str, observer.Stream]):
             aliases = reference.OBSERVABLES.aliases[name]
             for alias in aliases:
                 assert stream[name] == stream[alias]
+
+
+def test_observer_axes(streams: typing.Dict[str, observer.Stream]):
+    """Test the observer axis-based properties."""
+    for stream in streams.values():
+        assert isinstance(stream.times, physical.Coordinates)
+        assert numpy.array_equal(stream.times.data, stream['time'])
+        assert isinstance(stream.shells, physical.Points)
+        shells = numpy.arange(len(stream.shells))
+        assert numpy.array_equal(stream.shells.data, shells)
+        assert isinstance(stream.species, physical.Symbols)
+        assert list(stream.species) == ['H+']
+        assert isinstance(stream.energies, physical.Coordinates)
+        assert numpy.array_equal(stream.energies.data, stream['energy'])
+        assert isinstance(stream.mus, physical.Coordinates)
+        assert numpy.array_equal(stream.mus.data, stream['mu'])
+
