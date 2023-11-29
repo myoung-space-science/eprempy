@@ -192,6 +192,7 @@ class Arrays:
         self._rho = None
         self._f = None
         self._flux = None
+        self._hasdist = None
         self._hasflux = None
 
     @property
@@ -360,6 +361,24 @@ class Arrays:
         return array.withunit(unit or str(self.system))
 
     @property
+    def hasdist(self):
+        """True if this dataset contains the particle distribution.
+
+        Datasets from EPREM runs with `streamFluxOutput=0`, which is the default
+        setting, contain the full pitch-angle resolved particle distribution.
+        This property allows users to check whether the underlying dataset
+        contains the distribution (`True`) or not (`False`) before attempting to
+        access the corresponding array property.
+
+        See Also
+        --------
+        `~hasflux`
+        """
+        if self._hasdist is None:
+            self._hasdist = 'dist' in self.view.arrays
+        return self._hasdist
+
+    @property
     def hasflux(self):
         """True if this dataset contains the particle flux.
 
@@ -368,6 +387,10 @@ class Arrays:
         distribution. This property allows users to check whether the underlying
         dataset contains pre-computed flux (`True`) or not (`False`) before
         attempting to access the corresponding array property.
+
+        See Also
+        --------
+        `~hasdist`
         """
         if self._hasflux is None:
             self._hasflux = 'flux' in self.view.arrays
