@@ -35,7 +35,6 @@ class Axis(numeric.Object[T]):
 
     def __init__(self, reference: T) -> None:
         super().__init__(reference)
-        self._reference = reference
         self._indices = None
         self._length = None
 
@@ -84,7 +83,7 @@ class Axis(numeric.Object[T]):
         if isinstance(__x, Axis) and len(__x) == 1:
             with contextlib.suppress(Exception):
                 return self.index(__x) in self.indices
-        return __x in self.reference
+        return __x in self.data
 
     def __getitem__(self, __i):
         """Called for index-based access.
@@ -97,7 +96,7 @@ class Axis(numeric.Object[T]):
         Both cases are designed to preserve index information with regard to the
         original reference array.
         """
-        axis = self.spawn(self.reference[__i])
+        axis = self.spawn(self.data[__i])
         if __i in (slice(None), ...):
             return axis
         idx = self.normalize(container.unwrap(__i))
@@ -106,16 +105,16 @@ class Axis(numeric.Object[T]):
 
     def __len__(self) -> int:
         """Called for len(self)."""
-        return len(self.reference)
+        return len(self.data)
 
     def __iter__(self):
         """Called for iter(self)."""
-        return iter(self.reference)
+        return iter(self.data)
 
     def __eq__(self, other):
         """Called for self == other."""
         if isinstance(other, Axis):
-            return numpy.array_equal(self.reference, other.reference)
+            return numpy.array_equal(self.data, other.data)
         return NotImplemented
 
     def __str__(self) -> str:
@@ -167,11 +166,6 @@ class Axis(numeric.Object[T]):
             self._length = len(self.data)
         return self._length
 
-    @property
-    def reference(self) -> T:
-        """The reference values for this axis."""
-        return self._reference
-
 
 AxisLike = typing.TypeVar('AxisLike', typing.Iterable[str], Axis)
 
@@ -188,11 +182,11 @@ class Points(Axis[numpy.typing.NDArray[numpy.uint]]):
         points = self.normalize(*targets)
         indices = []
         for point in points:
-            if point not in self.reference:
+            if point not in self.data:
                 raise AxisValueError(
                     f"This axis does not contain the point {point}"
                 ) from None
-            index = numpy.where(self.reference == point)
+            index = numpy.where(self.data == point)
             indices.append(index[0][0])
         if len(indices) == 1:
             return numeric.index.value(indices[0])
@@ -213,7 +207,7 @@ class Symbols(Axis[typing.List[str]]):
 
     def __getitem__(self, index, /):
         if container.isiterable(index):
-            return self.spawn([self.reference[i] for i in index])
+            return self.spawn([self.data[i] for i in index])
         return super().__getitem__(index)
 
     def index(self, *targets: T):
@@ -224,7 +218,7 @@ class Symbols(Axis[typing.List[str]]):
                 "All index targets must be strings"
             ) from None
         indices = [
-            self.reference.index(str(target))
+            self.data.index(str(target))
             for target in targets
         ]
         if len(indices) == 1:
@@ -309,16 +303,16 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
 
     def _compute_index(self, target, closest):
         """Helper for `index`."""
-        if numeric.data.isclose(self.reference, target):
-            return container.nearest(self.reference, target).index
+        if numeric.data.isclose(self.data, target):
+            return container.nearest(self.data, target).index
         if closest is None:
             raise AxisValueError(
-                f"{self.reference} does not contain {target}"
+                f"{self.data} does not contain {target}"
             ) from None
         if closest == 'lower':
-            return container.nearest(self.reference, target, 'upper').index
+            return container.nearest(self.data, target, 'upper').index
         if closest == 'upper':
-            return container.nearest(self.reference, target, 'lower').index
+            return container.nearest(self.data, target, 'lower').index
         raise ValueError(f"Unknown constraint {closest!r}") from None
 
     def _measure(self, targets: typing.Sequence):
@@ -337,16 +331,16 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
 
     def __measure__(self) -> quantity.Measurement:
         """Called for `~quantity.measure(self)`."""
-        return quantity.measurement(self.reference)
+        return quantity.measurement(self.data)
 
     def withunit(self: Self, new: metric.UnitLike, /) -> Self:
         """Convert this cooridinate to a new unit."""
-        s = self.reference.withunit(new)
+        s = self.data.withunit(new)
         return self.spawn(s)
 
     @property
     def unit(self):
         """The metric unit of reference values."""
-        return self.reference.unit
+        return self.data.unit
 
 
