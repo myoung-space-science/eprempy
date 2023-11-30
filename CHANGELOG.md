@@ -5,6 +5,7 @@
 ## NEXT
 
 - Update README Usage
+- Fix CLI bug
 
 ## v0.1.8 (2023-11-29)
 
