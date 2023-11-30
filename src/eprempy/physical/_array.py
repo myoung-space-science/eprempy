@@ -17,6 +17,9 @@ from ._tensor import Tensor
 from ._types import QuantityType as Q
 
 
+T = typing.TypeVar('T')
+
+
 class NDimError(Exception):
     """Error related to array dimension."""
 
@@ -41,6 +44,26 @@ class Array(Tensor[real.Array[real.ValueType]]):
     def __str__(self) -> str:
         attrs = f"unit={str(self.unit)!r},\ndimensions={self.dimensions}"
         return f"{self.data.array},\n{attrs}"
+
+    def __int__(self):
+        """Called for int(self)."""
+        return self._as_builtin(int)
+
+    def __float__(self):
+        """Called for float(self)."""
+        return self._as_builtin(float)
+
+    def __complex__(self):
+        """Called for complex(self)."""
+        return complex(float(self))
+
+    def _as_builtin(self, t: T):
+        """Convert this instance to a built-in numeric type."""
+        if self.size == 1:
+            return t(self.data.array.ravel()[0])
+        raise TypeError(
+            f"Cannot convert a size-{self.size} array to {t!r}"
+        ) from None
 
     def __getitem__(self, args, /):
         if isinstance(args, slice):
