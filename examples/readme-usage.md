@@ -1,208 +1,147 @@
 Before getting started in earnest with `eprempy`, one simple task you can perform to make sure everything is installed is to print the version number.
 
-
 ```python
-import eprempy
-print(f"Using version {eprempy.__version__} of eprempy {chr(0x1f60a)}")
+>>> import eprempy
+>>> print(eprempy.__version__)
 ```
 
-    Using version 0.1.4 of eprempy 😊
+You can also print the version number via the package command-line interface (CLI)
 
+```shell
+$ python -m eprempy --version
+```
+
+The value printed will depend on which version you have installed.
 
 ### Creating an observer
 
 The examples below assume a working knowledge of [EPREM](https://github.com/myoung-space-science/eprem) &mdash; essentially, they assume that you have successfully run EPREM and have access to both the runtime configuration file and the output files.
 
-Most `eprempy` applications will begin by creating one or more observers. EPREM stores output in the form of "stream observers", with each observer file representing a set of connected simulation nodes. An observer file name has the form `obsNNNNNN.nc` or `fluxNNNNNN.nc`, where `NNNNNN` is the zero-padded number of the EPREM node-stream, and the letters `obs` or `flux` indicate whether the corresponding data contains the full particle distribution or pre-computed flux.
-
-To create an observer, the user must provide the observer ID, which is simply the EPREM stream number in the case of a stream observer. There are two additional attributes that are necessary for uniquely specifying an observer: the path to the directory containing the EPREM output and the path to the EPREM configuration file. When working within the directory containing EPREM output and the configuration file, the `eprem.Observer` class will automatically detect the appropriate observer file and will search for a configuration file with a name matching a known pattern. However, you may always specify the data directory via `source` and the name of the configuration file via `config`. Either path may be relative to the current directory and may contain the `~` alias; the `config` path may also be relative to the `source` path.
+The most common first step will be to create a stream observer.
 
 
 ```python
 from eprempy import eprem
 
 stream = eprem.stream(4, source='data/with-dist/')
-stream
 ```
 
-
-
-
-    Observer(4)
-
-
-
-Each observer knows the location of its data file, as well as the runtime configuration file used to create the data.
+Each observer knows the path to the directory containing its dataset.
 
 
 ```python
-print(stream.dataset.source.name)
-print(stream.config.source.name)
+stream.source
 ```
 
-    obs000004.nc
-    eprem.cfg
 
 
-We can request the value of simulation runtime parameters by aliased keyword. For example, let's check the assumed mean free path at 1 au. There are three possible ways we can refer to this parameter: 'lambda0', 'lamo', or 'lam0'.
+
+    PosixPath('/home/matthew/emmrem/open/source/eprempy/tests/data/isotropic-shock-with-dist')
+
+
+
+Each observer knows the name of the file containing its dataset.
 
 
 ```python
-for key in ('lambda0', 'lamo', 'lam0'):
-    print(f"{key} = {stream[key]!r}")
+stream.dataset.source.name
 ```
 
-    lambda0 = Variable([1.], unit='au')
-    lamo = Variable([1.], unit='au')
-    lam0 = Variable([1.], unit='au')
 
 
-We can also request an array-like observable quantity by one of its aliases. 
+
+    'obs000004.nc'
+
+
+
+The observer's `source` property is simply an alias for the path to the directory containing its dataset.
 
 
 ```python
-for alias in ('Vr', 'vr', 'Ur', 'ur'):
-    print(f"{alias} = {stream[alias]!r}")
+stream.source == stream.dataset.source.parent
 ```
 
-    Vr = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
-    vr = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
-    Ur = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
-    ur = Quantity(unit='m s^-1', dimensions={'time', 'shell'})
 
 
-As show above, each observable quantity knows its metric unit and array dimensions. Dimension names have the same meaning as in the raw EPREM output.
 
-It is possible to change an observable quantity's unit by calling its `withunit` method:
+    True
+
+
 
 
 ```python
-print(stream['vr'].unit)
-print(stream['vr'].withunit('au / day').unit)
-print(stream['flux'].unit)
-print(stream['flux'].withunit('1 / (cm^2 s sr MeV)').unit)
+stream.dataset.source == stream.source / stream.dataset.source.name
 ```
 
-    m s^-1
-    au d^-1
-    J^-1 s^-1 sr^-1 m^-2
-    MeV^-1 s^-1 sr^-1 cm^-2
 
 
-An observable quantity supports subscription by standard index types or by "measurable" indices. An index is measurable if it contains one or more numeric values followed by a unit-like string.
 
-This is best illustrated by a concrete example. Let's first pick a particular time in hours and radius in au
+    True
+
+
+
+Each observer knows the name of the simulation configuration file that generated its dataset. Similar relationship hold between the `source` property and the path to this file.
 
 
 ```python
-time = stream['time'].withunit('hour')
-print(f"time:\n{time[27]}\n")
-radius = stream['radius'].withunit('au')
-print(f"radius:\n{radius[27, 57]}")
+stream.config.source.name
 ```
 
-    time:
-    [67.2],
-    unit='h',
-    dimensions={'time'}
-    
-    radius:
-    [[1.27798576]],
-    unit='au',
-    dimensions={'time', 'shell'}
 
 
-Next, we'll retrieve the observable quantity representing plasma density.
+
+    'eprem.cfg'
+
+
 
 
 ```python
-rho = stream['rho']
-print(f"density at fixed time:\n{rho[27, 56:59]}\n")
-print(f"density at fixed radius:\n{rho[26:29, 57]}\n")
-print(f"density at fixed time and radius:\n{rho[27, 57]}")
+stream.config.source == stream.source / stream.config.source.name
 ```
 
-    density at fixed time:
-    [[20884873.80632916  5146864.60956498 21476487.84191666]],
-    unit='m^-3',
-    dimensions={'time', 'shell'}
-    
-    density at fixed radius:
-    [[ 5521952.49424706]
-     [ 5146864.60956498]
-     [18721643.43447628]],
-    unit='m^-3',
-    dimensions={'time', 'shell'}
-    
-    density at fixed time and radius:
-    [[5146864.60956498]],
-    unit='m^-3',
-    dimensions={'time', 'shell'}
 
 
-Finally, we'll create a measured index with value equivalent to our chosen time point and one equivalent to our chosen radius point. When we use the measured indices to subscript the density, we get a value very close to the value of density subscripted with standard indices.
+
+    True
+
+
+
+Each observer knows the metric system in which it will compute physical quantities. The default metric system is MKS.
 
 
 ```python
-t0 = 67.2, 'hour'
-r0 = 1.27798576, 'au'
-print(f"density at (t0, r0):\n{rho[t0, r0]}\n")
+stream.system
 ```
 
-    density at (t0, r0):
-    [[5146864.35972748]],
-    unit='m^-3',
-    dimensions={'time', 'radius'}
-    
 
 
-Of course, most of the steps above were simply for the sake of demonstration. You can acheive the desired affect in a single line
+
+    System(mks)
 
 
+
+If you are working in the directory containing the simulation output and the configuration file, assuming that file has a standard name, the only required information when creating a stream observer is the stream number.
 ```python
-print(rho[(67.2, 'hour'), (1.27798576, 'au')])
+>>> stream = eprem.stream(4)
 ```
 
-    [[5146864.35972748]],
-    unit='m^-3',
-    dimensions={'time', 'radius'}
+The `source` argument is required if you are not in the simulation output directory and the `config` argument is required if the corresponding configuration file has a non-standard name. Standard configuration-file names and patterns are
 
+* `eprem_input_file`
+* `*.cfg`
+* `*.ini`
+* `*.in`
 
-Each observable quantity has a `plot` method.
+Furthermore, creating an observer that uses the CGS metric system requires passing `system='cgs'`. Note that the `system` argument is not case-sensitive.
 
-
+Of course, explicitly specifying each of these arguments is always safest!
 ```python
-vr = stream['vr']
-r0 = 0.5, 'au'
-vr[:, r0].plot('k')
+>>> stream = eprem.stream(4, source='data/with-dist', config='eprem.cfg', system='mks')
 ```
 
+### Working with Simulation Data
 
-    
-![png](readme-usage_files/readme-usage_24_0.png)
-    
-
-
-This method is useful for quickly viewing a single quantity. More complex plots require explicit use of a plotting module such as `matplotlib.pyplot`. The following example creates a slightly more complex version of the above plot, and demonstrates use of the `format` method for metric units.
-
-
-```python
-import matplotlib.pyplot as plt
-for r in (0.1, 0.5, 1.0):
-    plt.plot(time, vr[:, (r, 'au')], label=f"r = {r} au")
-plt.legend()
-plt.xlabel(f"Time [{time.unit}]")
-plt.ylabel(rf"$V_r$ [{vr.unit.format(style='tex')}]")
-plt.tight_layout()
-```
-
-
-    
-![png](readme-usage_files/readme-usage_26_0.png)
-    
-
-
-You can print all observable quantities and parameters available to an observer by calling the observer's `which` method.
+You can print the names of available observable quantities and simulation parameters by calling the observer's `which` method. Names that are aliases for each other are separated by `'=='`.
 
 
 ```python
@@ -212,39 +151,39 @@ stream.which('observables')
     'phiOffset'
     'times' == 't' == 'time'
     'shells' == 'shell'
-    'pitch-angle cosine' == 'pitch angles' == 'pitch-angle cosines' == 'pitch-angles' == 'mu' == 'pitch angle' == 'pitch-angle'
-    'm' == 'mass'
-    'q' == 'charge'
-    'egrid' == 'energy' == 'energies' == 'E'
-    'speed' == 'v' == 'vgrid'
-    'R' == 'r' == 'radius'
-    'T' == 'theta'
+    'pitch angle' == 'pitch-angle cosines' == 'mu' == 'pitch-angle cosine' == 'pitch-angle' == 'pitch angles' == 'pitch-angles'
+    'mass' == 'm'
+    'charge' == 'q'
+    'egrid' == 'energies' == 'E' == 'energy'
+    'v' == 'speed' == 'vgrid'
+    'r' == 'R' == 'radius'
+    'theta' == 'T'
     'P' == 'phi'
-    'Br' == 'br'
-    'Btheta' == 'Bt' == 'btheta' == 'bt'
-    'bphi' == 'Bphi' == 'Bp' == 'bp'
-    'vr' == 'Vr' == 'Ur' == 'ur'
-    'utheta' == 'Vtheta' == 'ut' == 'Ut' == 'Vt' == 'Utheta'
-    'Uphi' == 'Up' == 'uphi' == 'up' == 'Vphi' == 'Vp'
-    'rho' == 'Rho'
-    'Dist' == 'dist' == 'f'
-    'J(E)' == 'flux' == 'Flux' == 'j' == 'J' == 'j(E)'
-    'x' == 'X'
-    'y' == 'Y'
+    'br' == 'Br'
+    'btheta' == 'bt' == 'Btheta' == 'Bt'
+    'bphi' == 'Bp' == 'Bphi' == 'bp'
+    'Ur' == 'Vr' == 'ur' == 'vr'
+    'ut' == 'Vt' == 'Ut' == 'Vtheta' == 'Utheta' == 'utheta'
+    'up' == 'Vp' == 'Vphi' == 'uphi' == 'Uphi' == 'Up'
+    'Rho' == 'rho'
+    'dist' == 'f' == 'Dist'
+    'j' == 'J' == 'flux' == 'Flux' == 'J(E)' == 'j(E)'
+    'X' == 'x'
+    'Y' == 'y'
     'Z' == 'z'
-    'b mag' == 'b_mag' == 'b' == 'bmag' == 'B' == '|B|' == '|b|'
-    '|u|' == 'u_mag' == 'U' == '|U|' == 'u mag' == 'u' == 'umag'
-    'upara' == 'Upara' == 'u_para'
-    'uperp' == 'Uperp' == 'u_perp'
-    'angle' == 'flow angle' == 'flow_angle'
-    'divU' == 'divu' == 'div(U)' == 'div_u' == 'div U' == 'div(u)' == 'div u'
-    'rigidity' == 'R_g' == 'Rg'
-    'mean free path' == 'mean_free_path' == 'mfp'
-    'acceleration_rate' == 'ar' == 'acceleration rate'
-    'energy_density' == 'energy density'
+    'b mag' == '|B|' == 'B' == 'b_mag' == 'bmag' == 'b' == '|b|'
+    'u_mag' == 'U' == 'u' == 'umag' == '|u|' == '|U|' == 'u mag'
+    'u_para' == 'upara' == 'Upara'
+    'Uperp' == 'u_perp' == 'uperp'
+    'flow_angle' == 'angle' == 'flow angle'
+    'div u' == 'div(U)' == 'divU' == 'divu' == 'div_u' == 'div U' == 'div(u)'
+    'R_g' == 'rigidity' == 'Rg'
+    'mean free path' == 'mfp' == 'mean_free_path'
+    'acceleration rate' == 'ar' == 'acceleration_rate'
+    'energy density' == 'energy_density'
     'average energy' == 'average_energy'
     'fluence'
-    'integral flux' == 'integral_flux' == 'intflux'
+    'intflux' == 'integral_flux' == 'integral flux'
 
 
 
@@ -252,18 +191,18 @@ stream.which('observables')
 stream.which('parameters')
 ```
 
-    'minimum_energy' == 'Emin' == 'minimum energy'
-    'reference energy' == 'energy0'
-    'reference radius' == 'r0'
+    'Emin' == 'minimum_energy' == 'minimum energy'
+    'energy0' == 'reference energy'
+    'r0' == 'reference radius'
     'FailModeDump'
     'adiabaticChangeAlg'
     'adiabaticFocusAlg'
     'aziSunStart'
     'boundaryFunctAmplitude' == 'J0'
-    'boundaryFunctBeta' == 'beta'
+    'beta' == 'boundaryFunctBeta'
     'E0' == 'boundaryFunctEcutoff'
     'boundaryFunctGamma' == 'gamma'
-    'boundaryFunctXi' == 'xi'
+    'xi' == 'boundaryFunctXi'
     'boundaryFunctionInitDomain'
     'charge'
     'checkSeedPopulation'
@@ -294,8 +233,8 @@ stream.which('parameters')
     'idealShockTheta'
     'idealShockWidth'
     'idw_p'
-    'kperxkpar' == 'kper/kpar' == 'kper / kpar' == 'kper_kpar'
-    'lambda0' == 'lam0' == 'lamo'
+    'kper_kpar' == 'kper/kpar' == 'kperxkpar' == 'kper / kpar'
+    'lamo' == 'lam0' == 'lambda0'
     'mass'
     'mfpRadialPower' == 'mfp_radial_power'
     'mhdBAu'
@@ -345,4 +284,488 @@ stream.which('parameters')
     'useShellDiffusion'
     'useStochastic'
     'warningsFile'
+
+
+Aliased quantities are equal.
+
+
+```python
+for alias in ('Vr', 'ur', 'Ur'):
+    print(stream['vr'] == stream[alias])
+```
+
+    True
+    True
+    True
+
+
+
+```python
+for alias in ('lamo', 'lam0'):
+    print(stream['lambda0'] == stream[alias])
+```
+
+    True
+    True
+
+
+Each observable quantity knowns its own unit and dimensions.
+
+
+```python
+vr = stream['vr']
+vr
+```
+
+
+
+
+    Quantity(unit='m s^-1', dimensions={'time', 'shell'})
+
+
+
+When requesting an observable quantity, the returned object (if the quantity exists) does not represent an array of numerical values. There are various ways to access the corresponding array. One way is via standard indexing.
+
+
+```python
+vr[:]
+```
+
+
+
+
+    Array([[ 300000.  300000.  300000. ...  300000.  300000.  300000.]
+     [ 300000.  300000.  300000. ...  300000.  300000.  300000.]
+     [ 300000.  300000.  300000. ...  300000.  300000.  300000.]
+     ...
+     [1200000. 1200000. 1200000. ...  300000.  300000.  300000.]
+     [1200000. 1200000. 1200000. ...  300000.  300000.  300000.]
+     [1200000. 1200000. 1200000. ...  300000.  300000.  300000.]],
+    unit='m s^-1',
+    dimensions={'time', 'shell'})
+
+
+
+Another way is via conversion to a `numpy.ndarray`.
+
+
+```python
+import numpy
+
+numpy.array(vr)
+```
+
+
+
+
+    array([[ 300000.,  300000.,  300000., ...,  300000.,  300000.,  300000.],
+           [ 300000.,  300000.,  300000., ...,  300000.,  300000.,  300000.],
+           [ 300000.,  300000.,  300000., ...,  300000.,  300000.,  300000.],
+           ...,
+           [1200000., 1200000., 1200000., ...,  300000.,  300000.,  300000.],
+           [1200000., 1200000., 1200000., ...,  300000.,  300000.,  300000.],
+           [1200000., 1200000., 1200000., ...,  300000.,  300000.,  300000.]])
+
+
+
+The dimensions of the observable quantity represent the subscriptable axes of the corresponding array.
+
+
+```python
+vr[:].shape
+```
+
+
+
+
+    (50, 1000)
+
+
+
+The axes are array-like objects that represent the available values of time, shell, species, energy, or pitch-angle cosine, as appropriate to the specific observable quantity.
+
+
+```python
+vr[:].axes
+```
+
+
+
+
+    Axes(time: Coordinates([  8640.,  17280., ..., 423360., 432000.]), shell: Points([  0,   1, ..., 998, 999]))
+
+
+
+Subscription does not change the dimensional structure of the observable quantity, even when that subscription results in a single value.
+
+
+```python
+vr[2, 4]
+```
+
+
+
+
+    Array([[300000.]],
+    unit='m s^-1',
+    dimensions={'time', 'shell'})
+
+
+
+Subscription self-consistently reduces the axes.
+
+
+```python
+vr[2, 4].axes
+```
+
+
+
+
+    Axes(time: Coordinates([25920.]), shell: Points([4]))
+
+
+
+You can change an observable quantity's unit via the `withunit` method; doing so will self-consistently scale the corresponding array.
+
+
+```python
+vr_au_day = stream['vr'].withunit('au / day')
+vr_au_day[2, 4]
+```
+
+
+
+
+    Array([[0.1732645]],
+    unit='au d^-1',
+    dimensions={'time', 'shell'})
+
+
+
+Attempting to convert to a unit that is physically inconsistent with the given quantity results in a `ValueError`.
+
+
+```python
+try:
+    stream['vr'].withunit('J / Hz')
+except ValueError as err:
+    print(f"Caught ValueError: {err}")
+```
+
+    Caught ValueError: The unit 'J / Hz' is inconsistent with 'm s^-1'
+
+
+Simulation parameters behave similarly to observable quantities. The major difference is that they also contain their numeric value(s).
+
+Parameters naturally split into two categories: those for which the notion of a unit is meaningful and those for which it is not. For example, both the reference mean free path and the power-law index of the background spectrum have a unit, even though the latter is unitless (i.e., its unit is `'1'`) ...
+
+
+```python
+stream['lambda0']
+```
+
+
+
+
+    Variable([1.], unit='au')
+
+
+
+
+```python
+stream['gamma']
+```
+
+
+
+
+    Variable([2.], unit='1')
+
+
+
+... whereas the number of nodes per simulation stream is simply a number.
+
+
+```python
+stream['numNodesPerStream']
+```
+
+
+
+
+    1000
+
+
+
+Any numeric quantity for which the notion of a unit is meaningful (even if the appropriate unit is `'1'`) is "measurable". `eprempy` represents all measurable parameters via the `Variable` type.
+
+
+```python
+stream['lambda0']
+```
+
+
+
+
+    Variable([1.], unit='au')
+
+
+
+You may change the unit of a variable just as you would change the unit of an observable quantity.
+
+
+```python
+stream['lambda0'].withunit('cm')
+```
+
+
+
+
+    Variable([1.49597871e+13], unit='cm')
+
+
+
+All variables are logically multi-valued. In numerical terms, they are each a formal sequence, which means they support subscription and iteration, and have a size.
+
+
+```python
+lam0_cm = stream['lambda0'].withunit('cm')
+lam0_cm[0]
+```
+
+
+
+
+    Scalar(14959787070000.0, unit='cm')
+
+
+
+
+```python
+list(lam0_cm)
+```
+
+
+
+
+    [Scalar(14959787070000.0, unit='cm')]
+
+
+
+
+```python
+len(lam0_cm)
+```
+
+
+
+
+    1
+
+
+
+Since there may be many occasions in which only the numerical value matters, variables support conversion to built-in numeric types.
+
+
+```python
+float(stream['lambda0'].withunit('cm'))
+```
+
+
+
+
+    14959787070000.0
+
+
+
+If you want to iterate over only the numeric values, you must access the `data` property.
+
+
+```python
+list(lam0_cm.data)
+```
+
+
+
+
+    [14959787070000.0]
+
+
+
+While it is always possible to subscript an observable quantity via standard subscription syntax, `eprempy` arrays also support subscription (and interpolation) via physical indices.
+
+For example, suppose you have extracted the observable quantity representing particle flux, and have changed its unit to something more familiar.
+
+
+```python
+flux = stream['flux'].withunit('1 / (cm^2 s sr MeV/nuc)')
+```
+
+Next, you decide to view the value of flux at a time of 7.2 hours and a radial distance of 0.3 au, for protons with 1.4 MeV. You may do so by providing the time, radial distance, and energy as "measurable" tuples, and the species as a chemical symbol.
+
+A measurable tuple is a tuple with one or more numeric values followed by an optional unit string. The following are all examples of measurable tuples:
+
+* (1, 2, 'm'): multiple values with the unit 'meter(s)'
+* (1, 'm', 2, 'm'): multiple values with the unit 'meter(s)'
+* ((1, 'm'), (2, 'm')): multiple values with the unit 'meter(s)'
+* (1, 2, '1'): multiple unitless values
+* (1, 2): multiple unitless values or, in certain applications, values with an implied unit
+* (1, 'm'): a single value with the unit 'meter'
+
+The following are not valid measurable tuples:
+
+* (1, 'm', 2, 'cm'): units must be the same
+* (1, None): use '1' for unitless values
+* ('m',): there must be at least one value
+* (1, 'm', 'cm'): what would this even mean?
+* ('hello', 'world'): please stop
+
+Note that, in Python, `x = a, b` is equivalent to `x = (a, b)`.
+
+
+```python
+t0 = 7.2, 'hour'
+r0 = 0.3, 'au'
+p0 = 'H+'
+e0 = 1.4, 'MeV'
+flux[t0, r0, p0, e0]
+```
+
+
+
+
+    Array([[[[1519.18600383]]]],
+    unit='nuc MeV^-1 s^-1 sr^-1 cm^-2',
+    dimensions={'time', 'radius', 'species', 'energy'})
+
+
+
+
+```python
+flux[t0, r0, p0, e0].axes
+```
+
+
+
+
+    Axes(time: Coordinates([25920.]), radius: Coordinates([4.488e+10]), species: Symbols(['H+']), energy: Coordinates([2.243e-13]))
+
+
+
+As a check, let's look at the indices corresponding to these physical values.
+
+The given time exactly corresponds to index 2.
+
+
+```python
+time = stream['time'].withunit('hour')
+time[2]
+```
+
+
+
+
+    Array([7.2],
+    unit='h',
+    dimensions={'time'})
+
+
+
+The given radius is closest to index 17 at the given time. In this case, we are technically asking which node on this stream is closest to 0.3 au at the given time. The internal observing logic will interpolate over nearby shells to the requested radial value.
+
+
+```python
+radius = stream['radius'].withunit('au')
+radius[2, 17]
+```
+
+
+
+
+    Array([[0.29920212]],
+    unit='au',
+    dimensions={'time', 'shell'})
+
+
+
+The given energy is nearly equal to the energy at index 11.
+
+
+```python
+energy = stream['energy'].withunit('MeV')
+energy[11]
+```
+
+
+
+
+    Array([1.40014911],
+    unit='MeV',
+    dimensions={'energy'})
+
+
+
+The given species is the only option in this dataset. In this case, we access the observer's `species` property, since `'species'` is not an observable quantity.
+
+
+```python
+stream.species
+```
+
+
+
+
+    Symbols(['H+'])
+
+
+
+Putting these all together, we see that the value of flux at the integral indices corresponding to the given physical indices is very close to the value directly computed via those physical indices.
+
+
+```python
+flux[2, 17, 0, 11]
+```
+
+
+
+
+    Array([[[[1519.01378213]]]],
+    unit='nuc MeV^-1 s^-1 sr^-1 cm^-2',
+    dimensions={'time', 'shell', 'species', 'energy'})
+
+
+
+Each observed array has a `plot` method.
+
+
+```python
+vr = stream['vr']
+r0 = 0.5, 'au'
+vr[:, r0].plot('k')
+```
+
+
+    
+![png](readme-usage_files/readme-usage_78_0.png)
+    
+
+
+This method is useful for quickly viewing a single observation. More complex plots require explicit use of a plotting module such as `matplotlib.pyplot`. The following example creates a slightly more complex version of the above plot, and demonstrates use of the `format` method for metric units.
+
+
+```python
+import matplotlib.pyplot as plt
+for r in (0.1, 0.5, 1.0):
+    plt.plot(time, vr[:, (r, 'au')], label=f"r = {r} au")
+plt.legend()
+plt.xlabel(f"Time [{time.unit}]")
+plt.ylabel(rf"$V_r$ [{vr.unit.format(style='tex')}]")
+plt.tight_layout()
+```
+
+
+    
+![png](readme-usage_files/readme-usage_80_0.png)
+    
 
