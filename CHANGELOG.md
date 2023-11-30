@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Update README Usage
+
 ## v0.1.8 (2023-11-29)
 
 - Define observer axes properties
