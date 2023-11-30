@@ -6,6 +6,7 @@
 
 - Support casing instances of `physical.Array` to built-in numeric types
 - Remove superfluous (and potentially misleading) operators from `physical.Axes`
+- Remove superfluous `reference` property from `physical.Axes`
 
 ## v0.1.9 (2023-11-30)
 
