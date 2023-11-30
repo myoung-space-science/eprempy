@@ -183,24 +183,6 @@ class Axes(collections.abc.Mapping, typing.Mapping[str, _axis.Axis]):
         mapping = {k: other[k] if k in other else self[k] for k in keys}
         return Axes(mapping)
 
-    __mul__ = __or__
-    """Called for self * other."""
-
-    __rmul__ = __or__
-    """Called for other * self."""
-
-    __truediv__ = __or__
-    """Called for self / other."""
-
-    __rtruediv__ = __or__
-    """Called for other / self."""
-
-    def __pow__(self, other):
-        """Called for self ** other."""
-        if isinstance(other, numbers.Real):
-            return self
-        return NotImplemented
-
     def copy(self):
         """Create a shallow copy of this collection."""
         return Axes({d: self[d] for d in self.dimensions})
