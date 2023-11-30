@@ -98,7 +98,7 @@ if __name__ == '__main__':
         action='store_true',
     )
     cli = vars(parser.parse_args())
-    if cli.get('version'):
+    if cli.pop('version', None):
         print_version()
     elif usermode := cli.pop('mode'):
         try:
