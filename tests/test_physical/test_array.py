@@ -290,7 +290,7 @@ def check_multiplicative(
         axes = a.axes
     else:
         unit = f(a.unit, b.unit)
-        axes = f(a.axes, b.axes)
+        axes = a.axes | b.axes
     assert new.unit == unit
     assert new.axes == axes
 
