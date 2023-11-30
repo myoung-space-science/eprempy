@@ -132,6 +132,25 @@ def test_ordering():
             f(a, b)
 
 
+def test_cast(ndarrays: support.NDArrays):
+    """Test casting operations on arrays."""
+    ndarray = ndarrays.r
+    metadata = {
+        'unit': 'm',
+        'axes': ['x', 'y'],
+    }
+    array = physical.array(ndarray, **metadata)
+    operators = [
+        int,
+        float,
+        complex,
+    ]
+    for f in operators:
+        assert f(array[1, 1]) == f(array.data.array[1, 1])
+        with pytest.raises(TypeError):
+            f(array)
+
+
 def test_unary(ndarrays: support.NDArrays):
     """Test unary numerical operations on arrays."""
     ndarray = ndarrays.r
@@ -350,15 +369,15 @@ def check_pow(
 
 def compute(
     f: typing.Callable,
-    a: typing.Union[physical.Array, typing.SupportsFloat],
-    b: typing.Union[physical.Array, typing.SupportsFloat],
+    a: typing.Union[physical.Array, numbers.Real],
+    b: typing.Union[physical.Array, numbers.Real],
 ) -> numpy.ndarray:
     """Compute the result of `f(a, b)`."""
     if all(not isinstance(i, physical.Array) for i in (a, b)):
         raise TypeError("Expected at least one of a or b to be an array")
-    if isinstance(b, typing.SupportsFloat):
+    if isinstance(b, numbers.Real):
         return f(a.data, float(b))
-    if isinstance(a, typing.SupportsFloat):
+    if isinstance(a, numbers.Real):
         return f(float(a), b.data)
     return f(*numeric.remesh(a.data, b.data))
 
