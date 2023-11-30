@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Support casing instances of `physical.Array` to built-in numeric types
+
 ## v0.1.9 (2023-11-30)
 
 - Update README Usage
