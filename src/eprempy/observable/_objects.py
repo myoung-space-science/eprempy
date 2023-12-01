@@ -21,6 +21,11 @@ from .. import quantity
 from .. import reference
 from ..reference import ARRAYS
 from ..typehelp import Self
+from ..exceptions import (
+    AxisValueError,
+    ArgumentError,
+    ObservationError,
+)
 
 
 class Interpolant(typing.NamedTuple):
@@ -275,10 +280,6 @@ class Arguments(aliased.Mapping):
         return ', '.join(parts)
 
 
-class ArgumentError(Exception):
-    """Unknown or invalid argument."""
-
-
 class Context:
     """A general observing context."""
 
@@ -318,7 +319,7 @@ class Context:
         for k, v in user.items():
             try:
                 p = self._parse_user_arg(k, v)
-            except physical.AxisValueError:
+            except AxisValueError:
                 # NOTE: We are here because `k` is the name of an axis but `v`
                 # is not a value in the corresponding axis array. We will
                 # therefore indicate to downstream code that it needs to
@@ -380,10 +381,6 @@ class Context:
     def grid(self):
         """The coordinate arrays."""
         return self._grid
-
-
-class ObservationError(Exception):
-    """There is an error in the observed array."""
 
 
 class Quantity:

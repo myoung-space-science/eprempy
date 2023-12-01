@@ -2,40 +2,12 @@ import typing
 
 from . import _operand
 from . import _operator
-
-
-class ParsingError(Exception):
-    """Base class for exceptions encountered during symbolic parsing."""
-
-    def __init__(self, arg: typing.Any) -> None:
-        self.arg = arg
-
-
-class RatioError(ParsingError):
-    """The string contains multiple '/' on a single level."""
-
-    def __str__(self) -> str:
-        return (
-            f"The expression '{self.arg}' contains ambiguous '/'."
-            f" Please refer to the NIST guidelines"
-            f" (https://physics.nist.gov/cuu/Units/checklist.html)"
-            f" for more information."
-        )
-
-
-class ProductError(ParsingError):
-    """The string contains a '*' after a '/'."""
-
-    def __str__(self) -> str:
-        return (
-            f"The expression '{self.arg}' contains an ambiguous '*'."
-            f" Please group '*' in parentheses when following '/'."
-        )
-
-
-class ParsingValueError(ValueError):
-    """Cannot create an expression from the given string."""
-    pass
+from ..exceptions import (
+    ParsingError,
+    SymbolicValueError,
+    ProductError,
+    RatioError,
+)
 
 
 class Iteration:
@@ -193,8 +165,8 @@ class Parser:
         if current.operand:
             return current.operand
         if current.operator:
-            raise ParsingValueError("Operator without operand")
-        raise ParsingValueError("Failed to parse string")
+            raise SymbolicValueError("Operator without operand")
+        raise SymbolicValueError("Failed to parse string")
 
     def _operator_error(
         self,

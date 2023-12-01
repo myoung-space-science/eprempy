@@ -4,6 +4,10 @@ Objects and utilities relevant to metric properties and systems.
 
 import typing
 
+from ..exceptions import (
+    UnitConversionError,
+)
+
 from ._conversions import (
     convert,
 )
@@ -18,10 +22,6 @@ from ._defined import (
 from ._dimensions import (
     dimension_factory as dimension,
     Dimension,
-)
-from ._exceptions import (
-    UnitConversionError,
-    UnitParsingError,
 )
 from ._reference import (
     CONVERSIONS,
@@ -61,9 +61,7 @@ __all__ = [
     'System',
     'Type',
     'Unit',
-    'UnitConversionError',
     'UnitLike',
-    'UnitParsingError',
     'convert',
     'dimension',
     'identify',
@@ -178,7 +176,7 @@ def conversion(source, target, **kwargs):
             str(target),
             quantity=kwargs.get('quantity'),
         )
-    except _exceptions.UnitConversionError as err:
+    except UnitConversionError as err:
         if kwargs.get('error', True):
             raise err
         return

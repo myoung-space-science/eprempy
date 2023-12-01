@@ -7,7 +7,10 @@ import typing
 from .. import aliased
 from .. import etc
 from .. import symbolic
-from . import _exceptions
+from ..exceptions import (
+    UnitParsingError,
+    SystemAmbiguityError,
+)
 from . import _reference
 
 
@@ -269,7 +272,7 @@ def identify(string: str):
     try:
         unit = _reference.NAMED_UNITS[string]
     except KeyError as err:
-        raise _exceptions.UnitParsingError(string) from err
+        raise UnitParsingError(string) from err
     magnitude = Prefix(**unit['prefix'])
     reference = BaseUnit(**unit['base'])
     return magnitude, reference
@@ -522,7 +525,7 @@ class NamedUnit(metaclass=_NamedUnitMeta):
             # only defined in mks
             return 'mks'
         # system-dependent but we don't know the system
-        raise _exceptions.SystemAmbiguityError(str(self))
+        raise SystemAmbiguityError(str(self))
 
     def _reduce(self, system: typing.Literal['mks', 'cgs']):
         """Internal logic for `~NamedUnit.reduce`."""
@@ -601,7 +604,7 @@ class NamedUnit(metaclass=_NamedUnitMeta):
             system = systems.pop()
             base[system] = dimensions[system]
             return base
-        raise _exceptions.SystemAmbiguityError
+        raise SystemAmbiguityError
 
     def is_allowed_in(self, system: typing.Literal['mks', 'cgs']):
         """True if this named unit inter-operates with units in `system`.
@@ -631,7 +634,7 @@ class NamedUnit(metaclass=_NamedUnitMeta):
         if self.is_fundamental_in(system):
             return True
         canonical = CANONICAL['units'][system][self.quantity]
-        with contextlib.suppress(_exceptions.UnitParsingError):
+        with contextlib.suppress(UnitParsingError):
             reference = type(self)(canonical)
             if self.base == reference.base:
                 return True

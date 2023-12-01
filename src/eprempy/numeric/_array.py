@@ -18,13 +18,12 @@ from ._objects import (
     Quantity,
 )
 from ._mixins import Operators
+from ..exceptions import (
+    DimensionTypeError,
+)
 
 
 T = typing.TypeVar('T')
-
-
-class DimensionTypeError(Exception):
-    """Invalid type for operation on dimensions."""
 
 
 @etc.autostr

@@ -6,6 +6,7 @@ import support
 from eprempy import measured
 from eprempy import numeric
 from eprempy import quantity
+from eprempy import exceptions
 
 
 def test_implicitly_measurable(measurables):
@@ -48,13 +49,13 @@ def test_parse(measurables):
         expected = case['dist']
         assert result == expected
     assert quantity.parse(0) == (0, '1') # zero is measurable!
-    with pytest.raises(quantity.ParsingTypeError):
+    with pytest.raises(exceptions.MeasurableTypeError):
         quantity.parse(None)
-    with pytest.raises(quantity.ParsingTypeError):
+    with pytest.raises(exceptions.MeasurableTypeError):
         quantity.parse(slice(None))
-    with pytest.raises(quantity.ParsingValueError):
+    with pytest.raises(exceptions.MeasurableValueError):
         quantity.parse([1.1, 'm', 2.3, 'cm'])
-    with pytest.raises(quantity.ParsingValueError):
+    with pytest.raises(exceptions.MeasurableValueError):
         quantity.parse([(1.1, 'm'), (2.3, 5.8, 'cm')])
 
 

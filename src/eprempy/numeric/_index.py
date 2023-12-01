@@ -17,7 +17,9 @@ from ._mixins import Operators
 from . import _implementation
 from . import _operators
 from . import _objects
-from ._operations import OperandTypeError
+from ..exceptions import (
+    OperandTypeError,
+)
 
 
 T = typing.TypeVar('T')

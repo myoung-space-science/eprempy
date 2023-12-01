@@ -6,8 +6,11 @@ import typing
 
 from .. import etc
 from .. import symbolic
+from ..exceptions import (
+    UnitConversionError,
+    UnitParsingError,
+)
 from . import _defined
-from . import _exceptions
 from . import _reference
 
 
@@ -110,7 +113,7 @@ def _convert(u0: str, u1: str):
     for converter in converters:
         if factor := converter(u0, u1):
             return Conversion(u0, u1, factor)
-    raise _exceptions.UnitConversionError(
+    raise UnitConversionError(
         f"Cannot convert {u0!r} to {u1!r}"
     ) from None
 
@@ -192,7 +195,7 @@ def _simple_conversion(u0: str, u1: str, scale: float=1.0):
         return scale * found
     try:
         ratio = _defined.NamedUnit(u0) >> _defined.NamedUnit(u1)
-    except (ValueError, _exceptions.UnitParsingError):
+    except (ValueError, UnitParsingError):
         return
     return scale * ratio
 
@@ -484,7 +487,7 @@ def convert(source: str, target: str, quantity: str=None):
             return conversion_factory(source, '1')
         if quantity is None:
             if _is_ambiguous(source, target):
-                raise _exceptions.UnitConversionError(
+                raise UnitConversionError(
                     f"Conversion from {source!r} to {target!r}"
                     " is ambiguous without knowledge of physical quantity"
                 ) from None

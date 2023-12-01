@@ -11,8 +11,6 @@ from ._object import (
 )
 from ._axis import (
     Axis,
-    AxisTypeError,
-    AxisValueError,
     Points,
     Symbols,
     Coordinates,
@@ -40,8 +38,6 @@ from ._operations import (
 
 __all__ = [
     'Axis',
-    'AxisTypeError',
-    'AxisValueError',
     'Axes',
     'Points',
     'Symbols',

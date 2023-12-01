@@ -18,7 +18,9 @@ from ._object_factories import (
     tensor_factory,
     array_factory,
 )
-from ._exceptions import PhysicalTypeError
+from ..exceptions import (
+    OperandTypeError,
+)
 
 
 T = typing.TypeVar('T')
@@ -183,7 +185,7 @@ def cast(__type: T, a, protocol: typing.Optional[type]=None) -> T:
     if isinstance(a, Measured):
         if protocol and isinstance(a.data, protocol):
             return __type(a.data)
-    raise PhysicalTypeError(
+    raise OperandTypeError(
         f"Cannot convert {a} to {__type!r}"
     ) from None
 
@@ -201,7 +203,7 @@ def comparative(f: typing.Callable[..., T], a, b, /):
         return f(a.data, b)
     if isinstance(a, numbers.Real) and isinstance(b, Measured):
         return f(a, b.data)
-    raise PhysicalTypeError(a)
+    raise OperandTypeError(a)
 
 
 def from_builtin(operation):
@@ -260,14 +262,14 @@ def unary(f, a, /, **kwargs):
         if isinstance(a, Array):
             metadata['axes'] = a.axes
         return numeric.Result(f(a.data, **kwargs), **metadata)
-    raise PhysicalTypeError(a)
+    raise OperandTypeError(a)
 
 
 @from_builtin
 def additive(f, a, b, /):
     """Compute an additive binary operation."""
     if not (isinstance(a, Measured) and isinstance(b, Measured)):
-        raise PhysicalTypeError(a, b)
+        raise OperandTypeError(a, b)
     opr = numeric.CALLABLES.find(f)
     msg = "Cannot {} objects with different {}."
     if isinstance(a, Array) and isinstance(b, Array):
@@ -346,7 +348,7 @@ def multiplicative(f, a, b):
             axes = b.axes
             return array_factory(data, unit=unit, axes=axes)
         return numeric.Result(f(a, b.data), unit=unit)
-    raise PhysicalTypeError(a, b)
+    raise OperandTypeError(a, b)
 
 
 @from_builtin
@@ -392,7 +394,7 @@ def exponential(f, a, b, **kwargs):
         if isinstance(b, Array):
             return f(a, b.data.array, **kwargs)
         return f(a, b.data, **kwargs)
-    raise PhysicalTypeError(a, b)
+    raise OperandTypeError(a, b)
 
 
 @from_numpy

@@ -6,7 +6,9 @@ from .. import exceptions
 from .. import measured
 from .. import numeric
 from .. import real
-from ._exceptions import PhysicalTypeError
+from ..exceptions import (
+    OperandTypeError,
+)
 from ._object import (
     Object,
 )
@@ -49,7 +51,7 @@ class Scalar(Object[real.ValueType], Operators):
             ) from None
         super().__init__(data, context)
 
-    @exceptions.convert(PhysicalTypeError, TypeError)
+    @exceptions.convert(OperandTypeError, TypeError)
     def __int__(self) -> int:
         """Called for int(self)."""
         if operator := self._OPERATORS.get(int):
@@ -59,7 +61,7 @@ class Scalar(Object[real.ValueType], Operators):
             f" conversion to built-in {int} type"
         ) from None
 
-    @exceptions.convert(PhysicalTypeError, TypeError)
+    @exceptions.convert(OperandTypeError, TypeError)
     def __float__(self) -> float:
         """Called for float(self)."""
         if operator := self._OPERATORS.get(float):
@@ -69,7 +71,7 @@ class Scalar(Object[real.ValueType], Operators):
             f" conversion to built-in {float} type"
         ) from None
 
-    @exceptions.convert(PhysicalTypeError, TypeError)
+    @exceptions.convert(OperandTypeError, TypeError)
     def __complex__(self) -> complex:
         """Called for complex(self)."""
         if operator := self._OPERATORS.get('complex'):

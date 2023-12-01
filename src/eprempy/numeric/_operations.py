@@ -437,7 +437,3 @@ def resolve(operation, strict: bool=False):
         ) from None
 
 
-class OperandTypeError(TypeError):
-    """Wrong operand type for a numeric operation."""
-
-

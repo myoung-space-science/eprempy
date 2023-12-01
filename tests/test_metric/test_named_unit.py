@@ -4,6 +4,7 @@ import pytest
 
 from eprempy import symbolic
 from eprempy import metric
+from eprempy.exceptions import UnitParsingError
 
 
 def test_build_named_unit():
@@ -31,7 +32,7 @@ def test_build_named_unit():
         unit = metric.NamedUnit(name)
         for key, value in attrs.items():
             assert getattr(unit, key) == value
-    with pytest.raises(metric.UnitParsingError):
+    with pytest.raises(UnitParsingError):
         metric.NamedUnit('cat')
 
 

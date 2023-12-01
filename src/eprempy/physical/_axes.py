@@ -15,6 +15,9 @@ from .. import numeric
 from .. import quantity
 from . import _axis
 from ..typehelp import Self
+from ..exceptions import (
+    MeasurableTypeError,
+)
 
 
 AxisType = typing.Union[
@@ -504,7 +507,7 @@ def convert_to_axis(arg):
     """Attempt to convert `arg` to a valid axis object."""
     try:
         axis = _convert_to_axis(arg)
-    except (TypeError, quantity.ParsingTypeError):
+    except (TypeError, MeasurableTypeError):
         raise ValueError(
             f"Cannot convert {arg} to an axis."
         ) from None

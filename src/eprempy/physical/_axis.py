@@ -16,17 +16,14 @@ from .. import metric
 from .. import numeric
 from .. import quantity
 from ..typehelp import Self
+from ..exceptions import (
+    AxisValueError,
+    AxisTypeError,
+    MeasurableTypeError,
+)
 
 
 T = typing.TypeVar('T')
-
-
-class AxisValueError(ValueError):
-    """Error in axis argument value."""
-
-
-class AxisTypeError(TypeError):
-    """Error in axis argument type."""
 
 
 @etc.autostr
@@ -321,7 +318,7 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
             target = targets[0]
             if quantity.ismeasurable(target):
                 return quantity.measure(target)
-        with contextlib.suppress(quantity.ParsingTypeError):
+        with contextlib.suppress(MeasurableTypeError):
             return quantity.measure(targets)
 
     def __eq__(self, other):

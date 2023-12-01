@@ -27,7 +27,6 @@ from ._operations import (
     METHODS,
     DUNDER,
     CALLABLES,
-    OperandTypeError,
 )
 from ._mixins import (
     Functions,
@@ -66,7 +65,6 @@ __all__ = [
     'Quantity',
     'Interface',
     'Object',
-    'OperandTypeError',
     'Result',
     'Type',
     'CALLABLES',

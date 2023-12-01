@@ -4,15 +4,15 @@ from .. import base
 from .. import metric
 from .. import measured
 from .. import real
+from ..exceptions import (
+    MeasuringTypeError,
+    MeasurableTypeError,
+    MeasurableValueError,
+)
 from ._functions import (
     isindexlike,
     ismeasurable,
     parse,
-)
-from ._exceptions import (
-    MeasuringTypeError,
-    ParsingTypeError,
-    ParsingValueError,
 )
 from ._measurement import Measurement
 
@@ -23,8 +23,8 @@ __all__ = [
     'measure',
     'parse',
     'MeasuringTypeError',
-    'ParsingTypeError',
-    'ParsingValueError',
+    'MeasurableTypeError',
+    'MeasurableValueError',
     'Measurement',
 ]
 

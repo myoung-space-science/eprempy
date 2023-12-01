@@ -4,17 +4,12 @@ import shutil
 import typing
 
 from . import etc
+from .exceptions import (
+    NonExistentPathError,
+)
 
 
 PathLike = typing.Union[str, os.PathLike]
-
-
-class PathTypeError(Exception):
-    """The path is the wrong type."""
-
-
-class PathOperationError(Exception):
-    """This operation is not allowed on the given path(s)."""
 
 
 def normalize(p: PathLike):
@@ -83,21 +78,6 @@ class PathSet(etc.InstanceSet):
         if isinstance(path, (str, pathlib.Path)):
             return path
         return super()._generate_key(*args, **kwargs)
-
-
-class NonExistentPathError(Exception):
-
-    def __init__(self, path: str=None):
-        self._path = path
-
-    @property
-    def path(self) -> str:
-        if self._path is None:
-            self._path = "The requested path"
-        return self._path
-
-    def __str__(self):
-        return f"{self.path} does not exist."
 
 
 def fullpath(path: PathLike, strict: bool=False):

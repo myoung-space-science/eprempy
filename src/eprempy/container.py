@@ -7,6 +7,16 @@ import numpy
 import numbers
 
 from . import etc
+from .exceptions import (
+    AmbiguousRequestError,
+    AmbiguousValueError,
+    InjectiveTypeError,
+    MergeError,
+    MissingValueError,
+    NonInvertibleError,
+    TableKeyError,
+    TableLookupError,
+)
 
 
 T = typing.TypeVar('T')
@@ -415,75 +425,6 @@ class Graph(collections.abc.Collection):
         )
 
 
-class TableKeyError(Exception):
-    """No common key with this name."""
-    def __str__(self) -> str:
-        if len(self.args) > 0:
-            return f"Table has no common key '{self.args[0]}'"
-        return "Key not found in table"
-
-
-class TableValueError(Exception):
-    """An exception occurred during value-based look-up."""
-
-    def __init__(self, value: typing.Any) -> None:
-        self.value = value
-
-
-class AmbiguousValueError(TableValueError):
-    """Failed to find a unique entry by value."""
-
-    def __str__(self) -> str:
-        return f"No unique entry containing {self.value!r}"
-
-
-class MissingValueError(TableValueError):
-    """Failed to find any qualifying entries by value."""
-
-    def __str__(self) -> str:
-        return f"No entries containing {self.value!r}"
-
-
-class TableRequestError(Exception):
-    """An exception occurred during standard look-up."""
-
-    def __init__(self, request: typing.Mapping) -> None:
-        self.request = request
-
-
-class AmbiguousRequestError(TableRequestError):
-    """There are multiple instances of the same value for this key."""
-
-    def __str__(self) -> str:
-        """Print the requested pairs in the order provided."""
-        items = list(self.request.items())
-        n_items = len(items)
-        if n_items <= 2:
-            requested = " and ".join(f"'{k}={v}'" for k, v in items)
-        else:
-            these = ", ".join(f"'{k}={v}'" for k, v in items[:-1])
-            this = f"'{items[-1][0]}={items[-1][1]}'"
-            requested = f"{these}, and {this}"
-        if n_items == 1:
-            return f"The search criterion {requested} is ambiguous"
-        return f"The search criteria {requested} are ambiguous"
-
-
-class TableLookupError(TableRequestError):
-    """Could not find the requested key-value pair(s)."""
-
-    def __str__(self) -> str:
-        """Print the requested pairs in the order provided."""
-        items = list(self.request.items())
-        if len(items) <= 2:
-            criteria = " and ".join(f"{k}={v}" for k, v in items)
-        else:
-            these = ", ".join(f"{k}={v}" for k, v in items[:-1])
-            this = f"{items[-1][0]}={items[-1][1]}"
-            criteria = f"{these}, and {this}"
-        return f"Table has no entry with {criteria}"
-
-
 class Table(collections.abc.Mapping):
     """A collection of mappings with support for multi-key search.
 
@@ -681,14 +622,6 @@ def distribute(a, b):
 _KT = typing.TypeVar('_KT', bound=str)
 
 _VT = typing.TypeVar('_VT')
-
-
-class InjectiveTypeError(TypeError):
-    """The given mapping contains repeated values."""
-
-
-class NonInvertibleError(TypeError):
-    """The given mapping is not invertible."""
 
 
 class Bijection(collections.abc.Mapping, typing.Generic[_KT, _VT]):
@@ -1037,10 +970,6 @@ def nearest(
     if array.ndim > 1:
         index = numpy.unravel_index(index, array.shape)
     return Nearest(index=index, value=array[index])
-
-
-class MergeError(Exception):
-    """An error occurred while merging iterable objects."""
 
 
 def merge(these: typing.Iterable, those: typing.Iterable):

@@ -32,14 +32,13 @@ sys.path.append(str(DIRECTORY))
 from . import interfaces
 from . import etc
 from . import paths
-
-
-class LogKeyError(KeyError):
-    """The log has no entry for a given key."""
-
-
-class ReadTypeError(Exception):
-    """There is no support for reading a given file type."""
+from .exceptions import (
+    LogKeyError,
+    PathOperationError,
+    PathTypeError,
+    ProjectExistsError,
+    ReadTypeError,
+)
 
 
 RunLogType = typing.TypeVar('RunLogType', bound='RunLog')
@@ -260,10 +259,6 @@ class RunLog(collections.abc.Mapping):
         return f"{self.__class__.__qualname__}({self.path})"
 
 
-class ProjectExistsError(Exception):
-    """A project with this name already exists."""
-
-
 _Paths = typing.TypeVar('_Paths')
 _Paths = typing.Union[pathlib.Path, typing.Tuple[pathlib.Path, pathlib.Path]]
 
@@ -276,7 +271,7 @@ class _PathOperation(collections.abc.Iterable):
         self,
         operator: typing.Callable[
             [pathlib.Path],
-            typing.Union[pathlib.Path, paths.PathOperationError]
+            typing.Union[pathlib.Path, PathOperationError]
         ],
         paths: typing.Iterable[pathlib.Path]=None,
     ) -> None: ...
@@ -286,7 +281,7 @@ class _PathOperation(collections.abc.Iterable):
         self,
         operator: typing.Callable[
             [pathlib.Path, pathlib.Path],
-            typing.Union[pathlib.Path, paths.PathOperationError]
+            typing.Union[pathlib.Path, PathOperationError]
         ],
         paths: typing.Iterable[typing.Tuple[pathlib.Path, pathlib.Path]]=None,
     ) -> None: ...
@@ -307,7 +302,7 @@ class _PathOperation(collections.abc.Iterable):
         error = None
         for path in self._paths:
             result = self.apply(path)
-            if not isinstance(result, paths.PathOperationError):
+            if not isinstance(result, PathOperationError):
                 yield result
                 error = False
             else:
@@ -380,7 +375,7 @@ class RunPaths(collections.abc.Collection):
         if root:
             path = paths.normalize(root)
             if path.exists():
-                raise paths.PathTypeError(
+                raise PathTypeError(
                     f"Renaming {self.root.name!r} to {path.name!r} would "
                     f"overwrite {path}."
                 )
@@ -419,7 +414,7 @@ class RunPaths(collections.abc.Collection):
         """Create the target run if safe to do so."""
         this = paths.normalize(target)
         if this.exists():
-            return paths.PathOperationError(
+            return PathOperationError(
                 f"Cannot create {str(this)!r}: already exists"
             )
         this.mkdir(parents=True)
@@ -440,15 +435,15 @@ class RunPaths(collections.abc.Collection):
         this = paths.normalize(source)
         that = paths.normalize(target)
         if not this.exists():
-            return paths.PathOperationError(
+            return PathOperationError(
                 f"Cannot rename {this}: does not exist"
             )
         if not this.is_dir():
-            return paths.PathOperationError(
+            return PathOperationError(
                 f"Cannot rename {this}: not a directory"
             )
         if that.exists():
-            return paths.PathOperationError(
+            return PathOperationError(
                 f"Renaming {this.name!r} to {that.name!r} would "
                 f"overwrite {that}."
             )
@@ -470,11 +465,11 @@ class RunPaths(collections.abc.Collection):
         """Remove the target path only if safe to do so."""
         this = paths.normalize(target)
         if not this.exists():
-            return paths.PathOperationError(
+            return PathOperationError(
                 f"Cannot remove {this}: does not exist"
             )
         if not this.is_dir():
-            return paths.PathOperationError(
+            return PathOperationError(
                 f"Cannot remove {this}: not a directory"
             )
         shutil.rmtree(this)
@@ -863,7 +858,7 @@ class Interface:
         # Handle an existing target path.
         if new.exists():
             if not force:
-                raise paths.PathOperationError(
+                raise PathOperationError(
                     f"Renaming this project to {target!r} would "
                     f"overwrite {new}."
                 )

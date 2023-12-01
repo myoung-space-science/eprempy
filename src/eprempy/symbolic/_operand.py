@@ -6,14 +6,10 @@ import typing
 
 from .. import etc
 from . import _part
-
-
-class OperandTypeError(TypeError):
-    """Type error associated with a symbolic operand."""
-
-
-class OperandValueError(ValueError):
-    """Value error associated with a symbolic operand."""
+from ..exceptions import (
+    SymbolicTypeError,
+    SymbolicValueError,
+)
 
 
 @etc.autostr
@@ -186,14 +182,14 @@ class OperandFactory(_part.Factory):
         try:
             nargs = len(args)
         except TypeError:
-            raise OperandTypeError(args) from None
+            raise SymbolicTypeError(args) from None
         if nargs == 1:
             return self._length_1(args)
         if nargs == 2:
             return self._length_2(args)
         if nargs == 3:
             return self._length_3(args)
-        raise OperandValueError(
+        raise SymbolicValueError(
             f"{self.__class__.__qualname__}"
             f" accepts 1, 2, or 3 arguments"
             f" (got {nargs})"
@@ -216,7 +212,7 @@ class OperandFactory(_part.Factory):
             given = {name: arg}
             if self.isvalid(name, arg):
                 return self.standardize(fill=True, **given)
-        raise OperandTypeError(
+        raise SymbolicTypeError(
             "A single argument may be either"
             " a coefficient <Real> or a base <str>;"
             f" not {type(arg)}"
@@ -240,7 +236,7 @@ class OperandFactory(_part.Factory):
             if all(self.isvalid(name, arg) for name, arg in given.items()):
                 return self.standardize(fill=True, **given)
         badtypes = [type(arg) for arg in args]
-        raise OperandTypeError(
+        raise SymbolicTypeError(
             "Acceptable two-argument forms are"
             " (base <str>, exponent <Real or str>),"
             " (coefficient <Real>, exponent <Real or str>),"
@@ -316,7 +312,7 @@ class OperandFactory(_part.Factory):
         c0, b0, e0 = self.normalize(*args).values()
         ends = (b0[0], b0[-1])
         if any(self.patterns['raising'].match(c) for c in ends):
-            raise OperandValueError(b0) from None
+            raise SymbolicValueError(b0) from None
         match = self.search(b0, mode='fullmatch')
         if not match:
             if not strict:

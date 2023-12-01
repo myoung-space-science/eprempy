@@ -13,6 +13,9 @@ from . import container
 from . import measured
 from . import physical
 from . import real
+from .exceptions import (
+    MassValueError,
+)
 
 
 _constants = {
@@ -413,15 +416,6 @@ def elements(
     bases = [list(_nucleons.keys())[m] for m in mass_idx]
     signs = [('+' if i > 0 else '-') * abs(int(i)) for i in _charge]
     return [f"{b}{c}" for b, c in zip(bases, signs)]
-
-
-class MassValueError(Exception):
-    """The given mass does not correspond to a known element."""
-    def __init__(self, value: int) -> None:
-        self.value = value
-
-    def __str__(self) -> str:
-        return f"Cannot find an element with atomic mass {self.value}"
 
 
 def get_mass_indices(

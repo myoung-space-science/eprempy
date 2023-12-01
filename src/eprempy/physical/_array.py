@@ -15,13 +15,12 @@ from ._axis import Coordinates
 from ._axes import Axes
 from ._tensor import Tensor
 from ._types import QuantityType as Q
+from ..exceptions import (
+    NDimError,
+)
 
 
 T = typing.TypeVar('T')
-
-
-class NDimError(Exception):
-    """Error related to array dimension."""
 
 
 class Array(Tensor[real.Array[real.ValueType]]):
@@ -165,10 +164,6 @@ def converter(c: metric.Conversion, x: Array) -> Array:
     new = x.spawn(x._data_interface, unit=c.new, axes=x.axes)
     new._scale = float(c)
     return new
-
-
-class AxisError(Exception):
-    """Invalid plotting axis."""
 
 
 _AXES_ARG_GROUPS = (

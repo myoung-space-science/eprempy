@@ -9,10 +9,14 @@ import typing
 from .. import aliased
 from .. import exceptions
 from .. import symbolic
+from ..exceptions import (
+    UnitConversionError,
+    UnitParsingError,
+    SystemAmbiguityError,
+)
 from . import _conversions
 from . import _defined
 from . import _dimensions
-from . import _exceptions
 from . import _reference
 
 
@@ -211,7 +215,7 @@ class Unit(symbolic.Expression):
             # If their base units produce equal expressions, the units are
             # equivalent.
             return True
-        with contextlib.suppress(_exceptions.UnitConversionError):
+        with contextlib.suppress(UnitConversionError):
             # If their numerical conversion factor is unity, they are
             # equivalent.
             return self << that == 1.0
@@ -262,7 +266,7 @@ class Unit(symbolic.Expression):
             return True
         try:
             self << that
-        except _exceptions.UnitConversionError:
+        except UnitConversionError:
             return False
         else:
             return True
@@ -374,7 +378,7 @@ def _decompose_term(term: symbolic.Term):
         # - parsing failed: raises `UnitParsingError`
         # - metric system is ambiguous: raises `SystemAmbiguityError`
         current = _defined.NamedUnit(term.base).decomposed
-    except (_exceptions.UnitParsingError, _exceptions.SystemAmbiguityError):
+    except (UnitParsingError, SystemAmbiguityError):
         # This effectively reduces the three failure modes listed above into
         # one result.
         current = None
@@ -429,7 +433,7 @@ def unit_factory(arg: typing.Union[str, Unit]) -> Unit:
         # symbol (e.g., 'centimeter' and 'cm').
         this = _defined.NamedUnit(name)
         key = (this.name, this.symbol)
-    except _exceptions.UnitParsingError:
+    except UnitParsingError:
         # If attempting to parse a named unit from `name` failed, register
         # the canonical string and, if applicable, the string argument.
         key = (name, string) if string else name
@@ -571,7 +575,7 @@ def reduction(unit: symbolic.Expressable, system: str=None):
         try:
             # NOTE: `_defined.NamedUnit.reduce` can return `None`
             current = _defined.NamedUnit(term.base).reduce(system=system)
-        except (_exceptions.UnitParsingError, _exceptions.SystemAmbiguityError):
+        except (UnitParsingError, SystemAmbiguityError):
             current = None
         if current:
             decomposed.append(current**term.exponent)

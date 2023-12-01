@@ -9,9 +9,9 @@ from .. import etc
 from .. import metric
 from .. import numeric
 from .. import real
-from ._exceptions import (
-    ParsingTypeError,
-    ParsingValueError,
+from ..exceptions import (
+    MeasurableTypeError,
+    MeasurableValueError,
 )
 
 
@@ -142,10 +142,10 @@ def parse(x, /, distribute: bool=False):
 
     Raises
     ------
-    `~ParsingTypeError`
+    `~MeasurableTypeError`
         - The input is any non-iterable object but is not a single number.
 
-    `~ParsingValueError`
+    `~MeasurableValueError`
         - The input is an empty iterable object.
         - The input contains multiple units.
         - The input contains multiple objects with individual units, but the
@@ -169,11 +169,11 @@ def parse(x, /, distribute: bool=False):
 
     # Raise a type-based exception if input is `None`.
     if unwrapped is None:
-        raise ParsingTypeError(f"Cannot measure {unwrapped!r}") from None
+        raise MeasurableTypeError(f"Cannot measure {unwrapped!r}") from None
 
     # Raise a value-based exception for empty input.
     if etc.isnull(unwrapped):
-        raise ParsingValueError(
+        raise MeasurableValueError(
             f"Cannot measure empty input: {unwrapped!r}"
         ) from None
 
@@ -186,7 +186,7 @@ def parse(x, /, distribute: bool=False):
     try:
         iter(unwrapped)
     except TypeError as err:
-        raise ParsingTypeError(
+        raise MeasurableTypeError(
             f"Cannot measure non-iterable input: {unwrapped!r}"
         ) from err
 
@@ -197,7 +197,7 @@ def parse(x, /, distribute: bool=False):
     # Raise an error for multiple units.
     if n_units > 1:
         errmsg = "You may only specify one unit."
-        raise ParsingValueError(errmsg) from None
+        raise MeasurableValueError(errmsg) from None
 
     # TODO: The structure below suggests that there may be available
     # refactorings, though they may require first redefining or dismantling
@@ -252,7 +252,7 @@ def _callback_parse(unwrapped, distribute: bool):
     units = [item[-1] for item in parsed]
     if any(unit != units[0] for unit in units):
         errmsg = "Can't combine measurements with different units."
-        raise ParsingValueError(errmsg)
+        raise MeasurableValueError(errmsg)
     values = [
         i for item in parsed for i in item[:-1]
     ]

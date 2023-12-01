@@ -11,8 +11,10 @@ import typing
 
 import numpy
 
-# NOTE: This module should not import any modules from the `eprem` package.
-
+from .exceptions import (
+    SentinelInitError,
+    SentinelValueError,
+)
 
 T = typing.TypeVar('T')
 
@@ -324,14 +326,6 @@ class NothingType(Singleton):
 
 Nothing = NothingType()
 """A unique object that represents nothing."""
-
-
-class SentinelInitError(Exception):
-    """Attempt to directly instantiate a new sentinel object."""
-
-
-class SentinelValueError(ValueError):
-    """Value error while creating a sentinel object."""
 
 
 _sentinels = {}

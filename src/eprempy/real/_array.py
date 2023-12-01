@@ -11,6 +11,9 @@ import numpy.typing
 from .. import base
 from .. import numeric
 from ._types import ValueType
+from ..exceptions import (
+    OperandTypeError,
+)
 
 
 T = typing.TypeVar('T')
@@ -200,7 +203,7 @@ def unary(f, a, /):
     """Implement a unary arithmetic operation on array quantities."""
     if isinstance(a, Array):
         return array_factory(f(a.array), dimensions=a.dimensions)
-    raise numeric.OperandTypeError(a)
+    raise OperandTypeError(a)
 
 
 def comparative(f, a, b, /):
@@ -224,7 +227,7 @@ def additive(f, a, b, /):
         return f(a.array, b)
     if isinstance(b, Array):
         return f(a, b.array)
-    raise numeric.OperandTypeError(a, b)
+    raise OperandTypeError(a, b)
 
 
 def multiplicative(f, a, b, /, **kwargs):
@@ -232,7 +235,7 @@ def multiplicative(f, a, b, /, **kwargs):
     try:
         operands = _get_operands(a, b)
     except TypeError as err:
-        raise numeric.OperandTypeError(a, b) from err
+        raise OperandTypeError(a, b) from err
     r = f(*operands, **kwargs)
     if isinstance(a, Array) and isinstance(b, Array):
         return array_factory(r, a.dimensions | b.dimensions)
@@ -240,7 +243,7 @@ def multiplicative(f, a, b, /, **kwargs):
         return array_factory(r, a.dimensions)
     if isinstance(b, Array):
         return array_factory(r, b.dimensions)
-    raise numeric.OperandTypeError(a, b)
+    raise OperandTypeError(a, b)
 
 
 def _get_operands(a, b):

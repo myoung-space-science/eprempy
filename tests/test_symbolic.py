@@ -4,6 +4,11 @@ import typing
 
 from eprempy import base
 from eprempy import symbolic
+from eprempy.exceptions import (
+    ProductError,
+    RatioError,
+    SymbolicValueError,
+)
 
 
 @pytest.fixture
@@ -48,7 +53,7 @@ def test_create_term(term_args: dict):
         'a^', # missing exponent
     ]
     for string in invalid:
-        with pytest.raises(symbolic.OperandValueError):
+        with pytest.raises(SymbolicValueError):
             term = symbolic.OperandFactory().create(string)
 
 
@@ -465,9 +470,9 @@ def test_nonstandard_chars():
 @pytest.mark.expression
 def test_parsing_errors():
     """Make sure the parser correctly catches errors."""
-    with pytest.raises(symbolic.RatioError):
+    with pytest.raises(RatioError):
         symbolic.expression('a/b/c', operator_order='error')
-    with pytest.raises(symbolic.ProductError):
+    with pytest.raises(ProductError):
         symbolic.expression('a/b*c', operator_order='error')
     invalid = [
         '(a*b))',
@@ -475,7 +480,7 @@ def test_parsing_errors():
         'a/',
     ]
     for string in invalid:
-        with pytest.raises(symbolic.ParsingValueError):
+        with pytest.raises(SymbolicValueError):
             symbolic.expression(string)
 
 
