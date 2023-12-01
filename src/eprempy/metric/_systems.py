@@ -7,10 +7,12 @@ import typing
 
 from .. import etc
 from .. import symbolic
+from ..exceptions import (
+    QuantityError,
+)
 from . import _conversions
 from . import _defined
 from . import _dimensions
-from . import _exceptions
 from . import _reference
 from . import _units
 
@@ -78,7 +80,7 @@ class Quantity:
             unit = self.units[system.lower()]
             return Properties(system, unit)
         except KeyError as err:
-            raise _exceptions.QuantityError(
+            raise QuantityError(
                 f"No properties available for {self.name!r} in {system!r}"
             ) from err
 
