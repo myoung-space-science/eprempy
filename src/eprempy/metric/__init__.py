@@ -52,7 +52,6 @@ __all__ = [
     'SYSTEMS',
     'UNITS',
     'Conversion',
-    'Converter',
     'Dimension',
     'Interface',
     'NamedUnit',

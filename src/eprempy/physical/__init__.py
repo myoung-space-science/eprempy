@@ -46,7 +46,6 @@ __all__ = [
     'ObjectType',
     'QuantityType',
     'ArrayType',
-    'Interpolant',
     'Scalar',
     'scalar',
     'Tensor',
