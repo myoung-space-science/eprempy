@@ -203,10 +203,14 @@ def parse(x, /, distribute: bool=False):
         # there is nothing we can do to salvage it.
         raise ParsingValueError(errmsg) from None
     if counted[str] > 1:
-        # First, check for all numeric strings.
+        # First, check for a single numeric string.
+        if isinstance(unwrapped, str):
+            with contextlib.suppress(ValueError):
+                return parse([float(unwrapped)])
+        # Next, check for all numeric strings.
         with contextlib.suppress(ValueError):
             return parse([float(arg) for arg in unwrapped])
-        # Next, check for numeric strings with a final unit.
+        # Finally, check for numeric strings with a final unit.
         try:
             values = [float(arg) for arg in unwrapped[:-1]]
         except ValueError as err:
