@@ -69,6 +69,9 @@ def test_measure(measurables):
     this = support.Measurable([1], unit='m / s')
     expected = quantity.measurement([1], unit='m / s')
     assert quantity.measure(this) == expected
+    strings = ['1.1', '2.3', 'm']
+    expected = quantity.measurement([1.1, 2.3], unit='m')
+    assert quantity.measure(strings) == expected
     with pytest.raises(quantity.MeasuringTypeError):
         quantity.measure()
 
