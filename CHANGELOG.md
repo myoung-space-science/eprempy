@@ -4,6 +4,9 @@
 
 ## NEXT
 
+- Allow measurable objects with numeric strings to be unitless
+- Allow a single numeric string to be measurable
+
 ## v0.1.10 (2023-12-06)
 
 - Support casing instances of `physical.Array` to built-in numeric types
