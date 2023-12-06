@@ -194,18 +194,24 @@ def parse(x, /, distribute: bool=False):
 
     # Count the number of distinct unit-like objects.
     types = [type(arg) for arg in unwrapped]
-    n_units = sum(types.count(t) for t in (str, metric.Unit))
+    counted = {t: types.count(t) for t in (str, metric.Unit)}
 
     # Check for multiple units.
-    if n_units > 1:
-        errmsg = "You may only specify one unit."
-        if types.count(metric.Unit) == 0:
-            try:
-                values = [float(arg) for arg in unwrapped[:-1]]
-            except ValueError as err:
-                raise ParsingValueError(errmsg) from err
-            return parse([*values, unwrapped[-1]])
+    errmsg = "You may only specify one unit."
+    if counted[metric.Unit] > 1:
+        # If the input contains more than one instance of the `Unit` class,
+        # there is nothing we can do to salvage it.
         raise ParsingValueError(errmsg) from None
+    if counted[str] > 1:
+        # First, check for all numeric strings.
+        with contextlib.suppress(ValueError):
+            return parse([float(arg) for arg in unwrapped])
+        # Next, check for numeric strings with a final unit.
+        try:
+            values = [float(arg) for arg in unwrapped[:-1]]
+        except ValueError as err:
+            raise ParsingValueError(errmsg) from err
+        return parse([*values, unwrapped[-1]])
 
     # TODO: The structure below suggests that there may be available
     # refactorings, though they may require first redefining or dismantling
