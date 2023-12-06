@@ -153,7 +153,7 @@ def parse(x, /, distribute: bool=False):
 
     Notes
     -----
-    This function will parse the following types of arguments:
+    This function will parse the following types of arguments
 
     - a single number
     - a `list` or `tuple` of only numbers
@@ -162,6 +162,8 @@ def parse(x, /, distribute: bool=False):
       `tuple` of only numbers, and the second element is a single unit
     - an iterable collection of any of the above cases, as long as the units are
       consistent
+
+    where 'numbers' includes strings that can be converted to numeric values.
     """
 
     # Strip redundant lists and tuples.
@@ -194,9 +196,15 @@ def parse(x, /, distribute: bool=False):
     types = [type(arg) for arg in unwrapped]
     n_units = sum(types.count(t) for t in (str, metric.Unit))
 
-    # Raise an error for multiple units.
+    # Check for multiple units.
     if n_units > 1:
         errmsg = "You may only specify one unit."
+        if types.count(metric.Unit) == 0:
+            try:
+                values = [float(arg) for arg in unwrapped[:-1]]
+            except ValueError as err:
+                raise ParsingValueError(errmsg) from err
+            return parse([*values, unwrapped[-1]])
         raise ParsingValueError(errmsg) from None
 
     # TODO: The structure below suggests that there may be available
