@@ -7,6 +7,7 @@
 - Support casing instances of `physical.Array` to built-in numeric types
 - Remove superfluous (and potentially misleading) operators from `physical.Axes`
 - Remove superfluous `reference` property from `physical.Axes`
+- Allow measurable objects to have numeric string values
 
 ## v0.1.9 (2023-11-30)
 
