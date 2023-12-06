@@ -6,6 +6,7 @@
 
 - Allow measurable objects with numeric strings to be unitless
 - Allow a single numeric string to be measurable
+- Fix bug in `quantity.measure` for `measured.Object` input
 
 ## v0.1.10 (2023-12-06)
 
