@@ -74,6 +74,10 @@ def test_measure(measurables):
     assert quantity.measure(strings) == expected
     expected = quantity.measurement([1.1, 2.3], unit='1')
     assert quantity.measure(strings[:-1]) == expected
+    expected = quantity.measurement([1.1], unit='m')
+    assert quantity.measure('1.1', 'm') == expected
+    expected = quantity.measurement([1.1], unit='1')
+    assert quantity.measure('1.1') == expected
     with pytest.raises(quantity.MeasuringTypeError):
         quantity.measure()
 
