@@ -123,7 +123,7 @@ def measure(*args, **kwargs):
     if isinstance(this, base.Measurable):
         return _measure_explicit(this, **kwargs)
     if isinstance(this, measured.Object):
-        return measurement(this.data, this.unit)
+        return measurement(this.data, unit=this.unit)
     return _measure_implicit(args)
 
 
