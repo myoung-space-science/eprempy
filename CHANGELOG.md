@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.1.11 (2023-12-06)
+
 - Allow measurable objects with numeric strings to be unitless
 - Allow a single numeric string to be measurable
 - Fix bug in `quantity.measure` for `measured.Object` input
