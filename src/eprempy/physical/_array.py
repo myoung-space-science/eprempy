@@ -222,9 +222,10 @@ def plot(
             xarr = numpy.array(m)
             if 'xlabel' not in extra:
                 extra['xlabel'] = f"{name} [{m.unit}]"
-        else:
-            xarr = numpy.array(x)
-            extra['xlabel'] = name
+        elif isinstance(x, str):
+            axis = array.axes[x]
+            xarr = numpy.array(axis)
+            extra['xlabel'] = x
         _create_plot(xarr, ndarray, *args, **extra)
     if path is None:
         plt.show()
