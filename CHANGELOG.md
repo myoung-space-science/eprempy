@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Make observers hashable
+
 ## v0.1.11 (2023-12-06)
 
 - Allow measurable objects with numeric strings to be unitless
@@ -12,7 +14,7 @@
 
 ## v0.1.10 (2023-12-06)
 
-- Support casing instances of `physical.Array` to built-in numeric types
+- Support casting instances of `physical.Array` to built-in numeric types
 - Remove superfluous (and potentially misleading) operators from `physical.Axes`
 - Remove superfluous `reference` property from `physical.Axes`
 - Allow measurable objects to have numeric string values
