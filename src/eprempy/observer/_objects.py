@@ -53,6 +53,10 @@ class Observer(collections.abc.Mapping):
         self._energies = None
         self._mus = None
 
+    def __hash__(self):
+        """Called for hash(self)."""
+        return hash(self.source) + hash(self._id)
+
     def __str__(self) -> str:
         """A simplified representation of this object."""
         return repr(self._id)
