@@ -214,9 +214,7 @@ def plot(
         _create_plot(xarr, ndarray, *args, **extra)
     else:
         if isinstance(x, measured.Type):
-            xarr = numpy.array(x)
-            if 'xlabel' not in extra:
-                extra['xlabel'] = f"{name} [{x.unit}]"
+            xarr = numpy.array(x).squeeze()
         elif isinstance(x, Coordinates):
             m = quantity.measure(x)
             xarr = numpy.array(m)
@@ -226,6 +224,8 @@ def plot(
             axis = array.axes[x]
             xarr = numpy.array(axis)
             extra['xlabel'] = x
+        else:
+            raise TypeError(x)
         _create_plot(xarr, ndarray, *args, **extra)
     if path is None:
         plt.show()
