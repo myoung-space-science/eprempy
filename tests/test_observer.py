@@ -88,3 +88,13 @@ def test_observer_axes(streams: typing.Dict[str, observer.Stream]):
         assert isinstance(stream.mus, physical.Coordinates)
         assert numpy.array_equal(stream.mus.data, stream['mu'])
 
+
+def test_observer_hash(datadir: pathlib.Path):
+    """Test the ability to hash an observer."""
+    basedirs = {'isotropic-shock-with-dist', 'isotropic-shock-with-flux'}
+    for basedir in basedirs:
+        source = datadir / basedir
+        for n in (0, 1):
+            stream = observer.stream_factory(0, 'eprem.cfg', source)
+            assert hash(stream)
+
