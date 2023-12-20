@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.2.0 (2023-12-20)
+
 - Fix bugs in `physical.Array` plotting
 - Make observers hashable
 
