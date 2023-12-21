@@ -3,9 +3,12 @@ import numbers
 import typing
 import typing_extensions
 
+import numpy
+
 from .. import base
 from .. import container
 from .. import etc
+from .. import measured
 from .. import metric
 from .. import numeric
 from .. import real
@@ -276,5 +279,30 @@ def _callback_parse(unwrapped, distribute: bool):
     ]
     unit = units[0]
     return (*values, unit)
+
+
+def getdata(a):
+    """Get the argument's data."""
+    if isinstance(a, measured.Object):
+        return a.data
+    if isinstance(a, typing.Sequence):
+        if len(a) == 2:
+            return a[0]
+        if len(a) > 2:
+            return numpy.array(a[:-1])
+    if isinstance(a, numbers.Real):
+        return a
+    raise TypeError(a)
+
+
+def getunit(a):
+    """Get the argument's unit."""
+    if isinstance(a, measured.Object):
+        return a.unit
+    if isinstance(a, typing.Sequence):
+        return a[-1]
+    if isinstance(a, numbers.Real):
+        return '1'
+    raise TypeError(a)
 
 
