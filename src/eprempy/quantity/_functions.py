@@ -187,6 +187,16 @@ def parse(x, /, distribute: bool=False):
         result = (unwrapped, '1')
         return (result,) if distribute else result
 
+    # Handle a single numerical string.
+    if isinstance(unwrapped, str):
+        try:
+            result = (float(unwrapped), '1')
+        except TypeError as err:
+            raise ParsingTypeError(
+                f"Cannot measure non-numeric string {unwrapped!r}"
+            ) from err
+        return (result,) if distribute else result
+
     # Raise a type-based exception if input is not iterable.
     try:
         iter(unwrapped)
