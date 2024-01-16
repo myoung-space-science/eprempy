@@ -3,7 +3,7 @@ import contextlib
 import pathlib
 import typing
 
-from .. import dataset
+from .. import datafile
 from .. import etc
 from .. import metric
 from .. import observable
@@ -136,7 +136,7 @@ class Observer(collections.abc.Mapping):
     def _get_axis(self, name: str):
         """Internal helper for axis properties."""
         if self._axes is None:
-            self._axes = dataset.axes(self._paths.source, self.system)
+            self._axes = datafile.axes(self._paths.source, self.system)
         return self._axes[name]
 
     @property
@@ -161,7 +161,7 @@ class Observer(collections.abc.Mapping):
     def dataset(self):
         """An interface to this observer's raw dataset."""
         if self._dataset is None:
-            self._dataset = dataset.view(self._paths.source)
+            self._dataset = datafile.view(self._paths.source)
         return self._dataset
 
     @property

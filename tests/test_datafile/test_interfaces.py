@@ -1,7 +1,7 @@
 import pathlib
 import typing
 
-from eprempy import dataset
+from eprempy import datafile
 
 
 def test_arrays(
@@ -20,13 +20,13 @@ def test_arrays(
         }
         datapath = datadir / rundir / data['source']
         for system in systems:
-            arrays = dataset.arrays(datapath, system=system)
+            arrays = datafile.arrays(datapath, system=system)
             assert arrays.system == system
             check_arrays(arrays, dimensions, units[system])
 
 
 def check_arrays(
-    this: dataset.Arrays,
+    this: datafile.Arrays,
     dimensions: typing.Dict[str, typing.Tuple[str]],
     units: typing.Dict[str, str],
 ) -> None:

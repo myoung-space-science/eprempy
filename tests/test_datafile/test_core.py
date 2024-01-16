@@ -1,6 +1,6 @@
 import numpy
 
-from eprempy import dataset
+from eprempy import datafile
 
 
 def test_array_factory():
@@ -8,7 +8,7 @@ def test_array_factory():
     data = numpy.arange(3 * 4).reshape(3, 4)
     unit = 'm'
     dimensions = ('x', 'y')
-    array = dataset.array(data=data, unit=unit, dimensions=dimensions)
+    array = datafile.array(data=data, unit=unit, dimensions=dimensions)
     assert isinstance(array.data, numpy.ndarray)
     assert isinstance(array.unit, str)
     assert array.unit == unit
@@ -19,7 +19,7 @@ def test_scalar_factory():
     """Test the ability to create a core scalar."""
     value = 2.0
     unit = 'J'
-    scalar = dataset.scalar(value=value, unit=unit)
+    scalar = datafile.scalar(value=value, unit=unit)
     assert scalar.value == value
     assert scalar.unit == unit
 
@@ -27,7 +27,7 @@ def test_scalar_factory():
 def test_axis_factory():
     """Test the ability to create a core axis."""
     size = 10
-    axis = dataset.axis(size=size)
+    axis = datafile.axis(size=size)
     assert isinstance(axis.size, int)
     assert axis.size == size
 

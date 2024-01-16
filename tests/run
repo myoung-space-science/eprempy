@@ -19,7 +19,7 @@ all=(
     test_parameter
     test_physical
     test_universal.py
-    test_dataset
+    test_datafile
     test_quantity
     test_observable.py
     test_observer.py

@@ -1,22 +1,22 @@
 import typing
 
-from eprempy import dataset
+from eprempy import datafile
 from eprempy import reference
 
 
 def test_arrays():
     """Test metadata for arrays."""
-    check(reference.ARRAYS, dataset.ARRAYS)
+    check(reference.ARRAYS, datafile.ARRAYS)
 
 
 def test_scalars():
     """Test metadata for scalars."""
-    check(reference.SCALARS, dataset.SCALARS)
+    check(reference.SCALARS, datafile.SCALARS)
 
 
 def test_axes():
     """Test metadata for axes."""
-    check(reference.AXES, dataset.AXES)
+    check(reference.AXES, datafile.AXES)
 
 
 def test_observables():

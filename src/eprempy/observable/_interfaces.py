@@ -10,7 +10,7 @@ from scipy.interpolate import interp1d
 
 from .. import aliased
 from .. import container
-from .. import dataset
+from .. import datafile
 from .. import etc
 from .. import measured
 from .. import metric
@@ -34,9 +34,9 @@ class Implementations:
 
     def __init__(
         self,
-        dataset: dataset.Arrays,
-        axes: dataset.Axes,
-        grid: aliased.Mapping[str, dataset.Array],
+        dataset: datafile.Arrays,
+        axes: datafile.Axes,
+        grid: aliased.Mapping[str, datafile.Array],
         constants: universal.Constants,
         parameters: parameter.Interface,
         system: metric.System,
@@ -1780,14 +1780,14 @@ class Quantities(collections.abc.Mapping):
     def grid(self):
         """The dataset coordinate-like arrays."""
         if self._grid is None:
-            self._grid = dataset.grid(self.source, self.system)
+            self._grid = datafile.grid(self.source, self.system)
         return self._grid
 
     @property
     def axes(self):
         """The array-indexing objects."""
         if self._axes is None:
-            self._axes = dataset.axes(self.source, system=self.system)
+            self._axes = datafile.axes(self.source, system=self.system)
         return self._axes
 
     @property
@@ -1817,7 +1817,7 @@ class Quantities(collections.abc.Mapping):
     def dataset(self):
         """A view of the underlying dataset."""
         if self._dataset is None:
-            self._dataset = dataset.arrays(self.source, self.system)
+            self._dataset = datafile.arrays(self.source, self.system)
         return self._dataset
 
     @property

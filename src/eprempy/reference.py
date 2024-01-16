@@ -5,7 +5,7 @@ Metadata for EPREM objects.
 import typing
 
 from . import aliased
-from . import dataset
+from . import datafile
 from . import metric
 
 
@@ -182,9 +182,9 @@ class Subset(typing.NamedTuple):
 
 
 _SUBSETS = {
-    'arrays': dataset.ARRAYS,
-    'scalars': dataset.SCALARS,
-    'axes': dataset.AXES,
+    'arrays': datafile.ARRAYS,
+    'scalars': datafile.SCALARS,
+    'axes': datafile.AXES,
     'observables': tuple(_metadata),
 }
 

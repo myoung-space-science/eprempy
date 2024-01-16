@@ -10,7 +10,7 @@ from scipy.interpolate import interp1d
 
 from .. import aliased
 from .. import container
-from .. import dataset
+from .. import datafile
 from .. import etc
 from .. import measured
 from .. import metric
@@ -269,7 +269,7 @@ class Arguments(aliased.Mapping):
         return self._mu
 
     def __str__(self) -> str:
-        parts = [f"{k}: {getattr(self, k)}" for k in dataset.AXES]
+        parts = [f"{k}: {getattr(self, k)}" for k in datafile.AXES]
         if s := super().__str__():
             parts.append(s)
         return ', '.join(parts)
@@ -285,8 +285,8 @@ class Context:
     def __init__(
         self,
         operator: typing.Callable[[Arguments], physical.Array],
-        axes: dataset.Axes,
-        grid: dataset.Grid,
+        axes: datafile.Axes,
+        grid: datafile.Grid,
     ) -> None:
         """Initialize this context."""
         self._operator = operator

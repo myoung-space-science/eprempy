@@ -3,7 +3,7 @@ import pathlib
 
 import pytest
 
-from eprempy import dataset
+from eprempy import datafile
 from eprempy import metric
 from eprempy import observable
 from eprempy import physical
@@ -55,7 +55,7 @@ class Wrapper:
 
     def _check(self, name: str, source: pathlib.Path, config: pathlib.Path):
         expected = self.observables[name]
-        dataview = dataset.view(source)
+        dataview = datafile.view(source)
         dimensions = list(expected['dimensions'])
         sizes = [
             dataview.axes[k].size for k in dimensions
