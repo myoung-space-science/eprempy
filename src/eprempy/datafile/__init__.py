@@ -1,5 +1,5 @@
 """
-Support for reading data and metadata from EPREM output.
+Support for reading data and metadata from EPREM observer files.
 """
 
 import typing
