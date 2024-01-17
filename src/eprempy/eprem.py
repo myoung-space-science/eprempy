@@ -27,11 +27,8 @@ __all__ = [
 class Observer(collections.abc.Mapping):
     """A generic EPREM observer.
 
-    An instance of this class provides interfaces to observable array-like
-    quantities via its `observables` property, and to simulation parameter
-    values via its `parameters` property. It also implements a mapping-style
-    interface to all observable quantities and simulation parameters as a flat
-    collection.
+    An instance of this class provides an interface to observable array-like
+    quantities via a mapping-style interface.
     """
 
     def __init__(
