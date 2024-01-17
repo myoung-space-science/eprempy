@@ -154,7 +154,8 @@ def observer(
 ) -> Observer:
     """Create an interface to an EPREM observer."""
     dataview = datafile.view(source)
-    observables = observable.quantities(source, config, system=system)
+    confpath = _build_config_path(dataview.source.parent, config=config)
+    observables = observable.quantities(source, confpath, system=system)
     return Observer(dataview, observables)
 
 
