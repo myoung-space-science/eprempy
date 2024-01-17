@@ -21,14 +21,9 @@ from ._array import (
 
 __all__ = [
     'Array',
-    'Container',
-    'Context',
-    'Object',
-    'Quantity',
     'ValueType',
     'Variable',
     'array',
-    'operators',
 ]
 
 

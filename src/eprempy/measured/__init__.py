@@ -25,7 +25,6 @@ __all__ = [
     'Interface',
     'Object',
     'Object',
-    'InterfaceType',
     'ObjectT',
     'Sequence',
     'Type',
