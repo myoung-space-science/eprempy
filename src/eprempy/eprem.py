@@ -240,7 +240,7 @@ class Dataset:
         """Create a new general observer interface."""
         dataview = datafile.view(source=path)
         observables = observable.quantities(
-            source=self.directory,
+            source=path,
             config=self.config.source,
             system=self.system,
         )
