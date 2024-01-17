@@ -4,6 +4,11 @@
 
 ## NEXT
 
+- Create `eprem.Dataset`: interface to a complete set of simulation output
+- Refactor observer interfaces
+- Add test to keep `import *` up-to-date
+- Rename `dataset` namespace to `datafile`
+
 ## v0.2.0 (2023-12-20)
 
 - Fix bugs in `physical.Array` plotting
