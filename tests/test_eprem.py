@@ -20,13 +20,15 @@ from eprempy import (
 # - physical assumptions have correct unit
 
 
-def test_create_dataset(datadir: pathlib.Path):
+def test_create_dataset(datadir: pathlib.Path, datasets: dict):
     """Create an interface to a complete dataset."""
-    source = datadir / 'isotropic-shock-with-flux'
-    dataset = eprem.dataset(source, config='eprem.cfg')
-    assert isinstance(dataset, eprem.Dataset)
-    assert dataset.directory == source
-    assert dataset.system == 'mks'
+    for name in datasets:
+        for system in ('mks', 'cgs'):
+            source = datadir / name
+            dataset = eprem.dataset(source, config='eprem.cfg', system=system)
+            assert isinstance(dataset, eprem.Dataset)
+            assert dataset.directory == source
+            assert dataset.system == system
 
 
 def test_symbolic_species(datadir: pathlib.Path):
