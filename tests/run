@@ -22,7 +22,6 @@ all=(
     test_datafile
     test_quantity
     test_observable.py
-    test_observer.py
     test_eprem.py
     test_import_all.py
 )

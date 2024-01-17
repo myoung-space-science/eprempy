@@ -3,12 +3,15 @@ Tests of the top-level API.
 """
 
 import pathlib
+import typing
 
 import numpy
 import pytest
 
 from eprempy import (
     eprem,
+    physical,
+    reference,
     Array,
     Observable,
 )
@@ -18,6 +21,62 @@ from eprempy import (
 # - interpolation
 # - access arbitrary parameter
 # - physical assumptions have correct unit
+
+
+UNOBSERVABLE = {'shell', 'shells', 'phiOffset'}
+"""Quantities that tests should not try to observe."""
+
+
+@pytest.fixture
+def streams(datadir: pathlib.Path) -> typing.Dict[str, eprem.Observer]:
+    """A collection of testable observer interfaces."""
+    basedirs = {'isotropic-shock-with-dist', 'isotropic-shock-with-flux'}
+    observers = {}
+    for basedir in basedirs:
+        source = datadir / basedir
+        observers[source] = eprem.stream(0, 'eprem.cfg', source)
+    return observers
+
+
+def test_observer_mapping(streams: typing.Dict[str, eprem.Observer]):
+    """Test the ability to access observable quantities."""
+    names = set(reference.ARRAYS.names) - UNOBSERVABLE
+    for stream in streams.values():
+        for name in names:
+            assert isinstance(stream[name], Observable)
+    observables = reference.OBSERVABLES.names.values(aliased=True)
+    names = set(observables) - UNOBSERVABLE
+    for stream in streams.values():
+        for name in names:
+            aliases = reference.OBSERVABLES.aliases[name]
+            for alias in aliases:
+                assert stream[name] == stream[alias]
+
+
+def test_observer_axes(streams: typing.Dict[str, eprem.Observer]):
+    """Test the observer axis-based properties."""
+    for stream in streams.values():
+        assert isinstance(stream.times, physical.Coordinates)
+        assert numpy.array_equal(stream.times.data, stream['time'])
+        assert isinstance(stream.shells, physical.Points)
+        shells = numpy.arange(len(stream.shells))
+        assert numpy.array_equal(stream.shells.data, shells)
+        assert isinstance(stream.species, physical.Symbols)
+        assert list(stream.species) == ['H+']
+        assert isinstance(stream.energies, physical.Coordinates)
+        assert numpy.array_equal(stream.energies.data, stream['energy'])
+        assert isinstance(stream.mus, physical.Coordinates)
+        assert numpy.array_equal(stream.mus.data, stream['mu'])
+
+
+def test_observer_hash(datadir: pathlib.Path):
+    """Test the ability to hash an observer."""
+    basedirs = {'isotropic-shock-with-dist', 'isotropic-shock-with-flux'}
+    for basedir in basedirs:
+        source = datadir / basedir
+        for n in (0, 4):
+            stream = eprem.stream(n, 'eprem.cfg', source)
+            assert hash(stream)
 
 
 def test_create_dataset(datadir: pathlib.Path, datasets: dict):
