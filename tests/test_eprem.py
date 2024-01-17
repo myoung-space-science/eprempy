@@ -20,6 +20,15 @@ from eprempy import (
 # - physical assumptions have correct unit
 
 
+def test_create_dataset(datadir: pathlib.Path):
+    """Create an interface to a complete dataset."""
+    source = datadir / 'isotropic-shock-with-flux'
+    dataset = eprem.dataset(source, config='eprem.cfg')
+    assert isinstance(dataset, eprem.Dataset)
+    assert dataset.directory == source
+    assert dataset.system == 'mks'
+
+
 def test_symbolic_species(datadir: pathlib.Path):
     """Subscript the species axis with a valid chemical symbol."""
     source = datadir / 'isotropic-shock-with-flux'
