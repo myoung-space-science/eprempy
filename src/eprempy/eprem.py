@@ -58,11 +58,11 @@ class Observer(collections.abc.Mapping):
 
     def __len__(self) -> int:
         """Called for len(self)."""
-        return len(self.observables)
+        return len(self._observables)
 
     def __iter__(self):
         """Called for iter(self)."""
-        return iter(tuple(self.observables))
+        return iter(tuple(self._observables))
 
     def __getitem__(self, key: str, /):
         """Retrieve the named quantity, if possible."""
@@ -124,13 +124,8 @@ class Observer(collections.abc.Mapping):
     def system(self):
         """This observer's metric system."""
         if self._system is None:
-            self._system = self.observables.system
+            self._system = self._observables.system
         return self._system
-
-    @property
-    def observables(self):
-        """An interface to observable array-like quantities."""
-        return self._observables
 
     @property
     def dataview(self):
