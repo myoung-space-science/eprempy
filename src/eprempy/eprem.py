@@ -3,7 +3,9 @@ EPREM observer interfaces.
 """
 
 import collections.abc
+import contextlib
 import pathlib
+import typing
 
 from . import datafile
 from . import etc
@@ -11,17 +13,9 @@ from . import metric
 from . import observable
 from . import parameter
 from . import paths
-from .observer import (
-    Stream,
-    Point,
-    stream_factory as stream,
-    point_factory as point,
-)
 
 
 __all__ = [
-    "Stream",
-    "Point",
     "stream",
     "point",
     "observer",
@@ -147,6 +141,77 @@ class Observer(collections.abc.Mapping):
         return self._dataview
 
 
+def stream(
+    __id: int,
+    config: paths.PathLike=None,
+    source: paths.PathLike=None,
+    system: str=None,
+) -> Observer:
+    """Create an interface to a stream-observer file."""
+    patterns = (f'{prefix}{__id:06}.*' for prefix in {'obs', 'flux'})
+    return _create_observer(patterns, config, source, system)
+
+
+def point(
+    __id: typing.Union[str, int],
+    config: paths.PathLike=None,
+    source: paths.PathLike=None,
+    system: str=None,
+) -> Observer:
+    """Create an interface to a point-observer file."""
+    patterns = []
+    if not isinstance(__id, (int, str)):
+        raise TypeError(
+            f"Cannot create point observer from ID type {type(__id)}"
+        ) from None
+    with contextlib.suppress(ValueError):
+        patterns.append(f'p_obs{int(__id):03}.*')
+    if isinstance(__id, str):
+        patterns.append(f'{__id}.*')
+    return _create_observer(tuple(patterns), config, source, system)
+
+
+def observer(
+    __id: typing.Union[str, int],
+    config: paths.PathLike=None,
+    source: paths.PathLike=None,
+    system: str=None,
+) -> Observer:
+    """Create an interface to an arbitrary observer file."""
+    if not isinstance(__id, (int, str)):
+        raise TypeError(
+            f"Cannot create observer from ID type {type(__id)}"
+        ) from None
+    if isinstance(__id, int):
+        patterns = (f'{prefix}{__id:06}.*' for prefix in {'obs', 'flux'})
+        return _create_observer(patterns, config, source, system)
+    patterns = []
+    with contextlib.suppress(ValueError):
+        patterns.append(f'p_obs{int(__id):03}.*')
+    if isinstance(__id, str):
+        patterns.append(f'{__id}.*')
+    return _create_observer(tuple(patterns), config, source, system)
+
+
+def _create_observer(
+    patterns: typing.Iterable[str],
+    config: paths.PathLike=None,
+    source: paths.PathLike=None,
+    system: str=None,
+) -> Observer:
+    """Internal factory for observer interfaces."""
+    directory = paths.fullpath(source or '.', strict=True)
+    if not directory.is_dir():
+        raise SourcePathError(
+            f"Source path {source} is not a directory"
+        ) from None
+    datapath = _build_datapath(patterns, directory)
+    confpath = _build_confpath(directory, config)
+    dataview = datafile.view(datapath)
+    observables = observable.quantities(datapath, confpath, system)
+    return Observer(dataview, observables)
+
+
 class Dataset:
     """An interface to a complete EPREM dataset."""
 
@@ -229,13 +294,36 @@ def dataset(
 ) -> Dataset:
     """Create an EPREM dataset interface."""
     directory = paths.fullpath(source, strict=True)
-    confpath = _build_config_path(directory, config=config)
+    confpath = _build_confpath(directory, config=config)
     return Dataset(
         directory,
         config=parameter.configfile(confpath),
         parameters=parameter.interface(confpath),
         system=metric.system(system or 'mks'),
     )
+
+
+class SourcePathError(Exception):
+    """Error while creating path to observer data."""
+
+
+def _build_datapath(
+    patterns: typing.Iterable[str],
+    directory: pathlib.Path,
+) -> pathlib.Path:
+    """Create the full path to an observer's data file, if possible."""
+    for pattern in patterns:
+        filenames = list(directory.glob(pattern))
+        if len(filenames) == 1:
+            return paths.fullpath(directory / filenames[0], strict=True)
+        if len(filenames) > 1:
+            raise SourcePathError(
+                f"Cannot determine unique data path within {directory}"
+                f" from {pattern!r}"
+            ) from None
+    raise SourcePathError(
+        f"Cannot locate observer data within {directory}"
+    ) from None
 
 
 _CONFIG_NAMES = (
@@ -245,7 +333,7 @@ _CONFIG_NAMES = (
     '*.in',
 )
 
-def _build_config_path(
+def _build_confpath(
     directory: pathlib.Path,
     config: paths.PathLike=None,
 ) -> pathlib.Path:

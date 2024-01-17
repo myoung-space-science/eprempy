@@ -92,13 +92,6 @@ def test_observable_algebra(datadir: pathlib.Path):
     assert isinstance(combined, Observable)
     assert combined.unit == ur_utheta.unit * mfp_sqr.unit
     assert combined.dimensions == mfp.dimensions | ur_utheta.dimensions
-    lambda0 = stream['lambda0']
-    with pytest.raises(TypeError):
-        mfp / lambda0
-    mfp_l0 = mfp[:] / lambda0
-    assert isinstance(mfp_l0, Array)
-    assert mfp_l0.unit == mfp.unit / lambda0.unit
-    assert mfp_l0.dimensions == mfp.dimensions
 
 
 def test_symbolic_observable(datadir: pathlib.Path):
