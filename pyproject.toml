@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "eprempy"
-version = "0.2.0"
+version = "0.3.0"
 description = "Tools for working with EPREM simulation runs"
 authors = ["Matt Young"]
 license = "BSD 3-Clause"
