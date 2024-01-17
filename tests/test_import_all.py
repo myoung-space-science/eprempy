@@ -3,13 +3,12 @@ This module exists to make sure each `__all__` is up to date.
 """
 
 from eprempy.base import *
-from eprempy.dataset import *
+from eprempy.datafile import *
 from eprempy.measurable import *
 from eprempy.measured import *
 from eprempy.metric import *
 from eprempy.numeric import *
 from eprempy.observable import *
-from eprempy.observer import *
 from eprempy.parameter import *
 from eprempy.physical import *
 from eprempy.quantity import *
