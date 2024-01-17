@@ -24,6 +24,7 @@ all=(
     test_observable.py
     test_observer.py
     test_api.py
+    test_import_all.py
 )
 
 i=0
