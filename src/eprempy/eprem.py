@@ -147,18 +147,6 @@ class Observer(collections.abc.Mapping):
         return self._dataview
 
 
-def observer(
-    config: paths.PathLike=None,
-    source: paths.PathLike=None,
-    system: str=None,
-) -> Observer:
-    """Create an interface to an EPREM observer."""
-    dataview = datafile.view(source)
-    confpath = _build_config_path(dataview.source.parent, config=config)
-    observables = observable.quantities(source, confpath, system=system)
-    return Observer(dataview, observables)
-
-
 class Dataset:
     """An interface to a complete EPREM dataset."""
 
@@ -179,10 +167,6 @@ class Dataset:
     def observers(self):
         """A mapping of available observer files."""
         if self._observers is None:
-            common = {
-                'config': self.config.source,
-                'system': self.system,
-            }
             prefixes = ('obs', 'flux', 'p_obs')
             obspaths = [
                 path
@@ -190,10 +174,20 @@ class Dataset:
                 for path in self.directory.glob(f"{prefix}*")
             ]
             self._observers = {
-                _get_observer_id(path): observer(source=path, **common)
+                _get_observer_id(path): self._new_observer(path)
                 for path in obspaths
             }
         return self._observers
+
+    def _new_observer(self, path: pathlib.Path):
+        """Create a new general observer interface."""
+        dataview = datafile.view(source=path)
+        observables = observable.quantities(
+            source=self.directory,
+            config=self.config.source,
+            system=self.system,
+        )
+        return Observer(dataview, observables)
 
     @property
     def directory(self):
