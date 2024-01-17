@@ -213,11 +213,12 @@ class Dataset:
 def _get_observer_id(path: pathlib.Path):
     """Compute the appropriate observer ID for the given path."""
     stem = path.stem
-    for prefix in ('obs', 'flux'):
+    for prefix in ('obs', 'flux', 'p_obs'):
         if stem.startswith(prefix):
-            return int(stem.lstrip(prefix))
-    if stem.startswith('p_obs'):
-        return stem.lstrip('p_obs')
+            key = stem.lstrip(prefix)
+            if prefix in {'obs', 'flux'}:
+                return int(key)
+            return key
     raise ValueError(path)
 
 
