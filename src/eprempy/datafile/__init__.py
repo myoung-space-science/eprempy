@@ -19,6 +19,7 @@ from ._reference import (
 )
 from ._viewers import (
     HINTS,
+    VIEWERS,
     View,
     view_factory as view,
 )
@@ -41,6 +42,7 @@ __all__ = [
     'SCALARS',
     'AXES',
     'HINTS',
+    'VIEWERS',
     'Array',
     'Scalar',
     'Axis',
