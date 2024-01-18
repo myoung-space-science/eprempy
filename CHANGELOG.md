@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Fix bugs in dataset and observer interfaces
+
 ## v0.3.0 (2024-01-17)
 
 - Create `eprem.Dataset`: interface to a complete set of simulation output
