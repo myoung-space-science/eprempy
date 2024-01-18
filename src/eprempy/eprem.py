@@ -13,6 +13,7 @@ from . import metric
 from . import observable
 from . import parameter
 from . import paths
+from . import physical
 
 
 __all__ = [
@@ -73,35 +74,35 @@ class Observer(collections.abc.Mapping):
         ) from None
 
     @property
-    def times(self):
+    def times(self) -> physical.Coordinates:
         """This observer's time coordinates."""
         if self._times is None:
             self._times = self._get_axis('time')
         return self._times
 
     @property
-    def shells(self):
+    def shells(self) -> physical.Points:
         """This observer's shell numbers."""
         if self._shells is None:
             self._shells = self._get_axis('shell')
         return self._shells
 
     @property
-    def species(self):
+    def species(self) -> physical.Symbols:
         """This observer's species symbols."""
         if self._species is None:
             self._species = self._get_axis('species')
         return self._species
 
     @property
-    def energies(self):
+    def energies(self) -> physical.Coordinates:
         """This observer's energy coordinates."""
         if self._energies is None:
             self._energies = self._get_axis('energy')
         return self._energies
 
     @property
-    def mus(self):
+    def mus(self) -> physical.Coordinates:
         """This observer's mu coordinates."""
         if self._mus is None:
             self._mus = self._get_axis('mu')
