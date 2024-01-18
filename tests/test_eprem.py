@@ -81,13 +81,20 @@ def test_observer_hash(datadir: pathlib.Path):
 
 def test_create_dataset(datadir: pathlib.Path, datasets: dict):
     """Create an interface to a complete dataset."""
-    for name in datasets:
+    observables = reference.OBSERVABLES.names.values(aliased=True)
+    names = set(observables) - UNOBSERVABLE
+    for filename in datasets:
         for system in ('mks', 'cgs'):
-            source = datadir / name
+            source = datadir / filename
             dataset = eprem.dataset(source, config='eprem.cfg', system=system)
             assert isinstance(dataset, eprem.Dataset)
             assert dataset.directory == source
             assert dataset.system == system
+            for observer in dataset.observers.values():
+                for name in names:
+                    aliases = reference.OBSERVABLES.aliases[name]
+                    for alias in aliases:
+                        assert observer[name] == observer[alias]
 
 
 def test_symbolic_species(datadir: pathlib.Path):
