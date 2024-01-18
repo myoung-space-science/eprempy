@@ -230,6 +230,7 @@ class Dataset:
                 path
                 for prefix in prefixes
                 for path in self.directory.glob(f"{prefix}*")
+                if path.suffix in datafile.VIEWERS
             ]
             self._observers = {
                 _get_observer_id(path): self._new_observer(path)
