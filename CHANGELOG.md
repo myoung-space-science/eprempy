@@ -4,6 +4,13 @@
 
 ## NEXT
 
+- Define `eprem.Stream` and `eprem.Point` subclasses of `eprem.Observer`
+- Define `streams` and `points` properties of `eprem.Dataset`
+- Skip non-data type files when creating `eprem.Dataset` observer properties
+- Force test-runner script to stop on first error and support pass-through arguments
+- Expand observer tests
+- Update test fixtures
+
 ## v0.3.1 (2024-01-17)
 
 - Fix bugs in dataset and observer interfaces
