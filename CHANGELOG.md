@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.3.1 (2024-01-17)
+
 - Fix bugs in dataset and observer interfaces
 
 ## v0.3.0 (2024-01-17)
