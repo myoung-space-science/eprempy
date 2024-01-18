@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.3.2 (2024-01-18)
+
 - Define `eprem.Stream` and `eprem.Point` subclasses of `eprem.Observer`
 - Define `streams` and `points` properties of `eprem.Dataset`
 - Skip non-data type files when creating `eprem.Dataset` observer properties
