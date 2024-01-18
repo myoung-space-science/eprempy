@@ -66,7 +66,7 @@ class NetCDFViewer(Viewer):
 
     def __init__(self, source: pathlib.Path) -> None:
         super().__init__(source)
-        datafile = netCDF4.dataset(self.source, 'r')
+        datafile = netCDF4.Dataset(self.source, 'r')
         self._variables = getattr(datafile, 'variables')
         self._dimensions = getattr(datafile, 'dimensions')
 
