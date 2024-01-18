@@ -18,7 +18,9 @@ from . import physical
 
 __all__ = [
     "stream",
+    "Stream",
     "point",
+    "Point",
     "observer",
     "Observer",
 ]
@@ -44,7 +46,6 @@ class Observer(collections.abc.Mapping):
         self._sizes = None
         self._axes = None
         self._times = None
-        self._shells = None
         self._species = None
         self._energies = None
         self._mus = None
@@ -79,13 +80,6 @@ class Observer(collections.abc.Mapping):
         if self._times is None:
             self._times = self._get_axis('time')
         return self._times
-
-    @property
-    def shells(self) -> physical.Points:
-        """This observer's shell numbers."""
-        if self._shells is None:
-            self._shells = self._get_axis('shell')
-        return self._shells
 
     @property
     def species(self) -> physical.Symbols:
@@ -134,34 +128,104 @@ class Observer(collections.abc.Mapping):
         return self._dataview
 
 
-def stream(
+ObserverType = typing.TypeVar('ObserverType', bound=Observer)
+
+
+@etc.autostr
+class Stream(Observer):
+    """An EPREM stream observer."""
+
+    @classmethod
+    def patterns(cls, __id: int) -> typing.List[str]:
+        """Generate stream-observer filename patterns for the given ID."""
+        if not isinstance(__id, int):
+            raise TypeError(
+                f"Cannot create stream observer from ID type {type(__id)}"
+            ) from None
+        return [f'{prefix}{__id:06}.*' for prefix in {'obs', 'flux'}]
+
+    def __init__(
+        self,
+        dataview: datafile.View,
+        observables: observable.Quantities,
+    ) -> None:
+        super().__init__(dataview, observables)
+        self._shells = None
+
+    @property
+    def shells(self) -> physical.Points:
+        """This observer's shell numbers."""
+        if self._shells is None:
+            self._shells = self._get_axis('shell')
+        return self._shells
+
+
+@etc.autostr
+class Point(Observer):
+    """An EPREM point observer."""
+
+    @classmethod
+    def patterns(cls, __id: typing.Union[str, int]) -> typing.List[str]:
+        """Generate point-observer filename patterns for the given ID."""
+        patterns = []
+        if not isinstance(__id, (int, str)):
+            raise TypeError(
+                f"Cannot create point observer from ID type {type(__id)}"
+            ) from None
+        with contextlib.suppress(ValueError):
+            patterns.append(f'p_obs{int(__id):03}.*')
+        if isinstance(__id, str):
+            patterns.append(f'{__id}.*')
+        return patterns
+
+    def __init__(
+        self,
+        dataview: datafile.View,
+        observables: observable.Quantities,
+    ) -> None:
+        super().__init__(dataview, observables)
+        self._r = None
+        self._theta = None
+        self._phi = None
+
+    @property
+    def r(self):
+        """The radial coordinate(s) of this observer."""
+        if self._r is None:
+            self._r = self._observables.parameters['obsR']
+        return self._r
+
+    @property
+    def theta(self):
+        """The polar coordinate(s) of this observer."""
+        if self._theta is None:
+            self._theta = self._observables.parameters['obsTheta']
+        return self._theta
+
+    @property
+    def phi(self):
+        """The azimuthal coordinate(s) of this observer."""
+        if self._phi is None:
+            self._phi = self._observables.parameters['obsPhi']
+        return self._phi
+
+
+@typing.overload
+def observer(
     __id: int,
     config: paths.PathLike=None,
     source: paths.PathLike=None,
     system: str=None,
-) -> Observer:
-    """Create an interface to a stream-observer file."""
-    patterns = (f'{prefix}{__id:06}.*' for prefix in {'obs', 'flux'})
-    return _create_observer(patterns, config, source, system)
+) -> Stream: ...
 
 
-def point(
-    __id: typing.Union[str, int],
+@typing.overload
+def observer(
+    __id: str,
     config: paths.PathLike=None,
     source: paths.PathLike=None,
     system: str=None,
-) -> Observer:
-    """Create an interface to a point-observer file."""
-    patterns = []
-    if not isinstance(__id, (int, str)):
-        raise TypeError(
-            f"Cannot create point observer from ID type {type(__id)}"
-        ) from None
-    with contextlib.suppress(ValueError):
-        patterns.append(f'p_obs{int(__id):03}.*')
-    if isinstance(__id, str):
-        patterns.append(f'{__id}.*')
-    return _create_observer(tuple(patterns), config, source, system)
+) -> Point: ...
 
 
 def observer(
@@ -169,7 +233,7 @@ def observer(
     config: paths.PathLike=None,
     source: paths.PathLike=None,
     system: str=None,
-) -> Observer:
+) -> typing.Union[Stream, Point]:
     """Create an interface to an arbitrary observer file."""
     if not isinstance(__id, (int, str)):
         raise TypeError(
@@ -177,21 +241,44 @@ def observer(
         ) from None
     if isinstance(__id, int):
         patterns = (f'{prefix}{__id:06}.*' for prefix in {'obs', 'flux'})
-        return _create_observer(patterns, config, source, system)
+        return _create_observer(Stream, patterns, config, source, system)
     patterns = []
     with contextlib.suppress(ValueError):
         patterns.append(f'p_obs{int(__id):03}.*')
     if isinstance(__id, str):
         patterns.append(f'{__id}.*')
-    return _create_observer(tuple(patterns), config, source, system)
+    return _create_observer(Point, tuple(patterns), config, source, system)
+
+
+def stream(
+    __id: int,
+    config: paths.PathLike=None,
+    source: paths.PathLike=None,
+    system: str=None,
+) -> Stream:
+    """Create an interface to a stream-observer file."""
+    patterns = Stream.patterns(__id)
+    return _create_observer(Stream, patterns, config, source, system)
+
+
+def point(
+    __id: typing.Union[str, int],
+    config: paths.PathLike=None,
+    source: paths.PathLike=None,
+    system: str=None,
+) -> Point:
+    """Create an interface to a point-observer file."""
+    patterns = Point.patterns(__id)
+    return _create_observer(Point, patterns, config, source, system)
 
 
 def _create_observer(
+    __type: typing.Type[ObserverType],
     patterns: typing.Iterable[str],
     config: paths.PathLike=None,
     source: paths.PathLike=None,
     system: str=None,
-) -> Observer:
+) -> ObserverType:
     """Internal factory for observer interfaces."""
     directory = paths.fullpath(source or '.', strict=True)
     if not directory.is_dir():
@@ -202,7 +289,7 @@ def _create_observer(
     confpath = _build_confpath(directory, config)
     dataview = datafile.view(datapath)
     observables = observable.quantities(datapath, confpath, system)
-    return Observer(dataview, observables)
+    return __type(dataview, observables)
 
 
 class Dataset:
@@ -220,25 +307,55 @@ class Dataset:
         self._config = config
         self._system = system
         self._observers = None
+        self._streams = None
+        self._points = None
 
     @property
     def observers(self):
         """A mapping of available observer files."""
         if self._observers is None:
-            prefixes = ('obs', 'flux', 'p_obs')
+            self._observers = {**self.streams, **self.points}
+        return self._observers
+
+    @property
+    def streams(self):
+        """A mapping of available stream-observer interfaces."""
+        if self._streams is None:
+            prefixes = {'obs', 'flux'}
             obspaths = [
                 path
                 for prefix in prefixes
                 for path in self.directory.glob(f"{prefix}*")
                 if path.suffix in datafile.VIEWERS
             ]
-            self._observers = {
-                _get_observer_id(path): self._new_observer(path)
+            self._streams = {
+                _get_observer_id(path): self._new_observer(path, Stream)
                 for path in obspaths
             }
-        return self._observers
+        return self._streams
 
-    def _new_observer(self, path: pathlib.Path):
+    @property
+    def points(self):
+        """A mapping of available point-observer interfaces."""
+        if self._points is None:
+            prefixes = {'p_obs'}
+            obspaths = [
+                path
+                for prefix in prefixes
+                for path in self.directory.glob(f"{prefix}*")
+                if path.suffix in datafile.VIEWERS
+            ]
+            self._points = {
+                _get_observer_id(path): self._new_observer(path, Point)
+                for path in obspaths
+            }
+        return self._points
+
+    def _new_observer(
+        self,
+        path: pathlib.Path,
+        obstype: typing.Type[ObserverType]=Observer,
+    ) -> ObserverType:
         """Create a new general observer interface."""
         dataview = datafile.view(source=path)
         observables = observable.quantities(
@@ -246,7 +363,7 @@ class Dataset:
             config=self.config.source,
             system=self.system,
         )
-        return Observer(dataview, observables)
+        return obstype(dataview, observables)
 
     @property
     def directory(self):
@@ -349,5 +466,4 @@ def _build_confpath(
     raise ValueError(
         f"Cannot determine path to config file from {config!r}"
     ) from None
-
 
