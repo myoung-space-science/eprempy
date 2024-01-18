@@ -26,10 +26,12 @@ all=(
     test_import_all.py
 )
 
+set -e
+
 i=0
 for tests in ${all[@]}; do
     echo "$i: ${tests}"
     i=$((i+1))
-    pytest ${tests}
+    pytest -x ${tests} "${@}"
 done
 
