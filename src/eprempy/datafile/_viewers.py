@@ -147,8 +147,8 @@ class View(metaclass=paths.PathSet):
     """A format-agnostic view of a datafile.
 
     An instance of this class provides access to variables and axes defined in a
-    specific datafile, given a path to that datafile. It is designed to provide a
-    single interface, regardless of file type, with as little overhead as
+    specific datafile, given a path to that datafile. It is designed to provide
+    a single interface, regardless of file type, with as little overhead as
     possible. Therefore, it does not attempt to modify attributes (e.g.,
     converting variable units), since doing so could result in reading a
     potentially large array from disk.
@@ -259,7 +259,7 @@ class View(metaclass=paths.PathSet):
 
     @property
     def source(self):
-        """The datafile source."""
+        """The file containing output data."""
         return self._source
 
 
