@@ -1,3 +1,10 @@
+"""
+Tools for viewing the contents of an EPREM datafile.
+
+For the purposes of this package, a datafile is a file containing simulation
+output for a single observer. Each EPREM dataset contains multiple datafiles.
+"""
+
 import abc
 import pathlib
 import typing
@@ -27,41 +34,41 @@ from ._reference import (
 T = typing.TypeVar('T')
 
 class Viewer(abc.ABC):
-    """An abstract base class for dataset viewers."""
+    """An abstract base class for datafile viewers."""
 
     def __init__(self, source: pathlib.Path) -> None:
         self._source = source
 
     @abc.abstractmethod
     def get_array(self, name: str) -> Array:
-        """Get the named array-like object from this dataset."""
+        """Get the named array-like object from this datafile."""
 
     @abc.abstractmethod
     def get_scalar(self, name: str) -> Scalar:
-        """Get the named scalar object from this dataset."""
+        """Get the named scalar object from this datafile."""
 
     @abc.abstractmethod
     def get_axis(self, name: str) -> Axis:
-        """Get the named array axis from this dataset."""
+        """Get the named array axis from this datafile."""
 
     @abc.abstractmethod
     def get_unit(self, name: str) -> str:
-        """Get the unit for the named dataset object."""
+        """Get the unit for the named datafile object."""
 
     @property
     def source(self):
-        """This dataset's source."""
+        """This datafile's source."""
         return self._source
 
 
 class NetCDFViewer(Viewer):
-    """A viewer for NetCDF datasets."""
+    """A viewer for NetCDF datafiles."""
 
     def __init__(self, source: pathlib.Path) -> None:
         super().__init__(source)
-        dataset = netCDF4.Dataset(self.source, 'r')
-        self._variables = getattr(dataset, 'variables')
-        self._dimensions = getattr(dataset, 'dimensions')
+        datafile = netCDF4.datafile(self.source, 'r')
+        self._variables = getattr(datafile, 'variables')
+        self._dimensions = getattr(datafile, 'dimensions')
 
     def get_array(self, name: str):
         data = self._get_variable(name)
@@ -89,7 +96,7 @@ class NetCDFViewer(Viewer):
         except KeyError as err:
             raise KeyError(
                 f"No dimension named {name!r}"
-                f" in the dataset at {self.source}"
+                f" in the datafile at {self.source}"
             ) from err
         size = getattr(data, 'size', None)
         return axis_factory(size=size)
@@ -99,22 +106,22 @@ class NetCDFViewer(Viewer):
         return self._get_unit_from_data(data)
 
     def _get_variable(self, name: str):
-        """Helper for retrieving dataset variables by name."""
+        """Helper for retrieving datafile variables by name."""
         try:
             data = self._variables[name]
         except KeyError as err:
             raise KeyError(
                 f"No variable named {name!r}"
-                f" in the dataset at {self.source}"
+                f" in the datafile at {self.source}"
             ) from err
         return data
 
     def _get_dimensions_from_data(self, data):
-        """Compute appropriate variable dimensions from a dataset object."""
+        """Compute appropriate variable dimensions from a datafile object."""
         return tuple(getattr(data, 'dimensions', ()))
 
     def _get_unit_from_data(self, data):
-        """Compute appropriate variable units from a dataset object."""
+        """Compute appropriate variable units from a datafile object."""
         available = (
             getattr(data, attr) for attr in ('unit', 'units')
             if hasattr(data, attr)
@@ -125,22 +132,22 @@ class NetCDFViewer(Viewer):
 HINTS = {
     '.nc': ['netcdf', 'NetCDF', 'NETCDF'],
 }
-"""Non-suffix aliases for dataset file types."""
+"""Non-suffix aliases for datafile file types."""
 
 
 _viewers = {
     '.nc': NetCDFViewer,
 }
 VIEWERS = aliased.Mapping(_viewers, aliases=HINTS)
-"""The available dataset-viewing classes."""
+"""The available datafile-viewing classes."""
 
 
 @etc.autostr
 class View(metaclass=paths.PathSet):
-    """A format-agnostic view of a dataset.
+    """A format-agnostic view of a datafile.
 
     An instance of this class provides access to variables and axes defined in a
-    specific dataset, given a path to that dataset. It is designed to provide a
+    specific datafile, given a path to that datafile. It is designed to provide a
     single interface, regardless of file type, with as little overhead as
     possible. Therefore, it does not attempt to modify attributes (e.g.,
     converting variable units), since doing so could result in reading a
@@ -194,7 +201,7 @@ class View(metaclass=paths.PathSet):
 
     @property
     def units(self):
-        """The unit of each dataset quantity, if available."""
+        """The unit of each datafile quantity, if available."""
         if self._units is None:
             reference = list(ARRAYS) + list(SCALARS)
             self._units = self._map(self.viewer.get_unit, reference)
@@ -202,28 +209,28 @@ class View(metaclass=paths.PathSet):
 
     @property
     def arrays(self):
-        """The array-like quantities in this dataset."""
+        """The array-like quantities in this datafile."""
         if self._arrays is None:
             self._arrays = self._map(self.viewer.get_array, ARRAYS)
         return self._arrays
 
     @property
     def scalars(self):
-        """The scalar quantities in this dataset."""
+        """The scalar quantities in this datafile."""
         if self._scalars is None:
             self._scalars = self._map(self.viewer.get_scalar, SCALARS)
         return self._scalars
 
     @property
     def sizes(self):
-        """The length of each dataset dimension."""
+        """The length of each datafile dimension."""
         if self._sizes is None:
             self._sizes = {k: v.size for k, v in self.axes.items()}
         return self._sizes
 
     @property
     def axes(self):
-        """The array-axis quantities in this dataset."""
+        """The array-axis quantities in this datafile."""
         if self._axes is None:
             self._axes = self._map(self.viewer.get_axis, AXES)
         return self._axes
@@ -233,7 +240,7 @@ class View(metaclass=paths.PathSet):
         get: typing.Callable[[str], T],
         reference: typing.Iterable[str],
     ) -> typing.Dict[str, T]:
-        """Create a mapping of dataset attributes."""
+        """Create a mapping of datafile attributes."""
         guarded = exceptions.Wrapper(get)
         guarded.catch(KeyError)
         mapped = {k: guarded.compute(k) for k in reference}
@@ -241,7 +248,7 @@ class View(metaclass=paths.PathSet):
 
     @property
     def viewer(self) -> Viewer:
-        """The appropriate file viewer for this dataset."""
+        """The appropriate file viewer for this datafile."""
         if self._viewer is None:
             try:
                 viewer = VIEWERS[self.source.suffix]
@@ -252,7 +259,7 @@ class View(metaclass=paths.PathSet):
 
     @property
     def source(self):
-        """The dataset source."""
+        """The datafile source."""
         return self._source
 
 
@@ -261,12 +268,12 @@ def view_factory(
     *,
     hint: typing.Optional[str]=None,
 ) -> View:
-    """Create a format-agnostic view of an EPREM dataset.
+    """Create a format-agnostic view of an EPREM datafile.
 
     Parameters
     ----------
     source : string or `os.PathLike`
-        The path to the target dataset. The path must exist. This function will
+        The path to the target datafile. The path must exist. This function will
         convert `source` into a fully qualified `pathlib.Path`.
     hint : optional; keyword only
         A defined alias for the target file type. See Notes for further
@@ -274,8 +281,8 @@ def view_factory(
 
     Notes
     -----
-    - The dataset-viewing interface will attempt to determine the correct
-      file-type viewer for the target dataset based on the path suffix.
+    - The datafile-viewing interface will attempt to determine the correct
+      file-type viewer for the target datafile based on the path suffix.
       Providing a `hint` allows the interface to choose the appropriate viewer
       even in cases when the target file does not have the expected suffix.
     """
