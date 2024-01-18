@@ -28,8 +28,8 @@ UNOBSERVABLE = {'shell', 'shells', 'phiOffset'}
 
 
 @pytest.fixture
-def streams(datadir: pathlib.Path) -> typing.Dict[str, eprem.Observer]:
-    """A collection of testable observer interfaces."""
+def streams(datadir: pathlib.Path) -> typing.Dict[str, eprem.Stream]:
+    """A collection of testable stream-observer interfaces."""
     basedirs = {'isotropic-shock-with-dist', 'isotropic-shock-with-flux'}
     observers = {}
     for basedir in basedirs:
@@ -38,7 +38,18 @@ def streams(datadir: pathlib.Path) -> typing.Dict[str, eprem.Observer]:
     return observers
 
 
-def test_observer_mapping(streams: typing.Dict[str, eprem.Observer]):
+@pytest.fixture
+def points(datadir: pathlib.Path) -> typing.Dict[str, eprem.Stream]:
+    """A collection of testable point-observer interfaces."""
+    basedirs = {'isotropic-shock-with-dist', 'isotropic-shock-with-flux'}
+    observers = {}
+    for basedir in basedirs:
+        source = datadir / basedir
+        observers[source] = eprem.point('000', 'eprem.cfg', source)
+    return observers
+
+
+def test_observer_mapping(streams: typing.Dict[str, eprem.Stream]):
     """Test the ability to access observable quantities."""
     names = set(reference.ARRAYS.names) - UNOBSERVABLE
     for stream in streams.values():
@@ -53,7 +64,7 @@ def test_observer_mapping(streams: typing.Dict[str, eprem.Observer]):
                 assert stream[name] == stream[alias]
 
 
-def test_observer_axes(streams: typing.Dict[str, eprem.Observer]):
+def test_observer_axes(streams: typing.Dict[str, eprem.Stream]):
     """Test the observer axis-based properties."""
     for stream in streams.values():
         assert isinstance(stream.times, physical.Coordinates)
@@ -95,6 +106,10 @@ def test_create_dataset(datadir: pathlib.Path, datasets: dict):
                     aliases = reference.OBSERVABLES.aliases[name]
                     for alias in aliases:
                         assert observer[name] == observer[alias]
+            for stream in dataset.streams.values():
+                assert isinstance(stream, eprem.Stream)
+            for point in dataset.points.values():
+                assert isinstance(point, eprem.Point)
 
 
 def test_symbolic_species(datadir: pathlib.Path):
