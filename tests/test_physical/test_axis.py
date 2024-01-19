@@ -45,6 +45,7 @@ def test_symbols():
     assert numpy.all(singular.indices == numeric.index.sequence(1))
     for index, letter in enumerate(letters):
         assert symbols.index(letter) == numeric.index.value(index)
+        assert symbols.data[index] == letter
     errors = [
         ('A', ValueError),
         ('d', ValueError),
@@ -72,6 +73,7 @@ def test_coordinates():
     assert coordinates.unit == unit
     for index, value in enumerate(data):
         assert coordinates.index(value) == numeric.index.value(index)
+        assert coordinates.data[index] == measured.value(value, unit=unit)
     expected = numeric.index.sequence([0, 2])
     assert all(coordinates.index(-100.0, 150.0, 'cm') == expected)
     errors = [
