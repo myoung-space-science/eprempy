@@ -311,7 +311,7 @@ def _resolve_terms(terms: typing.List[symbolic.Term]):
     unmatched = terms.copy()
     for target in terms:
         if target not in matched:
-            if match := _match_terms(target, unmatched):
+            if match := _match_exponents(target, unmatched):
                 value, term = match
                 if term != target:
                     for this in (target, term):
@@ -325,12 +325,12 @@ def _resolve_terms(terms: typing.List[symbolic.Term]):
         return factor
 
 
-def _match_terms(
+def _match_exponents(
     target: symbolic.Term,
     terms: typing.Iterable[symbolic.Term],
 ) -> typing.Optional[typing.Union[float, symbolic.Term]]:
-    """Attempt to convert `target` to a term in `terms`.
-    
+    """Attempt to convert `target` to a term in `terms` by exponent.
+
     This function first checks whether `target` is a dimensionless reference
     unit and, if so, returns a conversion factor of 1.0 along with `target`. If
     that check fails, this function compares `target` to each term in `terms`
