@@ -11,6 +11,9 @@ C = metric._reference.C
 def conversions():
     """Test cases for unit conversions."""
     return {
+        # Slot for temporary cases to run first, for the sake of simplifying
+        # breakpoint debugging.
+        'priority': {},
         # Length (common and simple)
         'length': {
             # trivial conversion
@@ -44,6 +47,8 @@ def conversions():
             ('g * km / day', 'g * cm / s'): 1e5 / 86400,
             # undefined (reverse); non-system time unit
             ('g * cm / s', 'g * km / day'): 86400 / 1e5,
+            # equivalent expression with energy
+            ('J s', 'kg m^2 s^-1'): 1.0,
         },
         # Energy (has multiple defined conversions)
         'energy': {
@@ -67,6 +72,10 @@ def conversions():
             ('MeV', 'erg'): 1.6022e-6,
             # (same)
             ('erg', 'MeV'): 1 / 1.6022e-6,
+            # expansion
+            ('J', 'kg m^2 s^-2'): 1.0,
+            # chained conversion with expansion
+            ('MeV', 'kg m^2 s^-2'): 1.6022e-13,
         },
         # Energy density (requires building quantity from formula)
         'energy density': {
@@ -121,6 +130,21 @@ def conversions():
             (
                 'm^-2 sr^-1 s^-1 J^-1',
                 'cm^-2 sr^-1 s^-1 (MeV/nuc)^-1',
+            ): 1.6022e-17,
+            # particle flux: reduced energy term
+            (
+                'm^-4 sr^-1 s kg^-1',
+                'cm^-2 sr^-1 s^-1 J^-1',
+            ): 1e-4,
+            # particle flux: reduced energy term with 'nuc'
+            (
+                'm^-4 sr^-1 s kg^-1',
+                'cm^-2 sr^-1 s^-1 (MeV/nuc)^-1',
+            ): 1.6022e-17,
+            # particle fluence: (same)
+            (
+                's^2 kg^-1 sr^-1 m^-4',
+                'cm^-2 sr^-1 (MeV/nuc)^-1',
             ): 1.6022e-17,
             # pseudo-conversion: mass number -> mass (MKS)
             ('nuc', 'kg'): 1.6605e-27,
