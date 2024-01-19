@@ -2,6 +2,7 @@
 Internal support for unit conversions.
 """
 
+import numbers
 import typing
 
 from .. import etc
@@ -282,27 +283,68 @@ def _get_aliases_of(unit: str):
 
 def _convert_by_dimensions(terms: typing.List[symbolic.Term]):
     """Attempt to compute a conversion via unit dimensions."""
+    factor = 1.0
     decomposed = []
     for term in terms:
-        reduction = _defined.NamedUnit(term.base).reduce()
-        if reduction:
-            decomposed.extend(
-                [
-                    symbolic.term(
-                        coefficient=reduction.scale**term.exponent,
-                        base=this.base,
-                        exponent=term.exponent*this.exponent,
-                    )
-                    for this in reduction.units
-                ]
-            )
+        if decomposition := _decompose_unit(term):
+            scale, units = decomposition
+            decomposed.extend(units)
+            factor *= scale
     if symbolic.expression(decomposed) == '1':
-        return 1.0
-    return _resolve_terms(decomposed)
+        return factor
+    cancelled = _cancel_terms(decomposed)
+    reduced = _reduce_terms(cancelled)
+    if result := _resolve_terms(reduced):
+        return factor * result
+
+
+def _decompose_unit(term: symbolic.Term):
+    """Convert a unit into fundamental units, if possible."""
+    exponent = term.exponent
+    if reduction := _reduce_unit(term.base, exponent):
+        return 1.0, reduction
+    for system in _reference.SYSTEMS:
+        norm = _defined.NamedUnit(term.base).norm[system]
+        if reduction := _reduce_unit(norm.symbol, exponent):
+            if factor := _convert_as_strings(term.base, norm.symbol):
+                return factor**exponent, reduction
+
+
+def _reduce_unit(base: str, exponent: numbers.Real):
+    """Compute the equivalent expression in fundamental units, if possible."""
+    if reduction := _defined.NamedUnit(base).reduce():
+        return [
+            symbolic.term(
+                coefficient=reduction.scale**exponent,
+                base=this.base,
+                exponent=exponent*this.exponent,
+            )
+            for this in reduction.units
+        ]
+
+
+def _cancel_terms(terms: typing.List[symbolic.Term]):
+    """Cancel out terms with equal magnitude and opposite exponent."""
+    # TODO: Reduce redundancy with `_resolve_terms`.
+    matched = []
+    unmatched = terms.copy()
+    for target in terms:
+        if target not in matched:
+            inverse_powers = [
+                term for term in terms
+                if term != target and term.exponent == -target.exponent
+            ]
+            for term in inverse_powers:
+                if term.base == target.base:
+                    for this in (target, term):
+                        matched.append(this)
+                        unmatched.remove(this)
+    return unmatched
 
 
 def _resolve_terms(terms: typing.List[symbolic.Term]):
-    """Compute ratios of matching terms, if possible."""
+    """Compute ratios of terms with comparable exponents, if possible."""
+    # TODO: Reduce redundancy with `_cancel_terms`.
     if len(terms) <= 1:
         # We require at least two terms for a ratio.
         return
@@ -325,10 +367,15 @@ def _resolve_terms(terms: typing.List[symbolic.Term]):
         return factor
 
 
+def _reduce_terms(terms: typing.List[symbolic.Term]):
+    """Partially or fully cancel terms with equal bases."""
+    return symbolic.expression(terms).terms
+
+
 def _match_exponents(
     target: symbolic.Term,
     terms: typing.Iterable[symbolic.Term],
-) -> typing.Optional[typing.Union[float, symbolic.Term]]:
+) -> typing.Optional[typing.Tuple[float, symbolic.Term]]:
     """Attempt to convert `target` to a term in `terms` by exponent.
 
     This function first checks whether `target` is a dimensionless reference
