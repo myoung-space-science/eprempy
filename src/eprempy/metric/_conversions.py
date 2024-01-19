@@ -329,20 +329,28 @@ def _match_terms(
     target: symbolic.Term,
     terms: typing.Iterable[symbolic.Term],
 ) -> typing.Optional[typing.Union[float, symbolic.Term]]:
-    """Attempt to convert `target` to a term in `terms`."""
+    """Attempt to convert `target` to a term in `terms`.
+    
+    This function first checks whether `target` is a dimensionless reference
+    unit and, if so, returns a conversion factor of 1.0 along with `target`. If
+    that check fails, this function compares `target` to each term in `terms`
+    that has an exponent with the same magnitude and opposite sign. If it can
+    convert the base unit of `target` to the base unit of a term in `terms`, it
+    will return the corresponding conversion factor and the matching term.
+    """
     u0 = target.base
-    exponent = target.exponent
-    like_terms = [
-        term for term in terms
-        if term != target and term.exponent == -exponent
-    ]
-    for term in like_terms:
-        u1 = term.base
-        if conversion := _convert_as_strings(u0, u1):
-            return conversion ** exponent, term
     dimensions = _defined.NamedUnit(u0).dimensions.values()
     if u0 in _reference.NAMED_UNITS and all(d == '1' for d in dimensions):
         return 1.0, target
+    exponent = target.exponent
+    inverse_powers = [
+        term for term in terms
+        if term != target and term.exponent == -exponent
+    ]
+    for term in inverse_powers:
+        u1 = term.base
+        if conversion := _convert_as_strings(u0, u1):
+            return conversion ** exponent, term
 
 
 @etc.autostr
