@@ -720,7 +720,8 @@ class Implementations:
         fiso = self._fiso(shell=shell, species=species)
         e = self.energy()
         m = self.mass(species=species)
-        array = 2 * fiso * e / m**2
+        g = physical.scalar(1.0, 'sr')
+        array = 2 * fiso * e / (g * m**2)
         unit = self.system['flux'].unit
         result = array.withunit(unit)
         return self._observe(result, assumptions, time=time, energy=energy)
