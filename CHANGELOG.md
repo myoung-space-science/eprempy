@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.3.3 (2024-01-19)
+
 - Improve robustness of metric unit conversions
 - Include geometric factor in unit of flux (and derived quantities)
 - Add unit-conversion test cases
