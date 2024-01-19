@@ -4,6 +4,10 @@
 
 ## NEXT
 
+- Improve robustness of metric unit conversions
+- Include geometric factor in unit of flux (and derived quantities)
+- Add unit-conversion test cases
+
 ## v0.3.2 (2024-01-18)
 
 - Define `eprem.Stream` and `eprem.Point` subclasses of `eprem.Observer`
