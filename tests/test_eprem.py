@@ -218,3 +218,25 @@ def test_radial_interpolation(datadir: pathlib.Path) -> None:
         assert converted.dimensions == dimensions
         assert converted.unit == unit
 
+
+def test_fluence_subscription(datadir: pathlib.Path) -> None:
+    """Fluence should always have a single time point."""
+    source = datadir / 'isotropic-shock-with-flux'
+    config = 'eprem.cfg'
+    stream = eprem.stream(0, config, source)
+    fluence = stream['fluence']
+    shape = numpy.array(fluence).shape
+    times = (
+        0,
+        1,
+        -1,
+        range(4),
+        range(2, 10),
+        slice(4),
+        slice(2, 10),
+        slice(None)
+    )
+    for time in times:
+        array = fluence[time, ...]
+        assert array.shape == (1, *shape[1:])
+
