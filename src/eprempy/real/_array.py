@@ -363,6 +363,19 @@ def _apply_gradient(
     return array_factory(gradient, dimensions=dimensions)
 
 
+@Array.implements(numpy.trapz)
+def trapz(x: Array[ValueType], *args, **kwargs):
+    """Integrate the array via the composite trapezoidal rule."""
+    data = numpy.trapz(x.array, *args, **kwargs)
+    axis = kwargs.get('axis')
+    if axis is None:
+        dimensions = x.dimensions[:-1]
+    else:
+        ax = axis % x.ndim
+        dimensions = [d for d in x.dimensions if x.dimensions.index(d) != ax]
+    return array_factory(data, dimensions=dimensions)
+
+
 @typing.overload
 def array_factory(*args, **kwargs) -> Array[T]:
     """Create an array from the given arguments, if possible."""
