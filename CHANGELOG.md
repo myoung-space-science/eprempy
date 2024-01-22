@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.3.4 (2024-01-22)
+
 - Improve indexing of `physical.Array`
 - Consistently handle `keepdims` in the overloaded implementation of `numpy.sum`
 
