@@ -66,19 +66,9 @@ class Array(Tensor[real.Array[real.ValueType]]):
         ) from None
 
     def __getitem__(self, args, /):
-        if isinstance(args, slice):
-            return self._getitem_from_slice(args)
-        return self._getitem_standard(args)
-
-    def _getitem_from_slice(self, s: slice):
-        data = self.data[s]
-        idx = numeric.index.expand(self.ndim, s)
-        axes = {k: v[i] for i, (k, v) in zip(idx, self.axes.items())}
-        return self.spawn(data, unit=self.unit, axes=axes)
-
-    def _getitem_standard(self, args):
         data = self.data[args]
-        axes = {k: v[i] for i, (k, v) in zip(args, self.axes.items())}
+        idx = numeric.index.expand(self.ndim, args)
+        axes = {k: v[i] for i, (k, v) in zip(idx, self.axes.items())}
         return self.spawn(data, unit=self.unit, axes=axes)
 
     @typing.overload
