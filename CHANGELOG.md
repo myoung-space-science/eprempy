@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Implement `numpy.trapz` for real and physical array-like objects
+
 ## v0.3.4 (2024-01-22)
 
 - Improve indexing of `physical.Array`
