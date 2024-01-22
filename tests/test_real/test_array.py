@@ -401,7 +401,7 @@ def test_axis_mean():
 
 
 def test_full_mean():
-    """Test `numpy.mean` of a full physical array."""
+    """Test `numpy.mean` of a full array."""
     ndarray = 1 + numpy.arange(3 * 4 * 5).reshape(3, 4, 5)
     old = real.array(ndarray, dimensions=['x', 'y', 'z'])
     assert numpy.mean(old) == numpy.mean(ndarray)
@@ -425,7 +425,7 @@ def test_axis_sum():
 
 
 def test_full_sum():
-    """Test `numpy.sum` of a full physical array."""
+    """Test `numpy.sum` of a full array."""
     ndarray = 1 + numpy.arange(3 * 4 * 5).reshape(3, 4, 5)
     old = real.array(ndarray, dimensions=['x', 'y', 'z'])
     assert numpy.sum(old) == numpy.sum(ndarray)
@@ -444,7 +444,7 @@ def test_axis_cumsum():
 
 
 def test_full_cumsum():
-    """Test `numpy.cumsum` of a full physical array."""
+    """Test `numpy.cumsum` of a full array."""
     ndarray = 1 + numpy.arange(3 * 4 * 5).reshape(3, 4, 5)
     old = real.array(ndarray, dimensions=['x', 'y', 'z'])
     new = numpy.cumsum(old)
