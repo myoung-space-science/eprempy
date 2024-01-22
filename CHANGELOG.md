@@ -4,6 +4,9 @@
 
 ## NEXT
 
+- Improve indexing of `physical.Array`
+- Consistently handle `keepdims` in the overloaded implementation of `numpy.sum`
+
 ## v0.3.3 (2024-01-19)
 
 - Improve robustness of metric unit conversions
