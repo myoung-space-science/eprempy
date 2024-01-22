@@ -620,6 +620,34 @@ def test_gradient(ndarrays: support.NDArrays):
             assert this.dimensions == numeric.dimensions(dimensions)
 
 
+def test_trapz():
+    """Test `numpy.trapz` of a physical array."""
+    ndarray = 1 + numpy.arange(3 * 4 * 5).reshape(3, 4, 5)
+    unit = 'm'
+    old = physical.array(
+        ndarray,
+        unit=unit,
+        axes=['x', 'y', 'z'],
+    )
+    new = numpy.trapz(old)
+    assert isinstance(new, physical.Array)
+    assert numpy.array_equal(new, numpy.trapz(ndarray))
+    assert new.dimensions == old.dimensions[:-1]
+    assert new.unit == metric.unit(unit)
+    testaxis = {
+         0: ('y', 'z'),
+         1: ('x', 'z'),
+         2: ('x', 'y'),
+        -1: ('x', 'y'),
+    }
+    for axis, dimensions in testaxis.items():
+        new = numpy.trapz(old, axis=axis)
+        assert isinstance(new, physical.Array)
+        assert numpy.array_equal(new, numpy.trapz(ndarray, axis=axis))
+        assert new.dimensions == numeric.dimensions(dimensions)
+        assert new.unit == metric.unit(unit)
+
+
 def test_string_transpose(ndarrays: support.NDArrays):
     """Test the ability to transpose an array by dimensions."""
     ndarray = ndarrays.xyz
