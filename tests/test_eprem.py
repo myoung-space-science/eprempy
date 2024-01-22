@@ -234,7 +234,8 @@ def test_fluence_subscription(datadir: pathlib.Path) -> None:
         range(2, 10),
         slice(4),
         slice(2, 10),
-        slice(None)
+        slice(None),
+        (3, 'hour'),
     )
     for time in times:
         array = fluence[time, ...]
