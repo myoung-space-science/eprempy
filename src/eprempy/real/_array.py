@@ -304,6 +304,8 @@ def sum(x: Array[ValueType], **kwargs):
     axis = kwargs.get('axis')
     if axis is None:
         return data
+    if 'keepdims' in kwargs:
+        return array_factory(data, dimensions=x.dimensions)
     ax = x.ndim + axis if axis < 0 else axis
     dimensions = [d for d in x.dimensions if x.dimensions.index(d) != ax]
     return array_factory(data, dimensions=dimensions)
