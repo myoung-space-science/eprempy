@@ -623,3 +623,20 @@ def _apply_gradient(unit, x, *args, **kwargs):
     return numeric.Result(gradient, **metadata)
 
 
+@Array.implements(numpy.trapz)
+@from_numpy
+def trapz(x: Measured[real.ValueType], *args, **kwargs):
+    """Integrate `x` via the composite trapezoidal rule."""
+    if isinstance(x, Scalar):
+        raise TypeError(
+            "Cannot apply numpy.trapz to a scalar object"
+        ) from None
+    data = numpy.trapz(x.data, *args, **kwargs)
+    if isinstance(data, (numbers.Real, numpy.number)):
+        return data
+    metadata = {'unit': x.unit}
+    if isinstance(x, Array):
+        metadata['axes'] = {d: x.axes[d] for d in data.dimensions}
+    return numeric.Result(data, **metadata)
+
+
