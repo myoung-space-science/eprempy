@@ -7,6 +7,7 @@ import numpy
 from .. import etc
 from ..measured import Object as Measured
 from .. import numeric
+from .. import quantity
 from .. import real
 from ._scalar import Scalar
 from ._vector import Vector
@@ -266,45 +267,53 @@ def unary(f, a, /, **kwargs):
 @from_builtin
 def additive(f, a, b, /):
     """Compute an additive binary operation."""
-    if not (isinstance(a, Measured) and isinstance(b, Measured)):
-        raise PhysicalTypeError(a, b)
+    if isinstance(a, Measured):
+        if a.unit != '1' and isinstance(b, (numbers.Number, numpy.number)):
+            raise PhysicalTypeError(a, b)
+    if isinstance(b, Measured):
+        if b.unit != '1' and isinstance(a, (numbers.Number, numpy.number)):
+            raise PhysicalTypeError(a, b)
+    x = a if isinstance(a, Measured) else quantity.measure(a)
+    y = b if isinstance(b, Measured) else quantity.measure(b)
+    if not (isinstance(x, Measured) and isinstance(y, Measured)):
+        raise PhysicalTypeError(x, y)
     opr = numeric.CALLABLES.find(f)
     msg = "Cannot {} objects with different {}."
-    if isinstance(a, Array) and isinstance(b, Array):
-        data = f(a.data, b.data)
+    if isinstance(x, Array) and isinstance(y, Array):
+        data = f(x.data, y.data)
         badattrs = []
-        if a.unit == b.unit:
-            if a.axes == b.axes:
-                return array_factory(data, unit=a.unit, axes=a.axes)
+        if x.unit == y.unit:
+            if x.axes == y.axes:
+                return array_factory(data, unit=x.unit, axes=x.axes)
             with contextlib.suppress(ValueError):
-                axes = a.axes + b.axes
-                return array_factory(data, unit=a.unit, axes=axes)
-        if a.unit != b.unit:
+                axes = x.axes + y.axes
+                return array_factory(data, unit=x.unit, axes=axes)
+        if x.unit != y.unit:
             badattrs.append('units')
-        if a.axes != b.axes:
+        if x.axes != y.axes:
             badattrs.append('bases')
         raise ValueError(msg.format(opr, etc.join(badattrs)))
-    if isinstance(a, Array):
-        if isinstance(b, Vector):
+    if isinstance(x, Array):
+        if isinstance(y, Vector):
             raise TypeError(
                 f"Cannot {opr} a vector to an array"
             ) from None
-        data = f(a.data.array, b.data)
-        if a.unit == b.unit:
-            return array_factory(data, unit=a.unit, axes=a.axes)
+        data = f(x.data.array, y.data)
+        if x.unit == y.unit:
+            return array_factory(data, unit=x.unit, axes=x.axes)
         raise ValueError(msg.format(opr, 'units'))
-    if isinstance(b, Array):
-        if isinstance(a, Vector):
+    if isinstance(y, Array):
+        if isinstance(x, Vector):
             raise TypeError(
                 f"Cannot {opr} a vector to an array"
             ) from None
-        data = f(a.data, b.data.array)
-        if a.unit == b.unit:
-            return array_factory(data, unit=a.unit, axes=b.axes)
+        data = f(x.data, y.data.array)
+        if x.unit == y.unit:
+            return array_factory(data, unit=x.unit, axes=y.axes)
         raise ValueError(msg.format(opr, 'units'))
-    data = f(a.data, b.data)
-    if a.unit == b.unit:
-        return numeric.Result(data, unit=a.unit)
+    data = f(x.data, y.data)
+    if x.unit == y.unit:
+        return numeric.Result(data, unit=x.unit)
     raise ValueError(msg.format(opr, 'units'))
 
 
@@ -346,7 +355,11 @@ def multiplicative(f, a, b):
             axes = b.axes
             return array_factory(data, unit=unit, axes=axes)
         return numeric.Result(f(a, b.data), unit=unit)
-    raise PhysicalTypeError(a, b)
+    x = a if isinstance(a, Measured) else quantity.measure(a)
+    y = b if isinstance(b, Measured) else quantity.measure(b)
+    if not (isinstance(x, Measured) and isinstance(y, Measured)):
+        raise PhysicalTypeError(x, y)
+    return multiplicative(f, x, y)
 
 
 @from_builtin
