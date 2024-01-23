@@ -291,6 +291,11 @@ def _callback_parse(unwrapped, distribute: bool):
     return (*values, unit)
 
 
+def hasdata(a):
+    """True if the argument appears to contain numeric data."""
+    return getdata(a) is not None # NOTE: data could be 0
+
+
 def getdata(a):
     """Get the argument's data."""
     if isinstance(a, measured.Object):

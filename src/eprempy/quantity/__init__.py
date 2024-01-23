@@ -8,6 +8,7 @@ from ._functions import (
     isindexlike,
     ismeasurable,
     parse,
+    hasdata,
     getdata,
     getunit,
 )
@@ -24,6 +25,7 @@ __all__ = [
     'ismeasurable',
     'measure',
     'parse',
+    'hasdata',
     'getdata',
     'getunit',
     'MeasuringTypeError',
