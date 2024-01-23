@@ -10,6 +10,7 @@ import numpy
 import numpy.typing
 import pytest
 
+import support
 from eprempy import measured
 from eprempy import metric
 from eprempy import physical
@@ -258,23 +259,8 @@ def check_multiplicative(
     x = quantity.getdata(a)
     y = quantity.getdata(b)
     assert numpy.array_equal(new.data, f(x, y))
-    unit = get_multiplicative_unit(g, a, b)
+    unit = support.compute_unit(g, a, b)
     assert new.unit == unit
-
-
-def get_multiplicative_unit(f, a, b):
-    """Helper for `check_multiplicative`."""
-    if isinstance(a, physical.Vector) and isinstance(b, physical.Vector):
-        return f(a.unit, b.unit)
-    if isinstance(a, numbers.Real) and isinstance(b, physical.Vector):
-        return f('1', b.unit)
-    if isinstance(a, physical.Vector) and isinstance(b, numbers.Real):
-        return a.unit
-    if isinstance(a, tuple) and isinstance(b, physical.Vector):
-        return f(a[-1], b.unit)
-    if isinstance(a, physical.Vector) and isinstance(b, tuple):
-        return f(a.unit, b[-1])
-    raise TypeError(a, b)
 
 
 def test_pow(array: numpy.ndarray) -> None:

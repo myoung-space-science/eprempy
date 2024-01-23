@@ -7,6 +7,7 @@ import typing
 import numpy
 import numpy.typing
 
+from eprempy import measured
 from eprempy import metric
 from eprempy import quantity
 
@@ -176,4 +177,20 @@ def _compute(
             ] for j in J
         ] for i in I
     ]
+
+
+def compute_unit(f, a, b):
+    """Apply `f` to the operands' unit(s)."""
+    if isinstance(a, measured.Object) and isinstance(b, measured.Object):
+        return f(a.unit, b.unit)
+    if isinstance(a, numbers.Real) and isinstance(b, measured.Object):
+        return f('1', b.unit)
+    if isinstance(a, measured.Object) and isinstance(b, numbers.Real):
+        return a.unit
+    if isinstance(a, tuple) and isinstance(b, measured.Object):
+        return f(a[-1], b.unit)
+    if isinstance(a, measured.Object) and isinstance(b, tuple):
+        return f(a.unit, b[-1])
+    raise TypeError(a, b)
+
 
