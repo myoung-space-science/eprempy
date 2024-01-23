@@ -62,21 +62,27 @@ def test_scalar_additive():
     meter = 'm'
     original = physical.scalar(va, unit=meter)
     sameunit = physical.scalar(vb, unit=meter)
+    unitless = physical.scalar(vb)
     valid = [
-        # same unit
-        (original, sameunit),
+        # measurable tuple with same unit
+        (original, (vb, original.unit), original.unit),
+        # scalar with same unit
+        (original, sameunit, original.unit),
+        # plain number with unitless scalar
+        (unitless, vb, '1'),
     ]
     operators = (standard.add, standard.sub)
     for f in operators:
-        for a, b in valid:
-            check_scalar_additive(f, a, b)
-            check_scalar_additive(f, b, a)
+        for a, b, u in valid:
+            check_scalar_additive(f, a, b, u)
+            check_scalar_additive(f, b, a, u)
     joule = 'J'
     diffunit = physical.scalar(va, unit=joule)
     invalid = [
-        # can't add or subtract scalars with a different unit
+        # can't add or subtract objects with a different unit
+        (original, (vb, joule), ValueError),
         (original, diffunit, ValueError),
-        # can't add or subtract plain numbers
+        # can't add or subtract plain numbers from a unitful scalar
         (original, va, TypeError),
     ]
     for f in operators:
@@ -87,17 +93,14 @@ def test_scalar_additive():
                 f(b, a)
 
 
-def check_scalar_additive(
-    f,
-    a: physical.Scalar,
-    b: physical.Scalar,
-) -> None:
+def check_scalar_additive(f, a, b, unit: metric.UnitLike) -> None:
     """Helper for `test_scalar_additive`."""
     new = f(a, b)
     assert isinstance(new, physical.Scalar)
-    data = f(a.data, b.data)
-    assert new.data == data
-    assert new.unit == a.unit
+    x = quantity.getdata(a)
+    y = quantity.getdata(b)
+    assert new.data == f(x, y)
+    assert new.unit == unit
 
 
 def test_scalar_multiplicative():
@@ -112,6 +115,7 @@ def test_scalar_multiplicative():
     valid = [
         # same unit
         (original, sameunit),
+        (original, (vb, original.unit)),
         # different unit
         (original, diffunit),
         # scale by constant factor
@@ -132,23 +136,32 @@ def test_scalar_multiplicative():
 def check_scalar_multiplicative(
     f: typing.Callable,
     g: typing.Callable,
-    a: typing.Union[physical.Scalar, numbers.Real],
-    b: typing.Union[physical.Scalar, numbers.Real],
+    a: typing.Union[physical.Scalar, numbers.Real, tuple],
+    b: typing.Union[physical.Scalar, numbers.Real, tuple],
 ) -> None:
     """Helper for `test_scalar_multiplicative`."""
     new = f(a, b)
     assert isinstance(new, physical.Scalar)
-    x = a.data if isinstance(a, physical.Scalar) else a
-    y = b.data if isinstance(b, physical.Scalar) else b
-    data = f(x, y)
-    assert new.data == data
-    if isinstance(a, numbers.Real):
-        unit = g('1', b.unit)
-    elif isinstance(b, numbers.Real):
-        unit = a.unit
-    else:
-        unit = g(a.unit, b.unit)
+    x = quantity.getdata(a)
+    y = quantity.getdata(b)
+    assert new.data == f(x, y)
+    unit = get_scalar_multiplicative_unit(g, a, b)
     assert new.unit == unit
+
+
+def get_scalar_multiplicative_unit(f, a, b):
+    """Helper for `check_scalar_multiplicative`."""
+    if isinstance(a, physical.Scalar) and isinstance(b, physical.Scalar):
+        return f(a.unit, b.unit)
+    if isinstance(a, numbers.Real) and isinstance(b, physical.Scalar):
+        return f('1', b.unit)
+    if isinstance(a, physical.Scalar) and isinstance(b, numbers.Real):
+        return a.unit
+    if isinstance(a, tuple) and isinstance(b, physical.Scalar):
+        return f(a[-1], b.unit)
+    if isinstance(a, physical.Scalar) and isinstance(b, tuple):
+        return f(a.unit, b[-1])
+    raise TypeError(a, b)
 
 
 def test_scalar_pow():
