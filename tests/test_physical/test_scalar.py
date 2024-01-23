@@ -118,6 +118,7 @@ def test_multiplicative():
         (original, (vb, original.unit)),
         # different unit
         (original, diffunit),
+        (original, (vb, diffunit.unit)),
         # scale by constant factor
         (original, va),
     ]
