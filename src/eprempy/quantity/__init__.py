@@ -10,7 +10,6 @@ from ._functions import (
     parse,
     hasdata,
     getdata,
-    getunit,
 )
 from ._exceptions import (
     MeasuringTypeError,
@@ -27,7 +26,6 @@ __all__ = [
     'parse',
     'hasdata',
     'getdata',
-    'getunit',
     'MeasuringTypeError',
     'ParsingTypeError',
     'ParsingValueError',

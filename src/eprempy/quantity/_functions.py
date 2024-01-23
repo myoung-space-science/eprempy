@@ -297,27 +297,16 @@ def hasdata(a):
 
 
 def getdata(a):
-    """Get the argument's data."""
+    """Get the argument's numeric data, if any."""
     if isinstance(a, measured.Object):
         return a.data
-    if isinstance(a, typing.Sequence):
-        if len(a) == 2:
-            return a[0]
-        if len(a) > 2:
-            return numpy.array(a[:-1])
-    if isinstance(a, numbers.Real):
+    if isinstance(a, (numbers.Number, numpy.number, numpy.ndarray)):
         return a
-    raise TypeError(a)
-
-
-def getunit(a):
-    """Get the argument's unit."""
-    if isinstance(a, measured.Object):
-        return a.unit
-    if isinstance(a, typing.Sequence):
-        return a[-1]
-    if isinstance(a, numbers.Real):
-        return '1'
-    raise TypeError(a)
+    with contextlib.suppress(ParsingTypeError, ParsingValueError):
+        parsed = parse(a, distribute=False)
+        data = parsed[:-1]
+        if len(data) > 1:
+            return numpy.array(data)
+        return data[0]
 
 
