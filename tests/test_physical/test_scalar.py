@@ -18,7 +18,7 @@ from eprempy import physical
 from eprempy import quantity
 
 
-def test_scalar_factory():
+def test_factory():
     """Test various ways to create a physical scalar."""
     value = 2
     unit = 'km'
@@ -55,7 +55,7 @@ def test_measure_scalar():
     assert int(m) == int(x)
 
 
-def test_scalar_additive():
+def test_additive():
     """Test additive operations on physical scalars."""
     va = 2.0
     vb = 1.1
@@ -74,8 +74,8 @@ def test_scalar_additive():
     operators = (standard.add, standard.sub)
     for f in operators:
         for a, b, u in valid:
-            check_scalar_additive(f, a, b, u)
-            check_scalar_additive(f, b, a, u)
+            check_additive(f, a, b, u)
+            check_additive(f, b, a, u)
     joule = 'J'
     diffunit = physical.scalar(va, unit=joule)
     invalid = [
@@ -93,8 +93,8 @@ def test_scalar_additive():
                 f(b, a)
 
 
-def check_scalar_additive(f, a, b, unit: metric.UnitLike) -> None:
-    """Helper for `test_scalar_additive`."""
+def check_additive(f, a, b, unit: metric.UnitLike) -> None:
+    """Helper for `test_additive`."""
     new = f(a, b)
     assert isinstance(new, physical.Scalar)
     x = quantity.getdata(a)
@@ -103,7 +103,7 @@ def check_scalar_additive(f, a, b, unit: metric.UnitLike) -> None:
     assert new.unit == unit
 
 
-def test_scalar_multiplicative():
+def test_multiplicative():
     """Test multiplicative operations on physical scalars."""
     va = 2.0
     vb = 1.1
@@ -129,28 +129,28 @@ def test_scalar_multiplicative():
     )
     for f, g in operators:
         for a, b in valid:
-            check_scalar_multiplicative(f, g, a, b)
-            check_scalar_multiplicative(f, g, b, a)
+            check_multiplicative(f, g, a, b)
+            check_multiplicative(f, g, b, a)
 
 
-def check_scalar_multiplicative(
+def check_multiplicative(
     f: typing.Callable,
     g: typing.Callable,
     a: typing.Union[physical.Scalar, numbers.Real, tuple],
     b: typing.Union[physical.Scalar, numbers.Real, tuple],
 ) -> None:
-    """Helper for `test_scalar_multiplicative`."""
+    """Helper for `test_multiplicative`."""
     new = f(a, b)
     assert isinstance(new, physical.Scalar)
     x = quantity.getdata(a)
     y = quantity.getdata(b)
     assert new.data == f(x, y)
-    unit = get_scalar_multiplicative_unit(g, a, b)
+    unit = get_multiplicative_unit(g, a, b)
     assert new.unit == unit
 
 
-def get_scalar_multiplicative_unit(f, a, b):
-    """Helper for `check_scalar_multiplicative`."""
+def get_multiplicative_unit(f, a, b):
+    """Helper for `check_multiplicative`."""
     if isinstance(a, physical.Scalar) and isinstance(b, physical.Scalar):
         return f(a.unit, b.unit)
     if isinstance(a, numbers.Real) and isinstance(b, physical.Scalar):
@@ -164,7 +164,7 @@ def get_scalar_multiplicative_unit(f, a, b):
     raise TypeError(a, b)
 
 
-def test_scalar_pow():
+def test_pow():
     """Test exponentiation on a physical scalar."""
     va = 2.0
     vb = 1.1
@@ -184,7 +184,7 @@ def test_scalar_pow():
         (p, unitless, type(p)),
     ]
     for a, b, t in valid:
-        check_scalar_pow(standard.pow, a, b, t)
+        check_pow(standard.pow, a, b, t)
     invalid = [
         # a non-numeric exponent is meaningless
         (original, '1', TypeError),
@@ -201,13 +201,13 @@ def test_scalar_pow():
             a ** b
 
 
-def check_scalar_pow(
+def check_pow(
     f,
     a: typing.Union[physical.Scalar, numbers.Real],
     b: typing.Union[physical.Scalar, numbers.Real],
     t: typing.Type[measured.ObjectT]=physical.Scalar,
 ) -> None:
-    """Helper for `test_scalar_pow`."""
+    """Helper for `test_pow`."""
     new = f(a, b)
     assert isinstance(new, t)
     if t == physical.Scalar:
@@ -218,17 +218,17 @@ def check_scalar_pow(
         assert new.unit == f(a.unit, p)
 
 
-def test_scalar_int():
+def test_int():
     """Test the conversion to `int` for a physical scalar."""
     assert int(physical.scalar(1.1, unit='m')) == 1
 
 
-def test_scalar_float():
+def test_float():
     """Test the conversion to `float` for a physical scalar."""
     assert int(physical.scalar(1, unit='m')) == 1.0
 
 
-def test_scalar_round():
+def test_round():
     """Test the built-in `round` method on a physical scalar."""
     values = [
         -1.6,
@@ -245,7 +245,7 @@ def test_scalar_round():
         assert r.unit == metric.unit(unit)
 
 
-def test_scalar_floor():
+def test_floor():
     """Test the `math.floor` method on a physical scalar."""
     values = [
         -1.6,
@@ -262,7 +262,7 @@ def test_scalar_floor():
         assert r.unit == metric.unit(unit)
 
 
-def test_scalar_ceil():
+def test_ceil():
     """Test the `math.ceil` method on a physical scalar."""
     values = [
         -1.6,
@@ -279,7 +279,7 @@ def test_scalar_ceil():
         assert r.unit == metric.unit(unit)
 
 
-def test_scalar_trunc():
+def test_trunc():
     """Test the `math.trunc` method on a physical scalar."""
     values = [
         -1.6,
@@ -296,7 +296,7 @@ def test_scalar_trunc():
         assert r.unit == metric.unit(unit)
 
 
-def test_scalar_trig():
+def test_trig():
     """Test `numpy` trigonometric ufuncs on a physical scalar."""
     value = 1.0
     for f in (numpy.sin, numpy.cos, numpy.tan):
@@ -311,7 +311,7 @@ def test_scalar_trig():
             f(bad)
 
 
-def test_scalar_sqrt():
+def test_sqrt():
     """Test `numpy.sqrt` on a physical scalar."""
     scalar = physical.scalar(2.0, unit='m')
     value = numpy.sqrt(scalar.data)
@@ -319,7 +319,7 @@ def test_scalar_sqrt():
     assert numpy.sqrt(scalar) == physical.scalar(value, unit=unit)
 
 
-def test_scalar_squeeze():
+def test_squeeze():
     """Test `numpy.squeeze` on a physical scalar."""
     value = 4
     old = physical.scalar(value, unit='m')
@@ -327,7 +327,7 @@ def test_scalar_squeeze():
     assert new is old
 
 
-def test_scalar_mean():
+def test_mean():
     """Test `numpy.mean` of a physical scalar."""
     value = 2
     old = physical.scalar(value, unit='m')
@@ -338,7 +338,7 @@ def test_scalar_mean():
     assert new.unit == old.unit
 
 
-def test_scalar_sum():
+def test_sum():
     """Test `numpy.sum` of a physical scalar."""
     value = 2
     old = physical.scalar(value, unit='m')
@@ -349,7 +349,7 @@ def test_scalar_sum():
     assert new.unit == old.unit
 
 
-def test_scalar_cumsum():
+def test_cumsum():
     """Test `numpy.cumsum` of a physical scalar."""
     value = 2
     old = physical.scalar(value, unit='m')
@@ -360,7 +360,7 @@ def test_scalar_cumsum():
     assert new.unit == old.unit
 
 
-def test_scalar_transpose():
+def test_transpose():
     """Test `numpy.transpose` on a physical scalar."""
     value = 2
     old = physical.scalar(value, unit='cm')
@@ -369,14 +369,14 @@ def test_scalar_transpose():
     assert new == physical.scalar(value, unit='cm')
 
 
-def test_scalar_gradient():
+def test_gradient():
     """Test `numpy.gradient` on a physical scalar."""
     value = 2
     scalar = physical.scalar(value, unit='cm')
     assert numpy.gradient(scalar) == []
 
 
-def test_scalar_unit():
+def test_unit():
     """Test the ability to update a physical scalar's unit."""
     old = physical.scalar(2.0, 'm')
     new = old.withunit('km')
