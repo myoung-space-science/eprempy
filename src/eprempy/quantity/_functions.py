@@ -191,7 +191,7 @@ def parse(x, /, distribute: bool=False):
     if isinstance(unwrapped, str):
         try:
             result = (float(unwrapped), '1')
-        except TypeError as err:
+        except (ValueError, TypeError) as err:
             raise ParsingTypeError(
                 f"Cannot measure non-numeric string {unwrapped!r}"
             ) from err
