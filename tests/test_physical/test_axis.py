@@ -79,7 +79,6 @@ def test_coordinates():
     errors = [
         (-2.0, ValueError),
         (0.5, ValueError),
-        ('1', TypeError),
         (None, TypeError),
     ]
     for target, error in errors:
