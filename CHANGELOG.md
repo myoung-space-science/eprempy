@@ -5,6 +5,8 @@
 ## NEXT
 
 - Implement `numpy.trapz` for real and physical array-like objects
+- Support additive and multiplicative operations between physical scalars and measurable tuples
+- Support additive and multiplicative operations between physical vectors and measurable tuples
 
 ## v0.3.4 (2024-01-22)
 
