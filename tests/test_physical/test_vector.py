@@ -10,15 +10,20 @@ import numpy
 import numpy.typing
 import pytest
 
-import support
 from eprempy import measured
+from eprempy import metric
 from eprempy import physical
 from eprempy import quantity
 
 
 @pytest.fixture
-def array():
-    return numpy.array([1.0, 10.0, -5.0])
+def values():
+    return [1.0, 10.0, -5.0]
+
+
+@pytest.fixture
+def array(values: typing.List[float]):
+    return numpy.array(values)
 
 
 def test_factory():
@@ -167,7 +172,7 @@ def test_unary(array: numpy.ndarray):
         assert f(vector) == physical.vector(f(array), unit=unit)
 
 
-def test_additive(array: numpy.ndarray) -> None:
+def test_additive(array: numpy.ndarray, values: typing.List[float]) -> None:
     """Test additive operations on physical vectors."""
     meter = 'm'
     joule = 'J'
@@ -175,17 +180,21 @@ def test_additive(array: numpy.ndarray) -> None:
     sameunit = physical.vector(array, unit=meter)
     valid = [
         # same unit
-        (original, sameunit),
+        (original, sameunit, original.unit),
+        (original, (values[0], original.unit), original.unit),
+        (original, (*values, original.unit), original.unit),
     ]
     operators = (standard.add, standard.sub)
     for f in operators:
-        for a, b in valid:
-            check_additive(f, a, b)
-            check_additive(f, b, a)
+        for a, b, u in valid:
+            check_additive(f, a, b, u)
+            check_additive(f, b, a, u)
     diffunit = physical.vector(array, unit=joule)
     invalid = [
         # can't add or subtract vectors with different units
         (diffunit, original),
+        (diffunit, (1.0, original.unit)),
+        (diffunit, (1.0, 2.0, 3.0, original.unit)),
     ]
     for f in operators:
         for a, b in invalid:
@@ -195,20 +204,17 @@ def test_additive(array: numpy.ndarray) -> None:
                 f(b, a)
 
 
-def check_additive(
-    f: typing.Callable,
-    a: physical.Vector,
-    b: physical.Vector,
-) -> None:
+def check_additive(f, a, b, unit: metric.UnitLike) -> None:
     """Helper for `test_additive`."""
     new = f(a, b)
     assert isinstance(new, physical.Vector)
-    expected = compute(f, a, b)
-    assert numpy.array_equal(new, expected)
-    assert new.unit == a.unit
+    x = quantity.getdata(a)
+    y = quantity.getdata(b)
+    assert numpy.array_equal(new.data, f(x, y))
+    assert new.unit == unit
 
 
-def test_multiplicative(array: numpy.ndarray) -> None:
+def test_multiplicative(array: numpy.ndarray, values: typing.List[float]):
     """Test multiplicative operations on physical vectors."""
     meter = 'm'
     joule = 'J'
@@ -229,6 +235,10 @@ def test_multiplicative(array: numpy.ndarray) -> None:
         (original, singular),
         (original, value),
         (singular, singular),
+        (original, (values[0], original.unit)),
+        (original, (*values, original.unit)),
+        (original, (values[0], diffunit.unit)),
+        (original, (*values, diffunit.unit)),
     ]
     for f, g in operators:
         for a, b in valid:
@@ -239,21 +249,32 @@ def test_multiplicative(array: numpy.ndarray) -> None:
 def check_multiplicative(
     f: typing.Callable,
     g: typing.Callable,
-    a: typing.Union[physical.Vector, numbers.Real],
-    b: typing.Union[physical.Vector, numbers.Real],
+    a: typing.Union[physical.Vector, numbers.Real, tuple],
+    b: typing.Union[physical.Vector, numbers.Real, tuple],
 ) -> None:
     """Helper for `test_multiplicative`."""
     new = f(a, b)
     assert isinstance(new, physical.Vector)
-    expected = compute(f, a, b)
-    assert numpy.array_equal(new, expected)
-    if isinstance(a, numbers.Real):
-        unit = g('1', b.unit)
-    elif isinstance(b, numbers.Real):
-        unit = a.unit
-    else:
-        unit = g(a.unit, b.unit)
+    x = quantity.getdata(a)
+    y = quantity.getdata(b)
+    assert numpy.array_equal(new.data, f(x, y))
+    unit = get_multiplicative_unit(g, a, b)
     assert new.unit == unit
+
+
+def get_multiplicative_unit(f, a, b):
+    """Helper for `check_multiplicative`."""
+    if isinstance(a, physical.Vector) and isinstance(b, physical.Vector):
+        return f(a.unit, b.unit)
+    if isinstance(a, numbers.Real) and isinstance(b, physical.Vector):
+        return f('1', b.unit)
+    if isinstance(a, physical.Vector) and isinstance(b, numbers.Real):
+        return a.unit
+    if isinstance(a, tuple) and isinstance(b, physical.Vector):
+        return f(a[-1], b.unit)
+    if isinstance(a, physical.Vector) and isinstance(b, tuple):
+        return f(a.unit, b[-1])
+    raise TypeError(a, b)
 
 
 def test_pow(array: numpy.ndarray) -> None:
