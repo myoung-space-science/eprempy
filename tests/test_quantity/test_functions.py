@@ -138,3 +138,33 @@ def test_isindexlike():
         assert not quantity.isindexlike(case)
 
 
+def test_hasdata_getdata():
+    """Test `quantity.hasdata` and `quantity.getdata`."""
+    true = (
+        (1, ...),
+        ('1', 1),
+        (1.0, ...),
+        (-1.0, ...),
+        ([1, 'm'], 1),
+        ((1, 'm'), 1),
+        (['1', 'm'], 1),
+        (('1', 'm'), 1),
+        (measured.value(1, unit='m'), 1),
+        (measured.sequence(1, unit='m'), [1]),
+        (measured.sequence([1, 2], unit='m'), [1, 2]),
+        (numpy.array([1, 2]), ...),
+        (numpy.array([[1, 2]]), ...),
+    )
+    for arg, data in true:
+        assert quantity.hasdata(arg)
+        expected = arg if data == ... else data
+        assert numeric.data.isequal(quantity.getdata(arg), expected)
+    false = (
+        'm',
+        [],
+        (),
+    )
+    for arg in false:
+        assert not quantity.hasdata(arg)
+
+
