@@ -22,7 +22,7 @@ class Defaults(collections.abc.Mapping):
         self._basetypes = _src.BaseTypesH(srcdir=srcdir)
         self._reference = _src.ConfigurationC(srcdir=srcdir)
         self._mapping = {
-            key: _convert(parameter['default'], parameter['type'])
+            key: _convert(parameter['defaultVal'], parameter['type'])
             for key, parameter in self.reference.items()
         }
 
