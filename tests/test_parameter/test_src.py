@@ -20,7 +20,7 @@ def test_basetypes_h(srcdir: str):
 
 def test_configuration_c(srcdir: str):
     """Make sure the object contains everything in src/configuration.c."""
-    testkeys = {'type', 'default', 'minimum', 'maximum'}
+    testkeys = {'type', 'defaultVal', 'minVal', 'maxVal'}
     for path in (srcdir, None):
         c = ConfigurationC(path)
         if path is not None:

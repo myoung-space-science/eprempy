@@ -93,7 +93,7 @@ def test_interface(
     for cfg in config.values():
         interface = parameter.interface(srcdir=srcdir, config=cfg['path'])
         for key, value in reference.items():
-            expected = cfg['args'].get(key, value['default'])
+            expected = cfg['args'].get(key, value['defaultVal'])
             for alias in parameter.ALIASES.get(key, [key]):
                 assert alias in interface
                 assert numerically_equal(interface[key], expected)

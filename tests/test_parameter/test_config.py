@@ -10,6 +10,6 @@ def test_default_values(
     """Compare the default value of each parameter to a reference value."""
     cfg = Defaults(srcdir=srcdir)
     for key, current in reference.items():
-        assert cfg[key] == current['default']
+        assert cfg[key] == current['defaultVal']
 
 
