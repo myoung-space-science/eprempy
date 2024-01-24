@@ -69,10 +69,13 @@ class Defaults(collections.abc.Mapping):
         """Resolve a parameter definition into simpler components."""
         if self._struct_member.match(definition):
             return self._evaluate(definition.replace('config.', ''))
+        interior = definition.strip('[]')
+        if self._struct_member.match(interior):
+            return [self._evaluate(interior.replace('config.', ''))]
         if result := self._compute_sum(definition):
             return result
         if any(c in definition for c in {'*', '/'}):
-            expression = symbolic.expression(definition)
+            expression = symbolic.expression(definition.replace('config.', ''))
             evaluated = [
                 term.coefficient * self._evaluate(term.base)**term.exponent
                 for term in expression
