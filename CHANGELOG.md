@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Fix bugs in config-parameter parsing and update default values
+
 ## v0.3.5 (2023-01-23)
 
 - Implement `numpy.trapz` for real and physical array-like objects
