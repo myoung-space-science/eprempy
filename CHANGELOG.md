@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.3.6 (2023-01-24)
+
 - Fix bugs in config-parameter parsing and update default values
 
 ## v0.3.5 (2023-01-23)
