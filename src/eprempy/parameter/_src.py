@@ -280,10 +280,8 @@ class FunctionCall:
         return re.compile(r"""
             # the start of the string, followed by optional whitespace
             \A\s*
-            # the name of the C struct
-            config\.
-            # the name of the target struct member
-            (?P<name>\w+)
+            # the assignment target (possibly a struct member)
+            (?:config\.)?\w+
             # equals sign surrounded by optional whitespace
             \s*=\s*
             # kludge for `(char*)readString(...)`
@@ -292,7 +290,7 @@ class FunctionCall:
             (?P<mode>read(?:Int|Double|DoubleArray|String))
             # beginning of function call
             \(
-                # the corresponding name in the config file
+                # the parameter key in the config file
                 (?P<key>\"\w*\")
                 # optional whitespace followed by a comma
                 \s*\,
@@ -321,10 +319,16 @@ class FunctionCall:
         return key, parsed
 
     _keys = {
-        'readInt': ['default', 'minimum', 'maximum'],
-        'readDouble': ['default', 'minimum', 'maximum'],
-        'readString': ['default'],
-        'readDoubleArray': ['size', 'default'],
+        'readInt': ['defaultVal', 'minVal', 'maxVal'],
+        'readDouble': ['defaultVal', 'minVal', 'maxVal'],
+        'readString': ['defaultVal'],
+        'readDoubleArray': [
+            'defaultSize',
+            'size',
+            'defaultVal',
+            'minVal',
+            'maxVal',
+        ],
     }
 
     def _normalize(self, mode: str, args: typing.Iterable[str]):
@@ -358,7 +362,7 @@ class VariableDefinition:
             # equals sign surrounded by optional whitespace
             \s*=\s*
             # array value(s)
-            \{(?P<value>\d*(?:\.\d+)?)\}
+            \{(?P<value>(\d*(?:\.\d+)?)|((?:config\.)?\w+))\}
             # C statement terminator
             \;
             # optional whitespace, followed by the end of the string
@@ -403,9 +407,11 @@ class ConfigurationC(SourceFile):
         subs = {
             key: {
                 'mode': assigned['mode'],
-                'default': arrays[assigned['default']]['value']
+                'defaultVal': arrays[assigned['defaultVal']]['value'],
+                'maxVal': assigned['maxVal'],
+                'minVal': assigned['minVal'],
             } for key, assigned in assignments.items()
-            if assigned['default'] in arrays
+            if assigned['defaultVal'] in arrays
         }
         return {
             key: subs.get(key, attrs)
