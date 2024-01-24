@@ -418,18 +418,23 @@ _BASETYPES_H = {
         'unit': None,
         'type': float,
     },
-    'VERYSMALL': {
-        'info': 'A very small value.',
+    'HALF_PI': {
+        'info': 'The value of π/2.',
         'unit': None,
         'type': float,
     },
-    'BADVALUE': {
-        'info': 'A bad (invalid) float value.',
+    'SMALLFLOAT': {
+        'info': 'A very small float value.',
         'unit': None,
         'type': float,
     },
-    'BADINT': {
-        'info': 'A bad (invalid) integer value.',
+    'LARGEFLOAT': {
+        'info': 'A very large float value.',
+        'unit': None,
+        'type': float,
+    },
+    'LARGEINT': {
+        'info': 'A very large integer value.',
         'unit': None,
         'type': int,
     },
