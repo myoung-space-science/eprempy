@@ -1,17 +1,19 @@
 {
     "BASETYPES_H": {
         "AU": "1.495978707e13",
-        "BADINT": "2147483647",
-        "BADVALUE": "1.0e33",
         "C": "2.99792458e10",
         "DAY": "( TAU / (24.0 * 60.0 * 60.0)  )",
         "EV": "1.6022e-12",
         "F": "0",
         "FCONVERT": "( 1.0e30 / (C * C * C * C) )",
         "GEV": "1.6022e-3",
+        "HALF_PI": "1.570796327",
+        "LARGEFLOAT": "1.0e33",
+        "LARGEINT": "2147483647",
         "MAX_STRING_SIZE": "240",
         "MEV": "1.6022e-6",
         "MHD_B_NORM": "( sqrt(MP*MHD_DENSITY_NORM) * C )",
+        "MHD_COUPLED": "1",
         "MHD_DEFAULT": "0",
         "MHD_DENSITY_NORM": "1.0",
         "MP": "1.6726e-24",
@@ -21,540 +23,728 @@
         "Q": "4.80320425e-10",
         "RSAU": "(RSUN/AU)",
         "RSUN": "6.96e10",
+        "SMALLFLOAT": "1.0e-33",
         "T": "1",
         "TAU": "( AU / C )",
         "THRESH": "0.025",
         "TWO_PI": "6.283185307179586",
-        "VERYSMALL": "1.0e-33",
         "VOLT": "0.33333e-2"
     },
     "CONFIGURATION_C": {
         "FailModeDump": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "adiabaticChangeAlg": {
-            "default": "1",
-            "maximum": "3",
-            "minimum": "1",
+            "defaultVal": "1",
+            "maxVal": "3",
+            "minVal": "1",
             "mode": "readInt"
         },
         "adiabaticFocusAlg": {
-            "default": "1",
-            "maximum": "3",
-            "minimum": "1",
+            "defaultVal": "1",
+            "maxVal": "3",
+            "minVal": "1",
             "mode": "readInt"
         },
         "aziSunStart": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "boundaryFunctAmplitude": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "boundaryFunctBeta": {
-            "default": "1.7",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "2.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "boundaryFunctEcutoff": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "boundaryFunctEr": {
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "boundaryFunctGamma": {
-            "default": "2.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "2.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "boundaryFunctR0": {
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "config.rScale",
             "mode": "readDouble"
         },
         "boundaryFunctXi": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "boundaryFunctionInitDomain": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "charge": {
-            "default": "[1.0]",
+            "defaultVal": "[1.0]",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "1.0",
             "mode": "readDoubleArray"
         },
         "checkSeedPopulation": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "dsh_hel_min": {
-            "default": "2.5e-4",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "2.5e-4",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "dsh_min": {
-            "default": "5.0e-5",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "5.0e-5",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "dumpFreq": {
-            "default": "1",
-            "maximum": "1000000",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1000000",
+            "minVal": "0",
             "mode": "readInt"
         },
         "dumpOnAbort": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "eMax": {
-            "default": "1000.0",
-            "maximum": "BADVALUE",
-            "minimum": "config.eMin",
+            "defaultVal": "1000.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "config.eMin",
             "mode": "readDouble"
         },
         "eMin": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "epCalcStartTime": {
-            "default": "config.simStartTime",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "config.simStartTime",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "epEquilibriumCalcDuration": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "epremDomain": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "epremDomainOutputTime": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "fieldAligned": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "flowMag": {
-            "default": "400.0e5",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "400.0e5",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "fluxLimiter": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "focusingLimit": {
-            "default": "1.0",
-            "maximum": "1.0",
-            "minimum": "0.0",
+            "defaultVal": "1.0",
+            "maxVal": "1.0",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "gammaEhigh": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "-1.0 * BADVALUE",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "-1.0 * LARGEFLOAT",
             "mode": "readDouble"
         },
         "gammaElow": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "-1.0 * BADVALUE",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "-1.0 * LARGEFLOAT",
             "mode": "readDouble"
         },
         "idealShock": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "idealShockFalloff": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "idealShockInitTime": {
-            "default": "config.simStartTime",
-            "maximum": "BADVALUE",
-            "minimum": "config.simStartTime",
+            "defaultVal": "config.simStartTime",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "config.simStartTime",
             "mode": "readDouble"
         },
         "idealShockJump": {
-            "default": "4.0",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "4.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "idealShockPhi": {
-            "default": "0.0",
-            "maximum": "2.0 * PI",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "TWO_PI",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "idealShockPhiWidth": {
+            "defaultVal": "config.idealShockWidth",
+            "maxVal": "PI",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "idealShockScale": {
+            "defaultVal": "config.idealShockSharpness / config.idealShockScaleLength",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "idealShockScaleLength": {
-            "default": "0.0046491",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "0.0046491",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "idealShockSharpness": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "idealShockSpeed": {
-            "default": "1500e5",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "1500e5",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "idealShockTheta": {
-            "default": "1.570796",
-            "maximum": "PI",
-            "minimum": "0.0",
+            "defaultVal": "HALF_PI",
+            "maxVal": "PI",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
+        "idealShockThetaWidth": {
+            "defaultVal": "config.idealShockWidth",
+            "maxVal": "PI",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "idealShockUseDegrees": {
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
         "idealShockWidth": {
-            "default": "0.0",
-            "maximum": "PI",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "PI",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "idw_p": {
-            "default": "3.0",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "3.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "kperxkpar": {
-            "default": "0.01",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "0.01",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "lamo": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "mass": {
-            "default": "[1.0]",
+            "defaultVal": "[1.0]",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "1.0",
             "mode": "readDoubleArray"
         },
         "mfpRadialPower": {
-            "default": "2.0",
-            "maximum": "BADVALUE",
-            "minimum": "-1.0 * BADVALUE",
+            "defaultVal": "2.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "-1.0 * LARGEFLOAT",
             "mode": "readDouble"
         },
         "mhdBAu": {
-            "default": "1.60e-5",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "1.60e-5",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
+        "mhdBConvert": {
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdCouple": {
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdCoupledTime": {
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
         "mhdDensityAu": {
-            "default": "8.30",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "8.30",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
+            "mode": "readDouble"
+        },
+        "mhdDigits": {
+            "defaultVal": "3",
+            "maxVal": "32767",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdDirectory": {
+            "defaultVal": "",
+            "mode": "readString"
+        },
+        "mhdInitFromOuterBoundary": {
+            "defaultVal": "2",
+            "maxVal": "2",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdInitMonteCarlo": {
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdInitRadius": {
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdInitTimeStep": {
+            "defaultVal": "0.000011574074074",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdNumFiles": {
+            "defaultVal": "0",
+            "maxVal": "32767",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdRadialMax": {
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdRadialMin": {
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdRhoConvert": {
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdRotateSolution": {
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdStartTime": {
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdSteadyState": {
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "mhdTimeConvert": {
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdVConvert": {
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "mhdVmin": {
+            "defaultVal": "50.0e5",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "minInjectionEnergy": {
-            "default": "0.01",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "0.01",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "numColumnsPerFace": {
-            "default": "2",
-            "maximum": "BADINT",
-            "minimum": "1",
+            "defaultVal": "2",
+            "maxVal": "LARGEINT",
+            "minVal": "1",
             "mode": "readInt"
         },
         "numEnergySteps": {
-            "default": "20",
-            "maximum": "BADINT",
-            "minimum": "2",
+            "defaultVal": "20",
+            "maxVal": "LARGEINT",
+            "minVal": "2",
             "mode": "readInt"
         },
         "numEpSteps": {
-            "default": "30",
-            "maximum": "BADINT",
-            "minimum": "1",
+            "defaultVal": "30",
+            "maxVal": "LARGEINT",
+            "minVal": "1",
             "mode": "readInt"
         },
         "numMuSteps": {
-            "default": "20",
-            "maximum": "BADINT",
-            "minimum": "2",
+            "defaultVal": "20",
+            "maxVal": "LARGEINT",
+            "minVal": "2",
             "mode": "readInt"
         },
         "numNodesPerStream": {
-            "default": "N_PROCS",
-            "maximum": "BADINT",
-            "minimum": "N_PROCS",
+            "defaultVal": "N_PROCS",
+            "maxVal": "LARGEINT",
+            "minVal": "N_PROCS",
             "mode": "readInt"
         },
         "numObservers": {
-            "default": "0",
-            "maximum": "1000",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1000",
+            "minVal": "0",
             "mode": "readInt"
         },
         "numRowsPerFace": {
-            "default": "2",
-            "maximum": "BADINT",
-            "minimum": "1",
+            "defaultVal": "2",
+            "maxVal": "LARGEINT",
+            "minVal": "1",
             "mode": "readInt"
         },
         "numSpecies": {
-            "default": "1",
-            "maximum": "100",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "100",
+            "minVal": "1",
             "mode": "readInt"
         },
         "obsPhi": {
-            "default": "[0]",
+            "defaultVal": "[0.0]",
+            "maxVal": "TWO_PI",
+            "minVal": "0.0",
             "mode": "readDoubleArray"
         },
         "obsR": {
-            "default": "[0]",
+            "defaultVal": "[config.rScale]",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "config.rScale",
             "mode": "readDoubleArray"
         },
         "obsTheta": {
-            "default": "[0]",
+            "defaultVal": "[0.0]",
+            "maxVal": "PI",
+            "minVal": "0.0",
             "mode": "readDoubleArray"
         },
+        "obsUseDegrees": {
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
         "omegaSun": {
-            "default": "0.001429813",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.001429813",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "outputFloat": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "outputRestart": {
-            "default": "0",
-            "maximum": "1000000",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1000000",
+            "minVal": "0",
             "mode": "readInt"
         },
         "parallelFlow": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "pointObserverOutput": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "pointObserverOutputTime": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "preEruptionDuration": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "rScale": {
-            "default": "RSAU",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "RSAU",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "rigidityPower": {
-            "default": "third",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "third",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "saveRestartFile": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "seedFunctionTest": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "shockDetectPercent": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "shockInjectionFactor": {
-            "default": "1.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "1.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "shockSolver": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "simStartTime": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "simStopTime": {
-            "default": "config.simStartTime + config.tDel",
-            "maximum": "BADVALUE",
-            "minimum": "config.simStartTime",
+            "defaultVal": "config.simStartTime + config.tDel",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "config.simStartTime",
             "mode": "readDouble"
         },
         "streamFluxOutput": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "streamFluxOutputTime": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
+        "streamSpawnLocAzi": {
+            "defaultVal": "[0.0]",
+            "maxVal": "TWO_PI",
+            "minVal": "0.0",
+            "mode": "readDoubleArray"
+        },
+        "streamSpawnLocZen": {
+            "defaultVal": "[0.0]",
+            "maxVal": "PI",
+            "minVal": "0.0",
+            "mode": "readDoubleArray"
+        },
         "subTimeCouple": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "tDel": {
-            "default": "0.01041666666667",
-            "maximum": "BADVALUE",
-            "minimum": "VERYSMALL",
+            "defaultVal": "0.01041666666667",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "SMALLFLOAT",
             "mode": "readDouble"
         },
         "unifiedOutput": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "unifiedOutputTime": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "unstructuredDomain": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "unstructuredDomainOutputTime": {
-            "default": "0.0",
-            "maximum": "BADVALUE",
-            "minimum": "0.0",
+            "defaultVal": "0.0",
+            "maxVal": "LARGEFLOAT",
+            "minVal": "0.0",
             "mode": "readDouble"
         },
         "useAdiabaticChange": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useAdiabaticFocus": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useBoundaryFunction": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useDrift": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useEPBoundary": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "useManualStreamSpawnLoc": {
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "useMhdSteadyStateDt": {
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useParallelDiffusion": {
-            "default": "1",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useShellDiffusion": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "useStochastic": {
-            "default": "0",
-            "maximum": "1",
-            "minimum": "0",
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
             "mode": "readInt"
         },
         "warningsFile": {
-            "default": "warningsXXX.txt",
+            "defaultVal": "warningsXXX.txt",
             "mode": "readString"
         }
     }
