@@ -8,11 +8,11 @@
 - Define `atomic.Species` and `atomic.species`
 - Make point-observer coordinates more precise
 
-## v0.3.6 (2023-01-24)
+## v0.3.6 (2024-01-24)
 
 - Fix bugs in config-parameter parsing and update default values
 
-## v0.3.5 (2023-01-23)
+## v0.3.5 (2024-01-23)
 
 - Implement `numpy.trapz` for real and physical array-like objects
 - Support additive and multiplicative operations between physical scalars and measurable tuples
