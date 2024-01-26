@@ -6,6 +6,7 @@
 
 - Extract `atomic.py` from `universal.py`
 - Define `atomic.Species` and `atomic.species`
+- Make point-observer coordinates more precise
 
 ## v0.3.6 (2023-01-24)
 
