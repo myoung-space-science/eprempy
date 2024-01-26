@@ -1,3 +1,14 @@
+"""
+Tools for working with atomic elements.
+
+Examples
+-----
+The following will print a table of elements in order of increasing atomic mass
+
+>>> from eprempy import atomic
+>>> atomic.ELEMENTS.show(names=['symbol', 'name', 'mass'])
+"""
+
 import typing
 
 import numpy
