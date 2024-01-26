@@ -3,11 +3,11 @@ import typing
 
 import numpy.typing
 
+from .. import atomic
 from .. import etc
 from .. import metric
 from .. import paths
 from .. import physical
-from .. import universal
 from ._reference import AXES
 from ._viewers import view_factory
 
@@ -104,7 +104,7 @@ class Axes(typing.Mapping[str, physical.Axis]):
         if self._species is None:
             mass = self._create('mass', unit='nuc')
             charge = self._create('charge', unit='e')
-            data = universal.elements(mass, charge)
+            data = atomic.elements(mass, charge)
             self._species = physical.symbols(data)
         return self._species
 
@@ -215,7 +215,7 @@ class Arrays:
         if self._species is None:
             mass = self._create('mass', unit='nuc')
             charge = self._create('charge', unit='e')
-            self._species = universal.elements(mass, charge)
+            self._species = atomic.elements(mass, charge)
         return self._species
 
     @property
