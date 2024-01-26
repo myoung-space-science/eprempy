@@ -219,3 +219,17 @@ def test_radial_interpolation(datadir: pathlib.Path) -> None:
         assert converted.unit == unit
 
 
+def test_point_coordinates(
+    datadir: pathlib.Path,
+    points: typing.Dict[str, eprem.Point],
+) -> None:
+    """Make sure a point observer knows its coordinates."""
+    for runname, point in points.items():
+        source = datadir / runname
+        dataset = eprem.dataset(source, config='eprem.cfg')
+        assert point.r.unit == 'm'
+        r0 = dataset.parameters['obsR'][0]
+        assert float(point.r.withunit(r0.unit)) == pytest.approx(float(r0))
+        assert point.theta == dataset.parameters['obsTheta'][0]
+        assert point.phi == dataset.parameters['obsPhi'][0]
+
