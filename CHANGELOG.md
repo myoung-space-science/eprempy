@@ -4,6 +4,9 @@
 
 ## NEXT
 
+- Extract `atomic.py` from `universal.py`
+- Define `atomic.Species` and `atomic.species`
+
 ## v0.3.6 (2023-01-24)
 
 - Fix bugs in config-parameter parsing and update default values
