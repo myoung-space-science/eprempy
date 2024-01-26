@@ -104,7 +104,7 @@ class Axes(typing.Mapping[str, physical.Axis]):
         if self._species is None:
             mass = self._create('mass', unit='nuc')
             charge = self._create('charge', unit='e')
-            data = atomic.elements(mass, charge)
+            data = atomic.elements(mass=mass, charge=charge)
             self._species = physical.symbols(data)
         return self._species
 
@@ -215,7 +215,7 @@ class Arrays:
         if self._species is None:
             mass = self._create('mass', unit='nuc')
             charge = self._create('charge', unit='e')
-            self._species = atomic.elements(mass, charge)
+            self._species = atomic.elements(mass=mass, charge=charge)
         return self._species
 
     @property
