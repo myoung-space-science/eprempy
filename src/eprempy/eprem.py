@@ -190,23 +190,29 @@ class Point(Observer):
 
     @property
     def r(self):
-        """The radial coordinate(s) of this observer."""
+        """The radial coordinate of this observer."""
         if self._r is None:
-            self._r = self._observables.parameters['obsR']
+            data = float(self['r'][0, 0])
+            unit = self['r'].unit
+            self._r = physical.scalar(data, unit=unit)
         return self._r
 
     @property
     def theta(self):
-        """The polar coordinate(s) of this observer."""
+        """The polar coordinate of this observer."""
         if self._theta is None:
-            self._theta = self._observables.parameters['obsTheta']
+            data = float(self['theta'][0, 0])
+            unit = self['theta'].unit
+            self._theta = physical.scalar(data, unit=unit)
         return self._theta
 
     @property
     def phi(self):
-        """The azimuthal coordinate(s) of this observer."""
+        """The azimuthal coordinate of this observer."""
         if self._phi is None:
-            self._phi = self._observables.parameters['obsPhi']
+            data = float(self['phi'][0, 0])
+            unit = self['phi'].unit
+            self._phi = physical.scalar(data, unit=unit)
         return self._phi
 
 
