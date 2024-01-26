@@ -1,5 +1,5 @@
 """
-Values and metadata of universal physical constants and chemical elements.
+Values and metadata of universal physical constants.
 """
 
 import collections.abc
