@@ -368,6 +368,9 @@ def test_subscription(ndarrays: support.NDArrays) -> None:
         dimensions=this.dimensions,
     )
     assert this[this < 0] == expected
+    xyz = real.array(ndarrays.xyz, dimensions=['x', 'y', 'z'])
+    assert numpy.array_equal(numpy.squeeze(xyz[0, ...]), ndarrays.xyz[0, ...])
+    assert numpy.array_equal(numpy.squeeze(xyz[..., 0]), ndarrays.xyz[..., 0])
 
 
 def test_squeeze(ndarrays: support.NDArrays):
