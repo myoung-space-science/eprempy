@@ -372,12 +372,12 @@ class Array(Quantity[DataType], Operators):
 
     def _getitem(self, args):
         """Extract a subarray.
-        
-        This method exists independently of `_subscript` in order to separate
+
+        This method exists independently of `__getitem__` in order to separate
         the subscription logic from the return-type logic.
         """
         unwrapped = container.unwrap(args)
-        indices = _index.normalize(self.shape, unwrapped)
+        indices = _index.resolve(self.shape, unwrapped)
         loaded = self._load_array(indices)
         array = numpy.array(loaded, ndmin=self.ndim)
         if isinstance(indices, numpy.ndarray) and indices.dtype == bool:
