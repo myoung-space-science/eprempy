@@ -599,8 +599,8 @@ def _has_ellipsis(args):
 
 def normalize(shape: typing.Sequence[int], args):
     """Compute appropriate array indices from `args`.
-    
-    If the indices in `args` have a standard form involving slices, an ellipsis,
+
+    If all indices in `args` have a standard form involving slices, an ellipsis,
     or integers, including 
 
     - `array[:]`
@@ -609,7 +609,7 @@ def normalize(shape: typing.Sequence[int], args):
     - `array[:, j]`
     - `array[i, j]`
 
-    (where i and j are integers) this method will immediately return them. If
+    (where i and j are integers) this function will immediately return them. If
     `args` is a `numpy.ndarray` with boolean type, this method will immediately
     return it. Otherwise, it will extract a sequence of indices that represents
     the original dimensions of the data.
