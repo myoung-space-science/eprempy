@@ -575,6 +575,28 @@ _INDEX_DTYPES = (
     numpy.uint64,
 )
 
+def resolve(shape: typing.Sequence[int], args):
+    """Convert `args` into array indices based on `shape`.
+
+    This function will first normalize `args` via `~normalize`. If the result
+    contains an `Ellipsis` (i.e., `...`), this function will expand the
+    `Ellipsis` via `~expand`. Otherwise, it will return the normalized indices.
+    """
+    normalized = normalize(shape, args)
+    if _has_ellipsis(normalized):
+        return expand(len(shape), normalized)
+    return normalized
+
+
+def _has_ellipsis(args):
+    """Helper for `~resolve`."""
+    try:
+        iter(args)
+    except TypeError:
+        return False
+    return any(arg is Ellipsis for arg in args)
+
+
 def normalize(shape: typing.Sequence[int], args):
     """Compute appropriate array indices from `args`.
     
