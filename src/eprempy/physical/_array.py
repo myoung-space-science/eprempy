@@ -66,8 +66,8 @@ class Array(Tensor[real.Array[real.ValueType]]):
         ) from None
 
     def __getitem__(self, args, /):
-        data = self.data[args]
         idx = numeric.index.expand(self.ndim, args)
+        data = self.data[idx]
         axes = {k: v[i] for i, (k, v) in zip(idx, self.axes.items())}
         return self.spawn(data, unit=self.unit, axes=axes)
 
