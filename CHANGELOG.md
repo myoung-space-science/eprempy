@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Fix subscription bugs in `real.Array` and `physical.Array`
+
 ## v0.3.7 (2024-01-26)
 - Extract `atomic.py` from `universal.py`
 - Define `atomic.Species` and `atomic.species`
