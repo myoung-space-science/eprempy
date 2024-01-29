@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.3.8 (2024-01-29)
+
 - Fix subscription bugs in `real.Array` and `physical.Array`
 
 ## v0.3.7 (2024-01-26)
