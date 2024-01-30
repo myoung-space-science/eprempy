@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Implement `numpy` logarithmic universal functions on physical objects
+
 ## v0.3.8 (2024-01-29)
 
 - Fix subscription bugs in `real.Array` and `physical.Array`
