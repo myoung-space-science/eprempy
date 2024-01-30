@@ -206,6 +206,10 @@ def parse(x, /, distribute: bool=False):
             f"Cannot measure non-iterable input: {unwrapped!r}"
         ) from err
 
+    # Recursively parse nested parsable objects.
+    if all(isinstance(arg, (list, tuple)) for arg in unwrapped):
+        return _recursive_parse(unwrapped, distribute)
+
     # Count the number of distinct unit-like objects.
     types = [type(arg) for arg in unwrapped]
     counted = {t: types.count(t) for t in (str, metric.Unit)}
@@ -231,15 +235,8 @@ def parse(x, /, distribute: bool=False):
             raise ParsingValueError(errmsg) from err
         return parse([*values, unwrapped[-1]])
 
-    # TODO: The structure below suggests that there may be available
-    # refactorings, though they may require first redefining or dismantling
-    # `_callback_parse`.
-
-    isnumerical = all(isinstance(arg, numbers.Real) for arg in unwrapped)
-    isseparable = all(container.isseparable(arg) for arg in unwrapped)
-
     # Handle flat numerical iterables, like (1.1,) or (1.1, 2.3).
-    if isnumerical:
+    if all(isinstance(arg, numbers.Real) for arg in unwrapped):
         return _wrap_measurable(unwrapped, '1', distribute)
 
     # Ensure an explicit unit-like object. Note that, at this point, `unwrapped`
@@ -252,13 +249,18 @@ def parse(x, /, distribute: bool=False):
     ) or last in ['1', metric.unit('1')]
     unit = '1' if unitless else str(last)
 
-    # Handle flat iterables with a unit, like (1.1, 'm') or (1.1, 2.3, 'm').
-    if all(isinstance(arg, numbers.Real) for arg in unwrapped[:-1]):
-        return _wrap_measurable(unwrapped[:-1], unit, distribute)
+    if isinstance(last, (str, metric.Unit)):
+        unit = str(unwrapped[-1])
 
-    # Handle iterable values with a unit, like [(1.1, 2.3), 'm'].
-    if isinstance(unwrapped[0], (list, tuple, range)):
-        return _wrap_measurable(unwrapped[0], unit, distribute)
+        # Handle flat iterables with a unit, like (1.1, 'm') or (1.1, 2.3, 'm').
+        if all(isinstance(arg, numbers.Real) for arg in unwrapped[:-1]):
+            return _wrap_measurable(unwrapped[:-1], unit, distribute)
+
+        # Handle iterable values with a unit, like [(1.1, 2.3), 'm'].
+        if isinstance(unwrapped[0], (list, tuple, range)):
+            return _wrap_measurable(unwrapped[0], unit, distribute)
+
+    raise ParsingTypeError(x)
 
 
 def _wrap_measurable(values, unit, distribute: bool):
