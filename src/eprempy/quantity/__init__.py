@@ -144,9 +144,10 @@ def _measure_explicit(x: base.Measurable, **kwargs):
 
 def _measure_implicit(x):
     """Create a measurement by calling `metric.parse`."""
-    parsed = parse(x, distribute=False)
-    if not parsed:
-        raise MeasuringTypeError(f"Cannot measure {x}") from None
+    try:
+        parsed = parse(x, distribute=False)
+    except (ParsingValueError, ParsingTypeError) as err:
+        raise MeasuringTypeError(f"Cannot measure {x}") from err
     data = parsed[:-1]
     unit = parsed[-1]
     return measurement(data, unit=unit)
