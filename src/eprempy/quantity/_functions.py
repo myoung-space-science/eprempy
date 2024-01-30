@@ -282,7 +282,7 @@ def _callback_parse(unwrapped, distribute: bool):
     ]
     units = [item[-1] for item in parsed]
     if any(unit != units[0] for unit in units):
-        errmsg = "Can't combine measurements with different units."
+        errmsg = "Cannot combine measurements with different units."
         raise ParsingValueError(errmsg)
     values = [
         i for item in parsed for i in item[:-1]
