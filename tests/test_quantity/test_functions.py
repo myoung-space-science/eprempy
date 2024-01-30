@@ -56,6 +56,8 @@ def test_parse(measurables):
         quantity.parse([1.1, 'm', 2.3, 'cm'])
     with pytest.raises(quantity.ParsingValueError):
         quantity.parse([(1.1, 'm'), (2.3, 5.8, 'cm')])
+    with pytest.raises(quantity.ParsingTypeError):
+        quantity.parse([1, (1, 'm')])
 
 
 def test_measure(measurables):
@@ -80,6 +82,8 @@ def test_measure(measurables):
     assert quantity.measure('1.1') == expected
     with pytest.raises(quantity.MeasuringTypeError):
         quantity.measure()
+    with pytest.raises(quantity.MeasuringTypeError):
+        quantity.measure(1, (1, 'm'))
 
 
 def test_isindexlike():
