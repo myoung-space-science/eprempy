@@ -166,7 +166,8 @@ def parse(x, /, distribute: bool=False):
     - an iterable collection of any of the above cases, as long as the units are
       consistent
 
-    where 'numbers' includes strings that can be converted to numeric values.
+    where the notion of numbers includes strings that can be converted to
+    numeric values.
     """
 
     # Strip redundant lists and tuples.
@@ -182,7 +183,7 @@ def parse(x, /, distribute: bool=False):
             f"Cannot measure empty input: {unwrapped!r}"
         ) from None
 
-    # Handle a single numerical value.
+    # Handle a single numeric value.
     if isinstance(unwrapped, numbers.Real):
         result = (unwrapped, '1')
         return (result,) if distribute else result
@@ -241,11 +242,10 @@ def parse(x, /, distribute: bool=False):
     if isnumerical:
         return _wrap_measurable(unwrapped, '1', distribute)
 
-    # Recursively handle an iterable of separable items.
-    if isseparable:
-        return _callback_parse(unwrapped, distribute)
-
-    # Ensure an explicit unit-like object
+    # Ensure an explicit unit-like object. Note that, at this point, `unwrapped`
+    # must have one of the following forms (where any tuple may be a list):
+    # - (v0, v1, ..., unit)
+    # - ((v0, v1, ...), unit)
     last = unwrapped[-1]
     unitless = all(
         not isinstance(arg, (str, metric.Unit)) for arg in unwrapped
