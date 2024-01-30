@@ -477,6 +477,47 @@ def sqrt(x: Measured[real.ValueType]):
     return numeric.Result(data, **metadata)
 
 
+@objects(numpy.log)
+@from_numpy
+def log(x: Measured[real.ValueType]):
+    """Compute the natural log of `x`."""
+    return _apply_log(numpy.log, x)
+
+
+@objects(numpy.log10)
+@from_numpy
+def log10(x: Measured[real.ValueType]):
+    """Compute the base-10 log of `x`."""
+    return _apply_log(numpy.log10, x)
+
+
+@objects(numpy.log2)
+@from_numpy
+def log2(x: Measured[real.ValueType]):
+    """Compute the base-2 log of `x`."""
+    return _apply_log(numpy.log2, x)
+
+
+@objects(numpy.log1p)
+@from_numpy
+def log1p(x: Measured[real.ValueType]):
+    """Compute the natural log of `x + 1`."""
+    return _apply_log(numpy.log1p, x)
+
+
+def _apply_log(f, x: Measured[real.ValueType]):
+    """Compute a logarithmic function of `x`."""
+    if str(x.unit) == '1':
+        metadata = {'unit': '1'}
+        if isinstance(x, Array):
+            metadata['axes'] = x.axes
+        return numeric.Result(f(x.data), **metadata)
+    strf = f.__name__
+    raise ValueError(
+        f"Cannot compute {strf}(x) when x is not unitless"
+    ) from None
+
+
 @objects(numpy.squeeze)
 @from_numpy
 def squeeze(x: Measured[real.ValueType], **kwargs):
