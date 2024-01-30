@@ -421,6 +421,30 @@ def test_sqrt(ndarrays: support.NDArrays):
     assert new.unit == f"{old.unit}^1/2"
 
 
+def test_logs(ndarrays: support.NDArrays):
+    """Test `numpy` logarithmic ufuncs on a physical array."""
+    ndarray = abs(ndarrays.r)
+    dimensions = ['x', 'y']
+    old = physical.array(
+        ndarray,
+        unit='1',
+        axes=dimensions,
+    )
+    bad = physical.array(
+        ndarray,
+        unit='m',
+        axes=dimensions,
+    )
+    for f in (numpy.log, numpy.log10, numpy.log2, numpy.log1p):
+        new = f(old)
+        assert isinstance(new, physical.Array)
+        assert numpy.array_equal(new, f(ndarray))
+        assert new.dimensions == numeric.dimensions(dimensions)
+        assert new.unit == '1'
+        with pytest.raises(ValueError):
+            f(bad)
+
+
 def test_squeeze(ndarrays: support.NDArrays):
     """Test `numpy.squeeze` on a physical array."""
     ndarray = ndarrays.r[:, :1]
