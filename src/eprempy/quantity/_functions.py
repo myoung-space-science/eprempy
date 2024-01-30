@@ -73,7 +73,7 @@ def ismeasurable(x, /):
         values = arg0 if container.isiterable(arg0) else args[:-1]
         if all(isinstance(value, numbers.Real) for value in values):
             return True
-    if all(ismeasurable(i) for i in args):
+    if all(isinstance(i, (list, tuple)) and ismeasurable(i) for i in args):
         return True
     return False
 
