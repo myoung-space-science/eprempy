@@ -268,7 +268,7 @@ def _wrap_measurable(values, unit, distribute: bool):
     return (*values, unit)
 
 
-def _callback_parse(unwrapped, distribute: bool):
+def _recursive_parse(unwrapped, distribute: bool):
     """Parse the measurable by calling back to `~parse`."""
     if distribute:
         parsed = [
