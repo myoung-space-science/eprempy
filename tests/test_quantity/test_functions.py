@@ -24,6 +24,7 @@ def test_implicitly_measurable(measurables):
         [],
         {},
         set(),
+        (1, (1, 'm')),
     ]
     for this in false:
         assert not quantity.ismeasurable(this)
