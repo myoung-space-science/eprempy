@@ -59,6 +59,11 @@ _UNITS = [
         'quantity': 'length',
     },
     {
+        'symbol': 'Rs',
+        'name': 'solar radius',
+        'quantity': 'length',
+    },
+    {
         'symbol': 'g',
         'name': 'gram',
         'quantity': 'mass',
@@ -772,6 +777,7 @@ PI = numpy.pi
 
 
 _CONVERSIONS = {
+    ('Rs', 'm'): 6.96e8,
     ('F', 'cm'): C**2 * 1e-9,
     ('C', 'statC'): 10*C,
     ('e', 'C'): 1.6022e-19,
