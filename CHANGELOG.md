@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Support length conversions to/from solar radius
+
 ## v0.4.0 (2024-01-31)
 
 - Extend observable coordinate subscription to support "interpolated" values
