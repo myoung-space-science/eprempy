@@ -11,7 +11,6 @@
 - Extend observable coordinate subscription to support "interpolated" values
 - Implement `numpy` logarithmic universal functions on physical objects
 - Improve quantity parsing and measuring
-- Fix subscription bugs in array objects
 
 ## v0.3.8 (2024-01-29)
 
