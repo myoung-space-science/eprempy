@@ -1153,11 +1153,19 @@ class Quantities(collections.abc.Mapping):
 
     def _time(self, user: Arguments):
         """Callback method for time."""
+        if 'time' in user:
+            unit = self.dataset.time.unit
+            data = numpy.array(user['time'].withunit(unit))
+            return physical.array(
+                data,
+                unit=unit,
+                axes=self.dataset.time.axes,
+            )
         return self.functions.time(time=user.time)
 
     @property
     def energy(self):
-        """The particle energies."""
+        """The particle energies per nucleon."""
         return self._implement(
             self._energy,
             self.dataset.energy.unit,
@@ -1165,12 +1173,20 @@ class Quantities(collections.abc.Mapping):
         )
 
     def _energy(self, user: Arguments):
-        """Callback method for particle energies."""
+        """Callback method for particle energies per nucleon."""
+        if 'energy' in user:
+            unit = self.dataset.energy.unit
+            data = numpy.array(user['energy'].withunit(unit))
+            return physical.array(
+                data,
+                unit=unit,
+                axes=self.dataset.energy.axes,
+            )
         return self.functions.energy(energy=user.energy)
 
     @property
     def v(self):
-        """The particle speeds."""
+        """The particle speed at each energy per nucleon."""
         return self._implement(
             self._v,
             self.dataset.v.unit,
@@ -1178,7 +1194,11 @@ class Quantities(collections.abc.Mapping):
         )
 
     def _v(self, user: Arguments):
-        """Callback method for particle speeds."""
+        """Callback method for equivalent particle speeds."""
+        if 'energy' in user:
+            energy = self._energy(user)
+            mass = self.constants['mp'].asscalar
+            return physical.array(numpy.sqrt(2 * energy / mass))
         return self.functions.v(energy=user.energy)
 
     @property
@@ -1192,6 +1212,14 @@ class Quantities(collections.abc.Mapping):
 
     def _mu(self, user: Arguments):
         """Callback method for pitch-angle cosines."""
+        if 'mu' in user:
+            unit = self.dataset.mu.unit
+            data = numpy.array(user['mu'].withunit(unit))
+            return physical.array(
+                data,
+                unit=unit,
+                axes=self.dataset.mu.axes,
+            )
         return self.functions.mu(mu=user.mu)
 
     @property
