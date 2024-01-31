@@ -163,13 +163,13 @@ def _apply_interp1d(
     return interp(target)
 
 
-class Arguments(aliased.Mapping):
+class Arguments(aliased.Mapping[str, measured.Object]):
     """Array indices and physical assumptions."""
 
     def __init__(
         self,
         indices: typing.Dict[str, numeric.index.Sequence],
-        **assumptions
+        **assumptions: measured.Object
     ) -> None:
         aliases = reference.ALIASES | parameter.ALIASES
         super().__init__(assumptions, aliases=aliases)
