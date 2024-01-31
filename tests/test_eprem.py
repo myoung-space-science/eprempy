@@ -11,7 +11,9 @@ import pytest
 from eprempy import (
     eprem,
     physical,
+    quantity,
     reference,
+    universal,
     Array,
     Observable,
 )
@@ -121,6 +123,28 @@ def test_symbolic_species(datadir: pathlib.Path):
     assert isinstance(flux, Array)
     with pytest.raises(ValueError):
         stream['flux'][0, 0, '!@', 0]
+
+
+def test_subscript_coordinate(streams: typing.Dict[str, eprem.Stream]):
+    """Request coordinate values that may or may not be in the array."""
+    coordinates = {
+        'time': ((0.55, 'day'), (0.55, 1.01, 'day')),
+        'energy': ((1.0, 'MeV'), (0.1, 1.0, 'MeV')),
+        'mu': ((-0.9876, '1'), (-0.9876, +0.5432, '1')),
+    }
+    for stream in streams.values():
+        for key, tuples in coordinates.items():
+            for idx in tuples:
+                this = stream[key][idx]
+                assert len(this) == len(idx)-1
+                x = quantity.measure(idx).withunit(this.unit)
+                assert numpy.array_equal(this, x)
+            if key == 'energy':
+                speed = stream['v'][idx]
+                assert len(speed) == len(idx)-1
+                energy = physical.array(x)
+                v = numpy.sqrt(2 * energy / universal.MKS['mp'])
+                assert numpy.array_equal(speed, v)
 
 
 def test_observable_array(datadir: pathlib.Path):
