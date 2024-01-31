@@ -428,7 +428,7 @@ class Quantity:
         if isinstance(args, Arguments):
             return self.context.apply(args)
         # Expand arguments to one index per dimension.
-        normalized = numeric.index.expand(self.ndim, args)
+        normalized = self._normalize(args)
         nargs = len(normalized)
         ndims = len(self.dimensions)
         if nargs != ndims:
@@ -459,6 +459,12 @@ class Quantity:
             f"The unit of the observed array ({str(result.unit)!r})"
             f" is not consistent with the expected unit ({str(self.unit)!r})"
         ) from None
+
+    def _normalize(self, args):
+        """Observable-specific index normalization."""
+        if self.ndim == 1 and quantity.ismeasurable(args):
+            return numeric.index.expand(self.ndim, [args])
+        return numeric.index.expand(self.ndim, args)
 
     def _shell_or_radius(self, axes: dict):
         """Determine whether the shell axis represents a radius."""
