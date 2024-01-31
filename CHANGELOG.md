@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.4.0 (2024-01-31)
+
 - Extend observable coordinate subscription to support "interpolated" values
 - Implement `numpy` logarithmic universal functions on physical objects
 - Improve quantity parsing and measuring
