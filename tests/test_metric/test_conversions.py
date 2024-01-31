@@ -114,9 +114,13 @@ def conversions():
         },
         # Common or pathological conversions
         'miscellaneous': {
+            # length: meter -> solar radius (special case)
+            ('Rs', 'm'): 6.96e8,
+            # length: centimeter -> solar radius (chained special case)
+            ('Rs', 'cm'): 6.96e10,
             # magnetic induction: cgs -> sim
             ('G', 'nT'): 1e5,
-            # magnetic induction: cgs -> sim
+            # magnetic induction: sim -> cgs
             ('nT', 'G'): 1e-5,
             # terms in different order
             ('ms^3 m^-2', 'km^-2 s^3'): 1e-3,
