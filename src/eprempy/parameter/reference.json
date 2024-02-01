@@ -653,6 +653,30 @@
             "minVal": "0",
             "mode": "readInt"
         },
+        "switchbackAlpha": {
+            "defaultVal": "0.0",
+            "maxVal": "PI",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "switchbackBeta": {
+            "defaultVal": "0.0",
+            "maxVal": "TWO_PI",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
+        "switchbackUseDegrees": {
+            "defaultVal": "0",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "switchbackXc": {
+            "defaultVal": "0.0",
+            "maxVal": "+LARGEFLOAT",
+            "minVal": "0.0",
+            "mode": "readDouble"
+        },
         "tDel": {
             "defaultVal": "0.01041666666667",
             "maxVal": "LARGEFLOAT",
