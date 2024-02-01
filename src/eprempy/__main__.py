@@ -36,18 +36,20 @@ if __name__ == '__main__':
         title="modes",
         dest="mode",
     )
-    generate_parser = subparsers.add_parser(
-        'generate',
-        description=DESCRIPTIONS['generate'],
+    database_parser = subparsers.add_parser(
+        'database',
+        description=DESCRIPTIONS['database'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help="generate database of default parameter values",
     )
-    generate_parser.add_argument(
-        'source',
+    database_parser.add_argument(
+        '-s',
+        '--source',
+        required=True,
         help="use files in SRC to define default parameter values",
         metavar='SRC',
     )
-    generate_parser.add_argument(
+    database_parser.add_argument(
         '--append',
         help=(
             "append parameters to the existing database"
@@ -55,19 +57,28 @@ if __name__ == '__main__':
         ),
         action='store_true',
     )
-    generate_parser.add_argument(
+    database_parser.add_argument(
         '-v',
         '--verbose',
         help="print informational messages",
         action='store_true',
     )
-    compare_parser = subparsers.add_parser(
-        'compare',
-        description=DESCRIPTIONS['compare'],
+    parameters_parser = subparsers.add_parser(
+        'parameters',
+        description=DESCRIPTIONS['parameters'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help="compare user configuration-file values",
+        help="compare parameter values",
     )
-    compare_parser.add_argument(
+    parameters_parser.add_argument(
+        '-c',
+        '--config',
+        dest='files',
+        required=True,
+        help="one or more configuration files to show",
+        nargs='+',
+        metavar=('FILE0', 'FILE1'),
+    )
+    parameters_parser.add_argument(
         '-s',
         '--source',
         help=(
@@ -76,15 +87,7 @@ if __name__ == '__main__':
         ),
         metavar='SRC',
     )
-    compare_parser.add_argument(
-        '-c',
-        '--config',
-        dest='files',
-        help="one or more configuration files to show",
-        nargs='+',
-        metavar=('FILE0', 'FILE1'),
-    )
-    compare_parser.add_argument(
+    parameters_parser.add_argument(
         '--diff',
         help=(
             "show only parameters with differing values"
@@ -92,7 +95,7 @@ if __name__ == '__main__':
         ),
         action='store_true',
     )
-    compare_parser.add_argument(
+    parameters_parser.add_argument(
         '--names',
         help="show full file names",
         action='store_true',

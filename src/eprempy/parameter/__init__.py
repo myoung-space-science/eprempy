@@ -14,8 +14,8 @@ from ._config import (
     configfile_factory as configfile,
 )
 from ._interface import (
-    compare_arguments as compare,
-    generate_defaults as generate,
+    compare_parameters as compare,
+    generate_database as generate,
 )
 from ._reference import (
     ALIASES,
