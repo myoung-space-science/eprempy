@@ -14,7 +14,6 @@ from ._config import (
     configfile_factory as configfile,
 )
 from ._interface import (
-    compare_parameters as compare,
     generate_database as generate,
 )
 from ._reference import (
@@ -24,13 +23,25 @@ from ._runtime import (
     Interface,
     Variable,
 )
+from ._src import (
+    BaseTypesH,
+    ConfigurationC,
+    SourceFile,
+)
 from . import default
+
+
+DB_PATH = str(_src.SourceFile._db_path)
+"""Public string version of source file default database path."""
 
 
 __all__ = [
     "ALIASES",
+    "BaseTypesH",
+    "ConfigurationC",
     "ConfigFile",
     "Interface",
+    "SourceFile",
     "Variable",
     "compare",
     "configfile",

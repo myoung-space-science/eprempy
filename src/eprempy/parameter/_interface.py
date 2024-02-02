@@ -8,15 +8,11 @@ import os
 import pathlib
 import typing
 
-from eprempy import etc
-from eprempy import measured
-from eprempy import parameter
-from eprempy.parameter._src import (
-    BaseTypesH,
-    ConfigurationC,
-    SourceFile,
-)
-from eprempy import paths
+from .. import etc
+from .. import measured
+from .. import paths
+from . import _runtime
+from . import _src
 
 
 class UserError(Exception):
@@ -31,116 +27,7 @@ DIRECTORY = pathlib.Path(__file__).expanduser().resolve().parent
 """The fully resolved directory containing this file."""
 
 
-def compare_parameters(
-    files: typing.Iterable[paths.PathLike],
-    source: paths.PathLike=None,
-    diff: bool=False,
-    names: bool=False,
-) -> None:
-    """Compare values of EPREM configuration parameters.
-    
-    This method will print the name of each parameter and its default value, as
-    well as the corresponding value contained in each configuration file in
-    `paths`. If `source` is not absent, it will read parameter names and default
-    values from the version of `configuration.c` in `source`; otherwise it will
-    use the values in the local database.
-    """
-    if not files:
-        raise UserError("Nothing to compare") from None
-    args = _build_arg_dict(files, source=source, diff=diff, names=names)
-    topkeys = next(list(v.keys()) for v in args.values() if v)
-    nonnull = (v for item in args.values() for v in item.values() if v)
-    # width (i.e., string length) of the longest parameter
-    pwidth = max(len(k) for k in args)
-    # width (i.e., string length) of the longest file key
-    lwidth = max(len(k) for k in topkeys)
-    # width (i.e., string length) of the longest non-null value
-    vwidth = max(len(v) for v in nonnull)
-    # padded parameter-value width
-    rwidth = vwidth + 2
-    # amount of parameter-value right-justification
-    jwidth = min(78, rwidth)
-    # total width: either the longest parameter or the longest key-value combo.
-    # - longest parameter produces groups like
-    # * ParameterName
-    # * -------------
-    # * key     value
-    # - longest key-value combo produces groups like
-    # *    ParameterName
-    # * -------------------
-    # * key           value
-    cwidth = max(pwidth, lwidth + jwidth)
-    print()
-    for key, item in args.items():
-        print(str(key).center(cwidth))
-        print('-' * cwidth)
-        for k, v in item.items():
-            print(f"{str(k).ljust(lwidth)}{str(v).rjust(jwidth)}")
-        print()
-
-
-def _build_arg_dict(
-    files: typing.Iterable[paths.PathLike],
-    source: paths.PathLike=None,
-    diff: bool=False,
-    names: bool=False,
-) -> typing.Dict[str, typing.Dict[str, typing.Any]]:
-    """Build a `dict` of parameter values."""
-    default = parameter.interface()
-    normalized = _normalize_paths(files)
-    if names:
-        mapped = normalized
-    else:
-        mapped = {k: str(i) for i, k in enumerate(normalized)}
-    targets = {
-        relpath: parameter.interface(abspath)
-        for abspath, relpath in mapped.items()
-    }
-    keys = sorted(ConfigurationC(source))
-    built = {key: {} for key in keys}
-    for key in keys:
-        current = {
-            name: _format_arg(interface.get(key))
-            for name, interface in targets.items()
-        }
-        values = list(current.values())
-        v0 = values[0]
-        if not diff or any(vi != v0 for vi in values):
-            built[key] = {
-                'default': _format_arg(default[key]),
-                **current,
-            }
-    if diff:
-        return {k: v for k, v in built.items() if v}
-    return built
-
-
-def _normalize_paths(args: typing.Iterable[paths.PathLike]):
-    """Compute full and unique relative paths."""
-    full = {
-        str(arg): str(paths.fullpath(arg, strict=True))
-        for arg in args
-    }
-    common = os.path.commonpath(full.values())
-    return {
-        str(path): os.path.relpath(path, start=common)
-        for path in full.values()
-    }
-
-
-def _format_arg(arg):
-    """Format this argument for display."""
-    if isinstance(arg, measured.Object):
-        data = arg.data[0] if len(arg.data) == 1 else arg.data
-        if arg.unit == '1' or data is None:
-            return f"{data!r}"
-        if str(arg.unit) in {'d', 'day'}:
-            return f"{data} 'day'"
-        return f"{data} {str(arg.unit)!r}"
-    return str(arg)
-
-
-_DB_PATH = SourceFile._db_path
+_DB_PATH = _src.SourceFile._db_path
 
 _PY_PATH = _DB_PATH.parent / 'default.py'
 
@@ -154,8 +41,8 @@ def generate_database(
     verbose: bool=False,
 ) -> None:
     """Generate default parameter values from the EPREM source code in `src`."""
-    basetypes_h = BaseTypesH(source)
-    configuration_c = ConfigurationC(source)
+    basetypes_h = _src.BaseTypesH(source)
+    configuration_c = _src.ConfigurationC(source)
     action = 'Appended' if append else 'Wrote'
     _generate_json(basetypes_h, configuration_c, _DB_PATH, append=append)
     if verbose:
@@ -166,8 +53,8 @@ def generate_database(
 
 
 def _generate_json(
-    basetypes_h: BaseTypesH,
-    configuration_c: ConfigurationC,
+    basetypes_h: _src.BaseTypesH,
+    configuration_c: _src.ConfigurationC,
     path: pathlib.Path,
     append: bool=False,
 ) -> None:
@@ -226,7 +113,7 @@ def _log_json_sources(path: pathlib.Path, sources: typing.Iterable[str]):
 _DEFAULT_PY_DOC = \
 f'''Default values and metadata for EPREM simulation parameters.
 
-DO NOT EDIT THIS FILE. It was created via the `database` feature of this module. Run `python </path/to/this/module> database -h` for more information.
+DO NOT EDIT THIS FILE. It was created via the {__file__} module. Run `python {__package__}/{__file__} -h` for more information.
 '''
 
 
@@ -285,8 +172,8 @@ See Also
 
 
 def _generate_py(
-    basetypes_h: BaseTypesH,
-    configuration_c: ConfigurationC,
+    basetypes_h: _src.BaseTypesH,
+    configuration_c: _src.ConfigurationC,
     path: pathlib.Path,
 ) -> None:
     """Generate the Python module of default parameter values."""
@@ -307,8 +194,6 @@ def _generate_py(
 def run(mode: str, options: typing.Mapping):
     if mode == 'database':
         return generate_database(**options)
-    if mode == 'parameters':
-        return compare_parameters(**options)
     raise CLIError(f"Unknown mode: {mode!r}")
 
 
@@ -323,11 +208,6 @@ _docstring_replacements = {
 DESCRIPTIONS = {
     'database': etc.doc2help(
         generate_database,
-        mode='full',
-        replacements=_docstring_replacements,
-    ),
-    'parameters': etc.doc2help(
-        compare_parameters,
         mode='full',
         replacements=_docstring_replacements,
     ),
