@@ -27,8 +27,7 @@ if __name__ == '__main__':
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
-        '-V',
-        '--version',
+        '-V', '--version',
         help="print the current package version",
         action='store_true',
     )
@@ -43,8 +42,7 @@ if __name__ == '__main__':
         help="generate database of default parameter values",
     )
     database_parser.add_argument(
-        '-s',
-        '--source',
+        '-s', '--source',
         help="use files in SRC to define default parameter values",
         metavar='SRC',
     )
@@ -57,8 +55,7 @@ if __name__ == '__main__':
         action='store_true',
     )
     database_parser.add_argument(
-        '-v',
-        '--verbose',
+        '-v', '--verbose',
         help="print informational messages",
         action='store_true',
     )
@@ -69,16 +66,14 @@ if __name__ == '__main__':
         help="compare parameter values",
     )
     parameters_parser.add_argument(
-        '-c',
-        '--compare',
+        '-c', '--compare',
         dest='files',
         help="one or more configuration files to view",
         nargs='+',
         metavar=('FILE0', 'FILE1'),
     )
     parameters_parser.add_argument(
-        '-s',
-        '--source',
+        '-s', '--source',
         help=(
             "use files in SRC when showing default parameter values"
             f"; otherwise, use definitions in {DB_PATH}"
