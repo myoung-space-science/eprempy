@@ -45,7 +45,6 @@ if __name__ == '__main__':
     database_parser.add_argument(
         '-s',
         '--source',
-        required=True,
         help="use files in SRC to define default parameter values",
         metavar='SRC',
     )
@@ -71,10 +70,9 @@ if __name__ == '__main__':
     )
     parameters_parser.add_argument(
         '-c',
-        '--config',
+        '--compare',
         dest='files',
-        required=True,
-        help="one or more configuration files to show",
+        help="one or more configuration files to view",
         nargs='+',
         metavar=('FILE0', 'FILE1'),
     )
@@ -109,7 +107,7 @@ if __name__ == '__main__':
         except UserError as err:
             print()
             print(f"ERROR: {err}")
-            print(f"       Try 'eprempy {usermode} -h'")
+            print(f"       Try running 'python -m eprempy {usermode} -h'")
     else:
         parser.error("No arguments. Try 'eprempy -h' for more information.")
 
