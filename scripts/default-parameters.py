@@ -12,9 +12,6 @@ _DB_PATH = parameter.SourceFile._db_path
 
 _PY_PATH = _DB_PATH.parent / 'default.py'
 
-DB_PATH = str(_DB_PATH)
-"""Public string version of source file default database path."""
-
 
 def main(
     source: paths.PathLike,
