@@ -31,7 +31,7 @@ from ._src import (
 from . import default
 
 
-DB_PATH = str(_src.SourceFile._db_path)
+DB_PATH = str(SourceFile._db_path)
 """Public string version of source file default database path."""
 
 
@@ -43,7 +43,6 @@ __all__ = [
     "Interface",
     "SourceFile",
     "Variable",
-    "compare",
     "configfile",
     "default",
     "generate",
