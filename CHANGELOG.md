@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Fix multiple bugs in package CLI
+
 ## v0.5.0 (2024-02-09)
 
 - Support length conversions to/from solar radius
