@@ -28,14 +28,19 @@ def run(mode: str, options: typing.Mapping):
 
 def run_configfile_subparser(options: typing.Mapping):
     """Generate or compare configuration files."""
-    if 'generate' in options:
+    if options.get('generate'):
         return generate_config_file(
             path=options['generate'],
             source=options['source'],
             verbose=options['verbose'],
         )
-    if 'compare' in options:
-        return compare_config_files()
+    if options.get('files'):
+        return compare_config_files(
+            files=options['files'],
+            source=options['source'],
+            diff=options['diff'],
+            names=options['names'],
+        )
 
 
 _timestr = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
