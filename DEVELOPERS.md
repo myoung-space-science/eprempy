@@ -8,7 +8,7 @@ Note that this is a living document and is subject to change without notice.
 
 ### Messages
 
-Commit messages should follow the structure prescribed by the [Angular commit style](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines). The exception to that style is that optional message bodies need not be written in imperative present tense. For example, message bodies that read "This new method blonks the flerb with thuzal." and "Create method to blonk the flerb with thuzal." are equally valid.
+Commit messages should follow the structure prescribed by the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) (CC) style. The exception to that style is that optional message bodies need not be written in imperative present tense. For example, message bodies that read "This new method blonks the flerb with thuzal." and "Create method to blonk the flerb with thuzal." are equally valid.
 
 For convenience, here are the allowed subject types
 
@@ -20,4 +20,5 @@ For convenience, here are the allowed subject types
 * perf: A code change that improves performance
 * test: Adding missing or correcting existing tests
 * chore: Changes to the build process or auxiliary tools and libraries such as documentation generation
+* wip: work in progress on a feature or bug fix.
 
