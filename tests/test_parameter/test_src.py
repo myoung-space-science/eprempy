@@ -1,7 +1,7 @@
 import pytest
 
 from eprempy import paths
-from eprempy.parameter import default
+from eprempy.parameter import reference
 from eprempy.parameter._src import (
     BaseTypesH,
     ConfigurationC,
@@ -14,7 +14,7 @@ def test_basetypes_h(srcdir: str):
         b = BaseTypesH(path)
         if path is not None:
             assert b.origin.parent == paths.fullpath(path, strict=True)
-        for key, this in default.BASETYPES_H.items():
+        for key, this in reference.BASETYPES_H.items():
             assert b[key] == pytest.approx(this['value'])
 
 
@@ -25,7 +25,7 @@ def test_configuration_c(srcdir: str):
         c = ConfigurationC(path)
         if path is not None:
             assert c.origin.parent == paths.fullpath(path, strict=True)
-        for key, this in default.CONFIGURATION_C.items():
+        for key, this in reference.CONFIGURATION_C.items():
             expected = {k: v for k, v in this.items() if k in testkeys}
             assert c[key] == expected
 

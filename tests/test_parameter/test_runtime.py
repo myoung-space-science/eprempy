@@ -78,7 +78,7 @@ def test_singular_variable():
 def test_interface(
     srcdir: str,
     config: typing.Dict[str, typing.Dict[str, dict]],
-    reference: typing.Dict[str, dict],
+    default: typing.Dict[str, dict],
 ) -> None:
     """Test the full interface to EPREM parameter values.
     
@@ -92,7 +92,7 @@ def test_interface(
     """
     for cfg in config.values():
         interface = parameter.interface(srcdir=srcdir, config=cfg['path'])
-        for key, value in reference.items():
+        for key, value in default.items():
             expected = cfg['args'].get(key, value['defaultVal'])
             for alias in parameter.ALIASES.get(key, [key]):
                 assert alias in interface

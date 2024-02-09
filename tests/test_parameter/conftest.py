@@ -4,7 +4,7 @@ Configuration file for the `test_parameter` namespace.
 
 import pytest
 
-from eprempy.parameter import default
+from eprempy.parameter import reference
 
 
 @pytest.fixture
@@ -14,134 +14,134 @@ def srcdir():
 
 
 @pytest.fixture
-def reference():
+def default():
     """All default parameter values, converted to underlying type."""
     defined = {
         'numNodesPerStream': {
             'type': int,
             'defaultVal': None,
             'minVal': None,
-            'maxVal': default.BASETYPES_H['LARGEINT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEINT']['value'],
         },
         'numRowsPerFace': {
             'type': int,
             'defaultVal': 2,
             'minVal': 1,
-            'maxVal': default.BASETYPES_H['LARGEINT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEINT']['value'],
         },
         'numColumnsPerFace': {
             'type': int,
             'defaultVal': 2,
             'minVal': 1,
-            'maxVal': default.BASETYPES_H['LARGEINT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEINT']['value'],
         },
         'numEnergySteps': {
             'type': int,
             'defaultVal': 20,
             'minVal': 2,
-            'maxVal': default.BASETYPES_H['LARGEINT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEINT']['value'],
         },
         'numMuSteps': {
             'type': int,
             'defaultVal': 20,
             'minVal': 2,
-            'maxVal': default.BASETYPES_H['LARGEINT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEINT']['value'],
         },
         'rScale': {
             'type': float,
-            'defaultVal': default.BASETYPES_H['RSAU']['value'],
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'defaultVal': reference.BASETYPES_H['RSAU']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'flowMag': {
             'type': float,
             'defaultVal': 400.0e5,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'mhdDensityAu': {
             'type': float,
             'defaultVal': 8.30,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'mhdBAu': {
             'type': float,
             'defaultVal': 1.60e-5,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'simStartTime': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'tDel': {
             'type': float,
             'defaultVal': 0.01041666666667,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'simStopTime': {
             'type': float,
             'defaultVal': 0.01041666666667,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'numEpSteps': {
             'type': int,
             'defaultVal': 30,
             'minVal': 1,
-            'maxVal': default.BASETYPES_H['LARGEINT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEINT']['value'],
         },
         'aziSunStart': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'omegaSun': {
             'type': float,
             'defaultVal': 0.001429813,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'lamo': {
             'type': float,
             'defaultVal': 1.0,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'dsh_min': {
             'type': float,
             'defaultVal': 5.0e-5,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'dsh_hel_min': {
             'type': float,
             'defaultVal': 2.5e-4,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'kperxkpar': {
             'type': float,
             'defaultVal': 0.01,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'mfpRadialPower': {
             'type': float,
             'defaultVal': 2.0,
-            'minVal': -1.0 * default.BASETYPES_H['LARGEFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': -1.0 * reference.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'rigidityPower': {
             'type': float,
             'defaultVal': 1 / 3,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'focusingLimit': {
             'type': float,
@@ -152,14 +152,14 @@ def reference():
         'eMin': {
             'type': float,
             'defaultVal': 1.0,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'eMax': {
             'type': float,
             'defaultVal': 1000.0,
             'minVal': 1.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'useStochastic': {
             'type': int,
@@ -194,14 +194,14 @@ def reference():
         'gammaEhigh': {
             'type': float,
             'defaultVal': 0.0,
-            'minVal': -1.0 * default.BASETYPES_H['LARGEFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': -1.0 * reference.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'gammaElow': {
             'type': float,
             'defaultVal': 0.0,
-            'minVal': -1.0 * default.BASETYPES_H['LARGEFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': -1.0 * reference.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'FailModeDump': {
             'type': int,
@@ -225,7 +225,7 @@ def reference():
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'pointObserverOutput': {
             'type': int,
@@ -237,7 +237,7 @@ def reference():
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'streamFluxOutput': {
             'type': int,
@@ -249,7 +249,7 @@ def reference():
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'subTimeCouple': {
             'type': int,
@@ -267,7 +267,7 @@ def reference():
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'unstructuredDomain': {
             'type': int,
@@ -279,7 +279,7 @@ def reference():
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'useAdiabaticChange': {
             'type': int,
@@ -342,26 +342,26 @@ def reference():
         'idw_p': {
             'type': float,
             'defaultVal': 3.0,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'epEquilibriumCalcDuration': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'preEruptionDuration': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'parallelFlow': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'fieldAligned': {
             'type': int,
@@ -373,7 +373,7 @@ def reference():
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'useBoundaryFunction': {
             'type': int,
@@ -390,32 +390,32 @@ def reference():
         'boundaryFunctAmplitude': {
             'type': float,
             'defaultVal': 1.0,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'boundaryFunctXi': {
             'type': float,
             'defaultVal': 1.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'boundaryFunctGamma': {
             'type': float,
             'defaultVal': 2.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'boundaryFunctBeta': {
             'type': float,
             'defaultVal': 2.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'boundaryFunctEcutoff': {
             'type': float,
             'defaultVal': 1.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'shockSolver': {
             'type': int,
@@ -427,19 +427,19 @@ def reference():
             'type': float,
             'defaultVal': 1.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'minInjectionEnergy': {
             'type': float,
             'defaultVal': 0.01,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'shockInjectionFactor': {
             'type': float,
             'defaultVal': 1.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'idealShock': {
             'type': int,
@@ -450,50 +450,50 @@ def reference():
         'idealShockSharpness': {
             'type': float,
             'defaultVal': 1.0,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'idealShockScaleLength': {
             'type': float,
             'defaultVal': 0.0046491,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'idealShockJump': {
             'type': float,
             'defaultVal': 4.0,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'idealShockSpeed': {
             'type': float,
             'defaultVal': 1500e5,
-            'minVal': default.BASETYPES_H['SMALLFLOAT']['value'],
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'minVal': reference.BASETYPES_H['SMALLFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'idealShockInitTime': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['LARGEFLOAT']['value'],
+            'maxVal': reference.BASETYPES_H['LARGEFLOAT']['value'],
         },
         'idealShockTheta': {
             'type': float,
-            'defaultVal': default.BASETYPES_H['HALF_PI']['value'],
+            'defaultVal': reference.BASETYPES_H['HALF_PI']['value'],
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['PI']['value'],
+            'maxVal': reference.BASETYPES_H['PI']['value'],
         },
         'idealShockPhi': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': 2.0 * default.BASETYPES_H['PI']['value'],
+            'maxVal': 2.0 * reference.BASETYPES_H['PI']['value'],
         },
         'idealShockWidth': {
             'type': float,
             'defaultVal': 0.0,
             'minVal': 0.0,
-            'maxVal': default.BASETYPES_H['PI']['value'],
+            'maxVal': reference.BASETYPES_H['PI']['value'],
         },
         'dumpFreq': {
             'type': int,
