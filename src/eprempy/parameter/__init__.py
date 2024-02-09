@@ -13,9 +13,6 @@ from ._config import (
     ConfigFile,
     configfile_factory as configfile,
 )
-from ._interface import (
-    generate_database as generate,
-)
 from ._reference import (
     ALIASES,
 )
@@ -45,7 +42,6 @@ __all__ = [
     "Variable",
     "configfile",
     "default",
-    "generate",
     "interface",
     "variable",
 ]
