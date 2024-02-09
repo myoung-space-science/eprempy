@@ -49,19 +49,23 @@ def generate_config_file(
     """Create a configuration file with default parameter values."""
     default = parameter.interface(srcdir=source)
     keys = sorted(parameter.ConfigurationC(source))
+    header = [
+        f"# EPREM default configuration file\n",
+        f"# Generated at {_timestr}\n",
+        f"# --------------------------------\n",
+    ]
     values = [
         f"{key}={_get_arg_value(default[key])}\n"
         for key in keys
     ]
-    header = [
-        f"# EPREM default configuration file\n",
-        f"# Generated at {_timestr}\n",
+    footer = [
         f"# --------------------------------\n",
     ]
     filepath = paths.fullpath(path)
     with filepath.open('w') as fp:
         fp.writelines(header)
         fp.writelines(values)
+        fp.writelines(footer)
     if verbose:
         print(f"Wrote default config file to {filepath}")
 
