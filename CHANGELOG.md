@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.5.1 (2024-02-09)
+
 - Fix multiple bugs in package CLI
 
 ## v0.5.0 (2024-02-09)
