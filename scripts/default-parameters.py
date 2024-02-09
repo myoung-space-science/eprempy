@@ -10,7 +10,7 @@ from eprempy import paths
 
 _DB_PATH = parameter.SourceFile._db_path
 
-_PY_PATH = _DB_PATH.parent / 'default.py'
+_PY_PATH = _DB_PATH.parent / 'reference.py'
 
 
 def main(
