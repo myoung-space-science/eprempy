@@ -21,12 +21,12 @@ class CLIError(Exception):
 
 
 def run(mode: str, options: typing.Mapping):
-    if mode == 'parameters':
-        return run_parameters_subparser(options)
+    if mode == 'configfile':
+        return run_configfile_subparser(options)
     raise CLIError(f"Unknown mode: {mode!r}")
 
 
-def run_parameters_subparser(options: typing.Mapping):
+def run_configfile_subparser(options: typing.Mapping):
     """Generate or compare configuration files."""
     if 'generate' in options:
         return generate_config_file(
@@ -35,7 +35,7 @@ def run_parameters_subparser(options: typing.Mapping):
             verbose=options['verbose'],
         )
     if 'compare' in options:
-        return compare_parameters()
+        return compare_config_files()
 
 
 _timestr = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -70,13 +70,13 @@ def generate_config_file(
         print(f"Wrote default config file to {filepath}")
 
 
-def compare_parameters(
+def compare_config_files(
     files: typing.Iterable[paths.PathLike],
     source: paths.PathLike=None,
     diff: bool=False,
     names: bool=False,
 ) -> None:
-    """Compare values of EPREM configuration parameters.
+    """Compare values of EPREM configuration-file parameters.
     
     This method will print the name of each parameter and its default value, as
     well as the corresponding value contained in each configuration file in
@@ -195,8 +195,8 @@ _docstring_replacements = {
 }
 
 DESCRIPTIONS = {
-    'parameters': etc.doc2help(
-        run_parameters_subparser,
+    'configfile': etc.doc2help(
+        run_configfile_subparser,
         mode='full',
         replacements=_docstring_replacements,
     ),
