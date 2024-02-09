@@ -5,6 +5,9 @@
 ## NEXT
 
 - Support length conversions to/from solar radius
+- Reorganize the package CLI
+- Create `scripts/default-parameters.py`
+- Refactor the `parameter` namespace
 
 ## v0.4.0 (2024-01-31)
 
