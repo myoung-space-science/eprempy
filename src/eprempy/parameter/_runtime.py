@@ -16,7 +16,7 @@ from .. import paths
 from .. import physical
 from .. import real
 from . import _config
-from . import _reference
+from . import _metadata
 
 
 T = typing.TypeVar('T')
@@ -147,7 +147,7 @@ class Interface(aliased.Mapping[str, _VT]):
 
         Not meant for public use. Please see `~interface`.
         """
-        super().__init__(base, aliases=_reference.ALIASES)
+        super().__init__(base, aliases=_metadata.ALIASES)
         self._defaults = defaults
         self._config = cfgpath
 
@@ -205,7 +205,7 @@ def interface_factory(*args, **kwargs):
     defaults = _config.Defaults(srcdir=srcinit)
     local = {
         key: info.get('default')
-        for key, info in _reference._LOCAL.items()
+        for key, info in _metadata._LOCAL.items()
     }
     init = {**local, **defaults}
     cfgpath = None
@@ -222,7 +222,7 @@ def interface_factory(*args, **kwargs):
         }
         init.update(user)
     base = {
-        key: {'unit': _reference.UNITS.get(key), 'value': value}
+        key: {'unit': _metadata.UNITS.get(key), 'value': value}
         for key, value in init.items()
     }
     return Interface(base, defaults, cfgpath)

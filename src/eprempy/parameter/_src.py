@@ -13,7 +13,7 @@ import typing
 from .. import container
 from .. import paths
 from .. import symbolic
-from . import _reference
+from . import _metadata
 
 
 class SourceFile(collections.abc.Mapping):
@@ -214,7 +214,7 @@ class BaseTypesH(SourceFile):
         if format == 'full':
             value = self.get(key, default)
             result = {'value': value}
-            for k, v in _reference._BASETYPES_H.get(key, {}).items():
+            for k, v in _metadata._BASETYPES_H.get(key, {}).items():
                 result[k] = v.__name__ if k == 'type' else v
             return result
         return super().get(key, default, format)
@@ -250,7 +250,7 @@ class BaseTypesH(SourceFile):
         """The type of each constant."""
         if self._types is None:
             self._types = {
-                k: v['type'] for k, v in _reference._BASETYPES_H.items()
+                k: v['type'] for k, v in _metadata._BASETYPES_H.items()
             }
         return self._types
 
@@ -431,7 +431,7 @@ class ConfigurationC(SourceFile):
             return loaded.get(key, default)
         if format == 'full':
             defined = self.definitions.get(key, default)
-            loaded = {**defined, **_reference._CONFIGURATION_C.get(key, {})}
+            loaded = {**defined, **_metadata._CONFIGURATION_C.get(key, {})}
             return {
                 k: v.__name__ if k == 'type' else v
                 for k, v in loaded.items()

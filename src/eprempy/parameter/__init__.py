@@ -13,7 +13,7 @@ from ._config import (
     ConfigFile,
     configfile_factory as configfile,
 )
-from ._reference import (
+from ._metadata import (
     ALIASES,
 )
 from ._runtime import (
