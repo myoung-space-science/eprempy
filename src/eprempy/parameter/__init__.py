@@ -25,7 +25,7 @@ from ._src import (
     ConfigurationC,
     SourceFile,
 )
-from . import default
+from . import reference
 
 
 DB_PATH = str(SourceFile._db_path)
@@ -41,7 +41,7 @@ __all__ = [
     "SourceFile",
     "Variable",
     "configfile",
-    "default",
+    "reference",
     "interface",
     "variable",
 ]
