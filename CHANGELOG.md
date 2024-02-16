@@ -5,6 +5,8 @@
 ## NEXT
 
 - Fix config-file parsing bug
+- Improve CLI config-file diff output
+- Add test for CLI config-file diff option
 
 ## v0.5.1 (2024-02-09)
 
