@@ -256,9 +256,9 @@ def _parse_config(
             line = line.rstrip('\n')
             if line == '' or line == '\n' or line[0] in cmnt:
                 continue
-            key, _tmp = line.split('=')
-            value = paths.strip_inline_comments(_tmp, cmnt)
-            pairs[key] = value
+            tmp = paths.strip_inline_comments(line, cmnt)
+            key, value = tmp.split('=')
+            pairs[key.strip()] = value.strip()
     return pairs
 
 
