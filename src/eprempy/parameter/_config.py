@@ -257,6 +257,30 @@ class ConfigFile(collections.abc.Mapping):
         return self._filepath
 
 
+def _parse_config(
+    filepath: pathlib.Path,
+    comments: typing.Iterable[str]=None,
+) -> typing.Dict[str, str]:
+    """Parse an EPREM config file into a dictionary.
+
+    This method opens the file that the given filepath points to and reads it
+    line-by-line. It ignores lines that begin with a valid comment character and
+    parses the rest into key-value pairs. It will automatically strip out inline
+    comments.
+    """
+    pairs = {}
+    cmnt = comments or ()
+    with filepath.open('r') as fp:
+        for line in fp:
+            line = line.rstrip('\n')
+            if line == '' or line == '\n' or line[0] in cmnt:
+                continue
+            key, _tmp = line.split('=')
+            value = paths.strip_inline_comments(_tmp, cmnt)
+            pairs[key] = value
+    return pairs
+
+
 def configfile_factory(
     filepath: paths.PathLike,
     comments: typing.Optional[typing.Iterable[str]]=None,
