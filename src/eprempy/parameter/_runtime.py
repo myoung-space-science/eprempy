@@ -170,6 +170,9 @@ class Interface(aliased.Mapping[str, _VT]):
             raise KeyError(f"No parameter corresponding to {__k!r}") from None
         value = this['value']
         unit = this['unit']
+        usedeg = super().__getitem__('useDegrees')
+        if unit == 'rad' and usedeg['value']:
+            unit = 'deg'
         if unit is None:
             return value
         return variable_factory(value, unit=unit)
