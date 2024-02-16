@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Fix config-file parsing bug
+
 ## v0.5.1 (2024-02-09)
 
 - Fix multiple bugs in package CLI
