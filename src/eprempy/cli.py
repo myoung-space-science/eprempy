@@ -143,10 +143,7 @@ def _build_arg_dict(
     keys = sorted(parameter.ConfigurationC(source))
     built = {key: {} for key in keys}
     for key in keys:
-        current = {
-            name: _format_arg_string(interface.get(key))
-            for name, interface in targets.items()
-        }
+        current = _map_parameter(key, targets)
         values = list(current.values())
         v0 = values[0]
         if not diff or any(vi != v0 for vi in values):
@@ -157,6 +154,21 @@ def _build_arg_dict(
     if diff:
         return {k: v for k, v in built.items() if v}
     return built
+
+
+def _map_parameter(
+    key: str,
+    targets: typing.Dict[str, parameter.Interface]
+) -> typing.Dict[str, str]:
+    """Build a dict of values for a single parameter."""
+    d = {}
+    for name, interface in targets.items():
+        userdef = parameter.configfile(interface.config)
+        if userdef.get(key):
+            d[name] = _format_arg_string(interface.get(key))
+        else:
+            d[name] = '(default)'
+    return d
 
 
 def _normalize_paths(args: typing.Iterable[paths.PathLike]):
