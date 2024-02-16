@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.5.2 (2024-02-16)
+
 - Fix config-file parsing bug
 - Improve CLI config-file diff output
 - Add test for CLI config-file diff option
