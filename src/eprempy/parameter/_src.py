@@ -171,7 +171,7 @@ class BaseTypeDef:
             # at least one whitespace character
             \s+
             # the defined name
-            (?P<name>[A-Z_]+)
+            (?P<name>[0-9A-Z_]+)
             # at least one whitespace character
             \s+
             # the defined value
