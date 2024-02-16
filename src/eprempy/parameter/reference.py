@@ -545,14 +545,6 @@ CONFIGURATION_C = {
         'aliases': [],
         'unit': 'rad',
     },
-    'idealShockUseDegrees': {
-        'type': int,
-        'defaultVal': '0',
-        'minVal': '0',
-        'maxVal': '1',
-        'aliases': [],
-        'unit': None,
-    },
     'idealShockWidth': {
         'type': float,
         'defaultVal': '0.0',
@@ -861,14 +853,6 @@ CONFIGURATION_C = {
         'aliases': [],
         'unit': 'rad',
     },
-    'obsUseDegrees': {
-        'type': int,
-        'defaultVal': '0',
-        'minVal': '0',
-        'maxVal': '1',
-        'aliases': [],
-        'unit': None,
-    },
     'omegaSun': {
         'type': float,
         'defaultVal': '0.001429813',
@@ -1088,6 +1072,12 @@ CONFIGURATION_C = {
     'useBoundaryFunction': {
         'type': int,
         'defaultVal': '1',
+        'minVal': '0',
+        'maxVal': '1',
+    },
+    'useDegrees': {
+        'type': int,
+        'defaultVal': '0',
         'minVal': '0',
         'maxVal': '1',
     },

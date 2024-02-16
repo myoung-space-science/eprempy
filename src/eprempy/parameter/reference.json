@@ -285,12 +285,6 @@
             "minVal": "0.0",
             "mode": "readDouble"
         },
-        "idealShockUseDegrees": {
-            "defaultVal": "0",
-            "maxVal": "1",
-            "minVal": "0",
-            "mode": "readInt"
-        },
         "idealShockWidth": {
             "defaultVal": "0.0",
             "maxVal": "PI",
@@ -523,12 +517,6 @@
             "minVal": "0.0",
             "mode": "readDoubleArray"
         },
-        "obsUseDegrees": {
-            "defaultVal": "0",
-            "maxVal": "1",
-            "minVal": "0",
-            "mode": "readInt"
-        },
         "omegaSun": {
             "defaultVal": "0.001429813",
             "maxVal": "LARGEFLOAT",
@@ -699,6 +687,12 @@
         },
         "useBoundaryFunction": {
             "defaultVal": "1",
+            "maxVal": "1",
+            "minVal": "0",
+            "mode": "readInt"
+        },
+        "useDegrees": {
+            "defaultVal": "0",
             "maxVal": "1",
             "minVal": "0",
             "mode": "readInt"
