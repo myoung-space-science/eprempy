@@ -119,7 +119,7 @@ def compare_config_files(
         print(str(key).center(cwidth))
         print('-' * cwidth)
         for k, v in item.items():
-            print(f"{str(k).ljust(lwidth)}{str(v).rjust(jwidth)}")
+            print(f"{str(k).ljust(lwidth)}{str(v).rjust(cwidth-lwidth)}")
         print()
 
 
@@ -143,14 +143,12 @@ def _build_arg_dict(
     keys = sorted(parameter.ConfigurationC(source))
     built = {key: {} for key in keys}
     for key in keys:
+        heading = f"  {key} (default: {_format_arg_string(default[key])})  "
         current = _map_parameter(key, targets)
         values = list(current.values())
         v0 = values[0]
         if not diff or any(vi != v0 for vi in values):
-            built[key] = {
-                'default': _format_arg_string(default[key]),
-                **current,
-            }
+            built[heading] = current.copy()
     if diff:
         return {k: v for k, v in built.items() if v}
     return built
