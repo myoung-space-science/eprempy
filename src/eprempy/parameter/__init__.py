@@ -12,6 +12,8 @@ from .. import real
 from ._config import (
     ConfigFile,
     configfile_factory as configfile,
+    Defaults,
+    defaults_factory as defaults,
 )
 from ._metadata import (
     ALIASES,
@@ -37,10 +39,12 @@ __all__ = [
     "BaseTypesH",
     "ConfigurationC",
     "ConfigFile",
+    "Defaults",
     "Interface",
     "SourceFile",
     "Variable",
     "configfile",
+    "defaults",
     "reference",
     "interface",
     "variable",
