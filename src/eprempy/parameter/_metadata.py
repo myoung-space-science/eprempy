@@ -471,6 +471,11 @@ _BASETYPES_H = {
         'unit': 'day',
         'type': float,
     },
+    'DEG2RAD': {
+        'info': 'The conversion from degrees to radians.',
+        'unit': '1',
+        'type': float,
+    },
     'EV': {
         'info': 'The conversion from eVs to ergs.',
         'unit': 'erg/eV',
@@ -559,6 +564,11 @@ _BASETYPES_H = {
     'Q': {
         'info': 'The proton charge.',
         'unit': 'statC',
+        'type': float,
+    },
+    'RAD2DEG': {
+        'info': 'The conversion from radians to degrees.',
+        'unit': '1',
         'type': float,
     },
     'RSAU': {
