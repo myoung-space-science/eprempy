@@ -25,6 +25,12 @@ BASETYPES_H = {
         'unit': 'day',
         'type': float,
     },
+    'DEG2RAD': {
+        'value': 0.017453292519943295,
+        'info': 'The conversion from degrees to radians.',
+        'unit': '1',
+        'type': float,
+    },
     'EV': {
         'value': 1.6022e-12,
         'info': 'The conversion from eVs to ergs.',
@@ -50,7 +56,7 @@ BASETYPES_H = {
         'type': float,
     },
     'HALF_PI': {
-        'value': 1.570796327,
+        'value': 1.5707963267948966,
         'info': 'The value of π/2.',
         'unit': None,
         'type': float,
@@ -131,6 +137,12 @@ BASETYPES_H = {
         'value': 4.80320425e-10,
         'info': 'The proton charge.',
         'unit': 'statC',
+        'type': float,
+    },
+    'RAD2DEG': {
+        'value': 57.29577951308232,
+        'info': 'The conversion from radians to degrees.',
+        'unit': '1',
         'type': float,
     },
     'RSAU': {
