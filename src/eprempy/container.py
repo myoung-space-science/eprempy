@@ -12,7 +12,24 @@ from . import etc
 T = typing.TypeVar('T')
 
 
-def unique(*args: T, strict: bool=False) -> typing.List[T]:
+@typing.overload
+def unique(
+    arg: typing.List[T],
+    *,
+    strict: bool=False,
+) -> typing.List[T]: ...
+
+@typing.overload
+def unique(
+    arg: T,
+    *,
+    strict: typing.Literal[True],
+) -> typing.List[T]: ...
+
+@typing.overload
+def unique(*args: T, strict: bool=False) -> typing.List[T]: ...
+
+def unique(*args, strict=False):
     """Remove repeated items from `args` while preserving order.
     
     Parameters
