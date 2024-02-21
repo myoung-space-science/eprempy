@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.5.3 (2024-02-21)
+
 - Update type annotations
 - Fix bug in `physical.Coordinates.index` to allow `quantity.Measurement`
 
