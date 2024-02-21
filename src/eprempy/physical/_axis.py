@@ -319,6 +319,8 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
         """Create a measured sequence, if possible."""
         if len(targets) == 1:
             target = targets[0]
+            if isinstance(target, quantity.Measurement):
+                return target
             if quantity.ismeasurable(target):
                 return quantity.measure(target)
         with contextlib.suppress(quantity.ParsingTypeError):
