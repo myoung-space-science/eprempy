@@ -4,6 +4,9 @@
 
 ## NEXT
 
+- Update type annotations
+- Fix bug in `physical.Coordinates.index` to allow `quantity.Measurement`
+
 ## v0.5.2 (2024-02-16)
 
 - Fix config-file parsing bug
