@@ -5,6 +5,7 @@ import numpy
 from eprempy import measured
 from eprempy import numeric
 from eprempy import physical
+from eprempy import quantity
 
 
 def test_points():
@@ -88,5 +89,6 @@ def test_coordinates():
     assert coordinates.index(1.2, closest='upper') == numeric.index.value(2)
     assert coordinates.withunit('cm').data == coordinates.data.withunit('cm')
     assert coordinates.withunit('cm').index(150.0) == numeric.index.value(2)
-
+    measurement = quantity.measure([1.5], unit)
+    assert coordinates.index(measurement) == numeric.index.value(2)
 
