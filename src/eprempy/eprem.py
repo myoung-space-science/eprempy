@@ -60,7 +60,7 @@ class Observer(collections.abc.Mapping):
         return hash(self.source)
 
     def __str__(self) -> str:
-        """An unambiguous representation of this object."""
+        """Called for str(self)."""
         return str(self.source)
 
     def __len__(self) -> int:
