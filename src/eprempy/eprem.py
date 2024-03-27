@@ -26,6 +26,9 @@ __all__ = [
 ]
 
 
+BASETYPES = parameter.reference.BASETYPES_H
+
+
 @etc.autostr
 class Observer(collections.abc.Mapping):
     """A generic EPREM observer.
