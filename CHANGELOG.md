@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.5.4 (2024-03-27)
+
 - Add `eprem.BASETYPES`
 - Add `eprem.PARAMETERS`
 - Add `eprem.OBSERVABLES`
