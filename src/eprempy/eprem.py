@@ -14,6 +14,7 @@ from . import observable
 from . import parameter
 from . import paths
 from . import physical
+from . import reference
 
 
 __all__ = [
@@ -27,6 +28,7 @@ __all__ = [
 
 
 BASETYPES = parameter.reference.BASETYPES_H
+OBSERVABLES = [str(group) for group in reference.QUANTITIES.keys(aliased=True)]
 
 
 @etc.autostr
