@@ -7,6 +7,7 @@ import contextlib
 import pathlib
 import typing
 
+from . import aliased
 from . import datafile
 from . import etc
 from . import metric
@@ -28,6 +29,8 @@ __all__ = [
 
 
 BASETYPES = parameter.reference.BASETYPES_H
+_CC = aliased.Mapping(parameter.reference.CONFIGURATION_C)
+PARAMETERS = [str(group) for group in _CC.keys(aliased=True)]
 OBSERVABLES = [str(group) for group in reference.QUANTITIES.keys(aliased=True)]
 
 
