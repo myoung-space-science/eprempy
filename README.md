@@ -161,7 +161,7 @@ The full list of observable quantities, with registered aliases, is
 * 'energy_density' = 'energy density'
 * 'average_energy' = 'average energy'
 * 'fluence'
-* 'integral flux' = 'integral_flux' = 'intflux
+* 'integral flux' = 'integral_flux' = 'intflux'
 
 ### Observations
 
@@ -334,7 +334,7 @@ The full list of parameters, with registered aliases, is
 * 'useParallelDiffusion'
 * 'useShellDiffusion'
 * 'useStochastic'
-* 'warningsFile
+* 'warningsFile'
 
 ## Contributing
 
