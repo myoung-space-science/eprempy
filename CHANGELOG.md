@@ -5,6 +5,8 @@
 ## NEXT
 
 - Add `eprem.BASETYPES`
+- Add `eprem.PARAMETERS`
+- Update example usage in `README.md`
 
 ## v0.5.3 (2024-02-21)
 
