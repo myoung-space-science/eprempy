@@ -303,6 +303,7 @@ def _create_observer(
     return __type(dataview, observables)
 
 
+@etc.autostr
 class Dataset:
     """An interface to a complete EPREM dataset."""
 
@@ -320,6 +321,10 @@ class Dataset:
         self._observers = None
         self._streams = None
         self._points = None
+
+    def __str__(self) -> str:
+        """Called for str(self)."""
+        return str(self.directory)
 
     @property
     def observers(self):
