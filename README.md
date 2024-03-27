@@ -25,7 +25,7 @@ $ python -m eprempy --version
 
 The value printed will depend on which version you have installed.
 
-### Accessing a dataset
+### Dataset interfaces
 
 The examples below assume a working knowledge of [EPREM](https://github.com/myoung-space-science/eprem) &mdash; essentially, they assume that you have successfully run EPREM and have access to both the runtime configuration file and the output files.
 
@@ -55,6 +55,8 @@ Each dataset has the following properties
 * `points`: all point observers in the dataset, keyed by ID.
 * `parameters`: an interface to EPREM runtime parameter values.
 
+### Observer interfaces
+
 You may directly create an individual observer by providing its ID (e.g., stream number or name), as well as the same arguments used to create a dataset. The observer ID must be the first argument and is required.
 
 ```python
@@ -82,6 +84,8 @@ Each observer has the following properties
 * `system`: an instance of `eprempy.metric.System` representing an observer's metric system.
 * `times`: the observer's time coordinates.
 * `species`: the available particle species.
+
+### Observable quantities
 
 Every observer provides a key-based interface (i.e., a mapping) to observable quantities. Users may request a known observable quantity from an observer by passing a valid alias for the observable via bracket syntax. For example, any of the following commands will return the observable quantity representing particle flux
 
@@ -119,6 +123,47 @@ It is possible to change the unit of an observable quantity via the `.withunit` 
 >>> stream['flux'].withunit('1 / (cm^2 s sr MeV/nuc)')
 Quantity(unit='nuc MeV^-1 s^-1 sr^-1 cm^-2', dimensions={'time', 'shell', 'species', 'energy'})
 ```
+
+The full list of observable quantities, with registered aliases, is
+
+* 'phiOffset'
+* 't' = 'times' = 'time'
+* 'shells' = 'shell'
+* 'pitch-angle cosines' = 'mu' = 'pitch-angle cosine' = 'pitch-angle' = 'pitch angles' = 'pitch angle' = 'pitch-angles'
+* 'm' = 'mass'
+* 'q' = 'charge'
+* 'energy' = 'egrid' = 'E' = 'energies'
+* 'v' = 'vgrid' = 'speed'
+* 'radius' = 'R' = 'r'
+* 'T' = 'theta'
+* 'phi' = 'P'
+* 'Br' = 'br'
+* 'bt' = 'btheta' = 'Btheta' = 'Bt'
+* 'Bphi' = 'Bp' = 'bphi' = 'bp'
+* 'ur' = 'vr' = 'Vr' = 'Ur'
+* 'Ut' = 'utheta' = 'Utheta' = 'Vtheta' = 'Vt' = 'ut'
+* 'uphi' = 'up' = 'Vp' = 'Vphi' = 'Up' = 'Uphi'
+* 'rho' = 'Rho'
+* 'Dist' = 'dist' = 'f'
+* 'Flux' = 'J' = 'j(E)' = 'j' = 'J(E)' = 'flux'
+* 'X' = 'x'
+* 'y' = 'Y'
+* 'Z' = 'z'
+* 'bmag' = 'b_mag' = 'b mag' = '|b|' = '|B|' = 'b' = 'B'
+* 'u mag' = 'umag' = '|U|' = 'U' = 'u_mag' = 'u' = '|u|'
+* 'Upara' = 'u_para' = 'upara'
+* 'u_perp' = 'Uperp' = 'uperp'
+* 'angle' = 'flow_angle' = 'flow angle'
+* 'div_u' = 'divu' = 'div(u)' = 'div(U)' = 'divU' = 'div u' = 'div U'
+* 'Rg' = 'rigidity' = 'R_g'
+* 'mean_free_path' = 'mean free path' = 'mfp'
+* 'ar' = 'acceleration rate' = 'acceleration_rate'
+* 'energy_density' = 'energy density'
+* 'average_energy' = 'average energy'
+* 'fluence'
+* 'integral flux' = 'integral_flux' = 'intflux
+
+### Observations
 
 Users may observe an observable quantity via standard subscription syntax, such as
 
@@ -165,44 +210,7 @@ numpy.array(flux)
 ```
 Doing so is essentially a shortcut for converting the full observation.
 
-The full list of observable quantities, with registered aliases, is
-
-* 'phiOffset'
-* 't' = 'times' = 'time'
-* 'shells' = 'shell'
-* 'pitch-angle cosines' = 'mu' = 'pitch-angle cosine' = 'pitch-angle' = 'pitch angles' = 'pitch angle' = 'pitch-angles'
-* 'm' = 'mass'
-* 'q' = 'charge'
-* 'energy' = 'egrid' = 'E' = 'energies'
-* 'v' = 'vgrid' = 'speed'
-* 'radius' = 'R' = 'r'
-* 'T' = 'theta'
-* 'phi' = 'P'
-* 'Br' = 'br'
-* 'bt' = 'btheta' = 'Btheta' = 'Bt'
-* 'Bphi' = 'Bp' = 'bphi' = 'bp'
-* 'ur' = 'vr' = 'Vr' = 'Ur'
-* 'Ut' = 'utheta' = 'Utheta' = 'Vtheta' = 'Vt' = 'ut'
-* 'uphi' = 'up' = 'Vp' = 'Vphi' = 'Up' = 'Uphi'
-* 'rho' = 'Rho'
-* 'Dist' = 'dist' = 'f'
-* 'Flux' = 'J' = 'j(E)' = 'j' = 'J(E)' = 'flux'
-* 'X' = 'x'
-* 'y' = 'Y'
-* 'Z' = 'z'
-* 'bmag' = 'b_mag' = 'b mag' = '|b|' = '|B|' = 'b' = 'B'
-* 'u mag' = 'umag' = '|U|' = 'U' = 'u_mag' = 'u' = '|u|'
-* 'Upara' = 'u_para' = 'upara'
-* 'u_perp' = 'Uperp' = 'uperp'
-* 'angle' = 'flow_angle' = 'flow angle'
-* 'div_u' = 'divu' = 'div(u)' = 'div(U)' = 'divU' = 'div u' = 'div U'
-* 'Rg' = 'rigidity' = 'R_g'
-* 'mean_free_path' = 'mean free path' = 'mfp'
-* 'ar' = 'acceleration rate' = 'acceleration_rate'
-* 'energy_density' = 'energy density'
-* 'average_energy' = 'average energy'
-* 'fluence'
-* 'integral flux' = 'integral_flux' = 'intflux
+### Runtime parameters
 
 Accessing a runtime parameter value via the dataset interface's `parameters` property returns a `Variable` for physical quantities &mdash; those with one or more value(s) and a unit &mdash; and a built-in type (e.g., integer or string) for all other quantities.
 
