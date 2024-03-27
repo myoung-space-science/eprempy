@@ -415,7 +415,7 @@ def dataset(
     system: str=None,
 ) -> Dataset:
     """Create an EPREM dataset interface."""
-    directory = paths.fullpath(source, strict=True)
+    directory = paths.fullpath(source or '.', strict=True)
     confpath = _build_confpath(directory, config=config)
     return Dataset(
         directory,
