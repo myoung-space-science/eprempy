@@ -6,7 +6,10 @@
 
 - Add `eprem.BASETYPES`
 - Add `eprem.PARAMETERS`
+- Add `eprem.OBSERVABLES`
 - Update example usage in `README.md`
+- Fix bug in `eprem.Dataset` instantiation
+- Update string representation of `physical.Coordinates` and `eprem.Dataset`
 
 ## v0.5.3 (2024-02-21)
 
