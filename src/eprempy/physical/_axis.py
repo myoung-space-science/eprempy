@@ -232,6 +232,11 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
     def __init__(self, data: measured.Sequence[numbers.Real]) -> None:
         super().__init__(data)
 
+    def _as_string(self, prefix: str='', suffix: str='') -> str:
+        """Create a string representation of this object."""
+        data = self._format_data(prefix=prefix, suffix=suffix)
+        return f"{prefix}{data}, {self.unit}{suffix}"
+
     def index(
         self,
         *targets: typing.Union[numbers.Real, str],
