@@ -326,6 +326,8 @@ class Coordinates(Axis[measured.Sequence[numbers.Real]]):
             target = targets[0]
             if isinstance(target, quantity.Measurement):
                 return target
+            if isinstance(target, measured.Object):
+                return quantity.measure(target)
             if quantity.ismeasurable(target):
                 return quantity.measure(target)
         with contextlib.suppress(quantity.ParsingTypeError):
