@@ -49,6 +49,7 @@ def test_parse(measurables):
         expected = case['dist']
         assert result == expected
     assert quantity.parse(0) == (0, '1') # zero is measurable!
+    # assert quantity.parse(measured.value(1, 'm')) == (1, 'm')
     with pytest.raises(quantity.ParsingTypeError):
         quantity.parse(None)
     with pytest.raises(quantity.ParsingTypeError):
@@ -69,11 +70,13 @@ def test_measure(measurables):
         assert tuple(result.data) == case['full'][:-1]
         assert result.unit == case['full'][-1]
         assert quantity.measure(result) is result
-    this = support.Measurable([1], unit='m / s')
     expected = quantity.measurement([1], unit='m / s')
+    assert quantity.measure(measured.value(1, 'm / s')) == expected
+    this = support.Measurable([1], unit='m / s')
     assert quantity.measure(this) == expected
-    strings = ['1.1', '2.3', 'm']
     expected = quantity.measurement([1.1, 2.3], unit='m')
+    assert quantity.measure(measured.sequence([1.1, 2.3], 'm')) == expected
+    strings = ['1.1', '2.3', 'm']
     assert quantity.measure(strings) == expected
     expected = quantity.measurement([1.1, 2.3], unit='1')
     assert quantity.measure(strings[:-1]) == expected
