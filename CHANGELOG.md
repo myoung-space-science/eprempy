@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Fix `measured.Value` bug in `physical.Coordinates.index`
+
 ## v0.5.4 (2024-03-27)
 
 - Add `eprem.BASETYPES`
