@@ -4,6 +4,8 @@
 
 ## NEXT
 
+## v0.6.0 (2024-05-31)
+
 - Add `stream` and `point` to known observer-file prefixes
 
 ## v0.5.5 (2024-05-29)
