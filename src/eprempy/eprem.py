@@ -143,6 +143,8 @@ ObserverType = typing.TypeVar('ObserverType', bound=Observer)
 class Stream(Observer):
     """An EPREM stream observer."""
 
+    prefixes = {'stream', 'obs', 'flux'}
+
     @classmethod
     def patterns(cls, __id: int) -> typing.List[str]:
         """Generate stream-observer filename patterns for the given ID."""
@@ -150,7 +152,7 @@ class Stream(Observer):
             raise TypeError(
                 f"Cannot create stream observer from ID type {type(__id)}"
             ) from None
-        return [f'{prefix}{__id:06}.*' for prefix in {'obs', 'flux'}]
+        return [f'{prefix}{__id:06}.*' for prefix in cls.prefixes]
 
     def __init__(
         self,
@@ -172,6 +174,8 @@ class Stream(Observer):
 class Point(Observer):
     """An EPREM point observer."""
 
+    prefixes = {'point', 'p_obs'}
+
     @classmethod
     def patterns(cls, __id: typing.Union[str, int]) -> typing.List[str]:
         """Generate point-observer filename patterns for the given ID."""
@@ -181,7 +185,7 @@ class Point(Observer):
                 f"Cannot create point observer from ID type {type(__id)}"
             ) from None
         with contextlib.suppress(ValueError):
-            patterns.append(f'p_obs{int(__id):03}.*')
+            patterns = [f'{prefix}{int(__id):03}.*' for prefix in cls.prefixes]
         if isinstance(__id, str):
             patterns.append(f'{__id}.*')
         return patterns
@@ -340,10 +344,9 @@ class Dataset:
     def streams(self):
         """A mapping of available stream-observer interfaces."""
         if self._streams is None:
-            prefixes = {'obs', 'flux'}
             obspaths = [
                 path
-                for prefix in prefixes
+                for prefix in Stream.prefixes
                 for path in self.directory.glob(f"{prefix}*")
                 if path.suffix in datafile.VIEWERS
             ]
@@ -357,10 +360,9 @@ class Dataset:
     def points(self):
         """A mapping of available point-observer interfaces."""
         if self._points is None:
-            prefixes = {'p_obs'}
             obspaths = [
                 path
-                for prefix in prefixes
+                for prefix in Point.prefixes
                 for path in self.directory.glob(f"{prefix}*")
                 if path.suffix in datafile.VIEWERS
             ]
@@ -408,10 +410,11 @@ class Dataset:
 def _get_observer_id(path: pathlib.Path):
     """Compute the appropriate observer ID for the given path."""
     stem = path.stem
-    for prefix in ('obs', 'flux', 'p_obs'):
+    prefixes = Stream.prefixes | Point.prefixes
+    for prefix in prefixes:
         if stem.startswith(prefix):
             key = stem.lstrip(prefix)
-            if prefix in {'obs', 'flux'}:
+            if prefix in Stream.prefixes:
                 return int(key)
             return key
     raise ValueError(path)
