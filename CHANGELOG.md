@@ -4,6 +4,8 @@
 
 ## NEXT
 
+- Add `stream` and `point` to known observer-file prefixes
+
 ## v0.5.5 (2024-05-29)
 
 - Fix `measured.Value` bug in `physical.Coordinates.index`
