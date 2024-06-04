@@ -1,5 +1,7 @@
 # EPREM(py)
 
+**WARNING:** This repository is read-only. All development has move to https://gitlab.com/open-eprem/eprempy.
+
 Tools for working with EPREM simulation runs
 
 ## Installation
